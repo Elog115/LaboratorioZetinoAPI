@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabZetino.Application", "LabZetino.Application\LabZetino.Application.csproj", "{19F8039A-7A9A-410D-A681-924C9827FB4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabZetino.Web", "LabZetino.Web\LabZetino.Web.csproj", "{B0BD1CF5-5D37-4054-B923-F58F1B372862}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabZetino.Domain", "LabZetino.Domain\LabZetino.Domain.csproj", "{E21C38F5-F13D-43F6-8722-5F423D7DF033}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisLabZetino.Application", "SisLabZetino.Application\SisLabZetino.Application.csproj", "{328CB861-D5A4-4531-87F2-A781D9B1E0A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabZetino.Infrastructure", "LabZetino.Infrastructure\LabZetino.Infrastructure.csproj", "{2E09F3E7-0967-4B07-BBBD-07AE7909FA1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisLabZetino.Domain", "SisLabZetino.Domain\SisLabZetino.Domain.csproj", "{EB63BA9A-D1A3-4B1C-B5C6-BBA71E9B3F7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabZetino.Web", "LabZetino.Web\LabZetino.Web.csproj", "{B0BD1CF5-5D37-4054-B923-F58F1B372862}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisLabZetino.Infrastructure", "SisLabZetino.Infrastructure\SisLabZetino.Infrastructure.csproj", "{51B49FE1-2D67-412B-8CF2-43239A178561}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,22 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{19F8039A-7A9A-410D-A681-924C9827FB4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19F8039A-7A9A-410D-A681-924C9827FB4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19F8039A-7A9A-410D-A681-924C9827FB4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19F8039A-7A9A-410D-A681-924C9827FB4D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E21C38F5-F13D-43F6-8722-5F423D7DF033}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E21C38F5-F13D-43F6-8722-5F423D7DF033}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E21C38F5-F13D-43F6-8722-5F423D7DF033}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E21C38F5-F13D-43F6-8722-5F423D7DF033}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E09F3E7-0967-4B07-BBBD-07AE7909FA1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E09F3E7-0967-4B07-BBBD-07AE7909FA1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E09F3E7-0967-4B07-BBBD-07AE7909FA1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E09F3E7-0967-4B07-BBBD-07AE7909FA1E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0BD1CF5-5D37-4054-B923-F58F1B372862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0BD1CF5-5D37-4054-B923-F58F1B372862}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0BD1CF5-5D37-4054-B923-F58F1B372862}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0BD1CF5-5D37-4054-B923-F58F1B372862}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328CB861-D5A4-4531-87F2-A781D9B1E0A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328CB861-D5A4-4531-87F2-A781D9B1E0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328CB861-D5A4-4531-87F2-A781D9B1E0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328CB861-D5A4-4531-87F2-A781D9B1E0A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB63BA9A-D1A3-4B1C-B5C6-BBA71E9B3F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB63BA9A-D1A3-4B1C-B5C6-BBA71E9B3F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB63BA9A-D1A3-4B1C-B5C6-BBA71E9B3F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB63BA9A-D1A3-4B1C-B5C6-BBA71E9B3F7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51B49FE1-2D67-412B-8CF2-43239A178561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51B49FE1-2D67-412B-8CF2-43239A178561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51B49FE1-2D67-412B-8CF2-43239A178561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51B49FE1-2D67-412B-8CF2-43239A178561}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
