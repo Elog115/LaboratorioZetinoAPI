@@ -48,5 +48,11 @@
     <Folder Include="Interfaces\" />
     <Folder Include="Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LabZetino.Domain\LabZetino.Domain.csproj">
+      <Project>{e21c38f5-f13d-43f6-8722-5f423d7df033}</Project>
+      <Name>LabZetino.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
