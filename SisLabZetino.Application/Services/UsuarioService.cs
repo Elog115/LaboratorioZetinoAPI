@@ -48,6 +48,8 @@ namespace SisLabZetino.Application.Services
             existente.Apellido = usuario.Apellido;
             existente.Correo = usuario.Correo;
             existente.Clave = usuario.Clave;
+            existente.FechaNacimiento = usuario.FechaNacimiento;
+            existente.Telefono = usuario.Telefono;
             existente.IdRol = usuario.IdRol;
             existente.Estado = usuario.Estado; // Permitir activar/inactivar
 
