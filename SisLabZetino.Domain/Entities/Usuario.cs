@@ -8,48 +8,48 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_UsuarioSistema")]
+    [Table("t_usuariosistema")]
     public class UsuarioSistema
     {
         [Key]
-        [Column("IdUsuario")]
+        [Column("idusuario")]
         public int IdUsuario { get; set; }
 
         [Required]
-        [Column("IdRol")]
+        [Column("idrol")]
         public int IdRol { get; set; }
 
         [Required]
-        [Column("Nombre")]
+        [Column("nombre")]
         [StringLength(150)]
         public string Nombre { get; set; }
 
         [Required]
-        [Column("Apellido")]
+        [Column("apellido")]
         [StringLength(150)]
         public string Apellido { get; set; }
 
         [Required]
-        [Column("Telefono")]
+        [Column("telefono")]
         [StringLength(8)]
         public string Telefono { get; set; }
 
         [Required]
-        [Column("Correo")]
+        [Column("correo")]
         [StringLength(250)]
         public string Correo { get; set; }
 
         [Required]
-        [Column("FechaNacimiento", TypeName = "date")]
+        [Column("fechanacimiento", TypeName = "date")]
         public DateTime FechaNacimiento { get; set; }
 
         [Required]
-        [Column("Clave")]
+        [Column("clave")]
         [StringLength(250)]
         public string Clave { get; set; }
 
         [Required]
-        [Column("Estado")]
+        [Column("estado")]
         public int Estado { get; set; }
     }
 }

@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_Rol")]
+    [Table("t_rol")]
     public class Rol
     {
         [Key]
-        [Column("IdRol")]
+        [Column("idrol")]
         public int IdRol { get; set; }
 
         [Required]
-        [Column("Nombre")]
+        [Column("nombre")]
         [StringLength(150)]
         public string Nombre { get; set; }
 
         [Required]
-        [Column("Estado")]
+        [Column("estado")]
         public int Estado { get; set; }
     }
 }

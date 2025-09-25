@@ -8,34 +8,34 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_NotificacionEmail")]
+    [Table("t_notificacionEmail")]
     public class NotificacionEmail
     {
         [Key]
-        [Column("IdNotificacion")]
+        [Column("idnotificacion")]
         public int IdNotificacion { get; set; }
 
         [Required]
-        [Column("IdResultado")]
+        [Column("idresultado")]
         public int IdResultado { get; set; }
 
         [Required]
-        [Column("Asunto")]
+        [Column("asunto")]
         [StringLength(150)]
         public string Asunto { get; set; }
 
         [Required]
-        [Column("Mensaje")]
+        [Column("mensaje")]
         [StringLength(500)]
         public string Mensaje { get; set; }
 
         [Required]
-        [Column("EstadoEnvio")]
+        [Column("estadoEnvio")]
         [StringLength(50)]
         public string EstadoEnvio { get; set; }
 
         [Required]
-        [Column("Estado")]
+        [Column("estado")]
         public int Estado { get; set; }
     }
 }

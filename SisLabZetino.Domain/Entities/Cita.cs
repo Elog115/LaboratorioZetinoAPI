@@ -8,28 +8,28 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_Cita")]
+    [Table("t_cita")]
     public class Cita
     {
         [Key]
-        [Column("IdCita")]
+        [Column("idcita")]
         public int IdCita { get; set; }
 
         [Required]
-        [Column("IdUsuario")]
+        [Column("idusuario")]
         public int IdUsuario { get; set; }
 
         [Required]
-        [Column("FechaHora", TypeName = "datetime")]
+        [Column("fechahora", TypeName = "datetime")]
         public DateTime FechaHora { get; set; }
 
         [Required]
-        [Column("Descripcion")]
+        [Column("descripcion")]
         [StringLength(250)]
         public string Descripcion { get; set; }
 
         [Required]
-        [Column("Estado")]
+        [Column("estado")]
         public int Estado { get; set; }
     }
 }

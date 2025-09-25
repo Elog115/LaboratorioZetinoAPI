@@ -8,32 +8,32 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_Examen")]
+    [Table("t_examen")]
     public class Examen
     {
         [Key]
-        [Column("IdExamen")]
+        [Column("idexamen")]
         public int IdExamen { get; set; }
 
         [Required]
-        [Column("IdOrdenExamen")]
+        [Column("idordenexamen")]
         public int IdOrdenExamen { get; set; }
 
         [Required]
-        [Column("IdTipoExamen")]
+        [Column("idtipoexamen")]
         public int IdTipoExamen { get; set; }
 
         [Required]
-        [Column("Descripcion")]
+        [Column("descripcion")]
         [StringLength(250)]
         public string Descripcion { get; set; }
 
         [Required]
-        [Column("TiempoEstimado")]
+        [Column("tiempoestimado")]
         public int TiempoEstimado { get; set; }
 
         [Required]
-        [Column("Estado")]
+        [Column("estado")]
         public int Estado { get; set; }
     }
 }
