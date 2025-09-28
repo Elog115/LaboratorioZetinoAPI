@@ -6,11 +6,11 @@ namespace SisLabZetino.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsuarioSistemaController : ControllerBase
+    public class UsuarioController : ControllerBase
     {
-        private readonly UsuarioSistemaService _usuarioService;
+        private readonly UsuarioService _usuarioService;
 
-        public UsuarioSistemaController(UsuarioSistemaService usuarioService)
+        public UsuarioController(UsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
         }
@@ -36,7 +36,7 @@ namespace SisLabZetino.WebAPI.Controllers
 
         // POST api/usuariosistema
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UsuarioSistema nuevoUsuario)
+        public async Task<IActionResult> Create([FromBody] Usuario nuevoUsuario)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -50,7 +50,7 @@ namespace SisLabZetino.WebAPI.Controllers
 
         // PUT api/usuariosistema/{id}
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UsuarioSistema usuario)
+        public async Task<IActionResult> Update(int id, [FromBody] Usuario usuario)
         {
             if (id != usuario.IdUsuario)
                 return BadRequest(new { message = "El ID del body no coincide con el de la URL" });

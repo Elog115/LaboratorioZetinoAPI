@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_notificacionEmail")]
+    [Table("t_notificacionemail")]
     public class NotificacionEmail
     {
         [Key]
@@ -30,7 +30,7 @@ namespace SisLabZetino.Domain.Entities
         public string Mensaje { get; set; }
 
         [Required]
-        [Column("estadoEnvio")]
+        [Column("estadoenvio")]
         [StringLength(50)]
         public string EstadoEnvio { get; set; }
 

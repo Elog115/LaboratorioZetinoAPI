@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_ordenExamen")]
+    [Table("t_ordenexamen")]
     public class OrdenExamen
     {
         [Key]

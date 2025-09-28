@@ -6,34 +6,34 @@ using System.Threading.Tasks;
 namespace SisLabZetino.Domain.Repositories
 {
     //Contrato del repositorio de usuarios del sistema
-    public interface IUsuarioSistemaRepository
+    public interface IUsuarioRepository
     {
         //Obtener todos los usuarios
-        Task<IEnumerable<UsuarioSistema>> GetUsuariosAsync();
+        Task<IEnumerable<Usuario>> GetUsuariosAsync();
 
         //Obtener un usuario por su Id
-        Task<UsuarioSistema> GetUsuarioByIdAsync(int id);
+        Task<Usuario> GetUsuarioByIdAsync(int id);
 
         //Agregar un nuevo usuario
-        Task<UsuarioSistema> AddUsuarioAsync(UsuarioSistema usuario);
+        Task<Usuario> AddUsuarioAsync(Usuario usuario);
 
         //Actualizar un usuario existente
-        Task<UsuarioSistema> UpdateUsuarioAsync(UsuarioSistema usuario);
+        Task<Usuario> UpdateUsuarioAsync(Usuario usuario);
 
         //Eliminar un usuario por su Id
         Task<bool> DeleteUsuarioAsync(int id);
 
         //Métodos adicionales (opcionales)
         //Obtener usuarios por IdRol
-        Task<IEnumerable<UsuarioSistema>> GetUsuariosByRolAsync(int idRol);
+        Task<IEnumerable<Usuario>> GetUsuariosByRolAsync(int idRol);
 
         //Obtener usuarios por estado (activo/inactivo)
-        Task<IEnumerable<UsuarioSistema>> GetUsuariosByEstadoAsync(int estado);
+        Task<IEnumerable<Usuario>> GetUsuariosByEstadoAsync(int estado);
 
         //Obtener usuario por correo
-        Task<UsuarioSistema> GetUsuarioByCorreoAsync(string correo);
+        Task<Usuario> GetUsuarioByCorreoAsync(string correo);
 
         //Autenticación: validar correo y clave
-        Task<UsuarioSistema> ValidateUsuarioAsync(string correo, string clave);
+        Task<Usuario> ValidateUsuarioAsync(string correo, string clave);
     }
 }

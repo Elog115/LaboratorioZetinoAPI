@@ -11,39 +11,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SisLabZetino.Infrastructure.Repositories
 {
-    public class UsuarioSistemaRepository : IUsuarioSistemaRepository
+    public class UsuarioRepository : IUsuarioRepository
     {
         private readonly AppDBContext _context;
 
-        public UsuarioSistemaRepository(AppDBContext context)
+        public UsuarioRepository(AppDBContext context)
         {
             _context = context;
         }
 
         // Obtener todos los usuarios
-        public async Task<IEnumerable<UsuarioSistema>> GetUsuariosAsync()
+        public async Task<IEnumerable<Usuario>> GetUsuariosAsync()
         {
-            return await _context.UsuariosSistema.ToListAsync();
+            return await _context.Usuarios.ToListAsync();
         }
 
         // Obtener usuario por Id
-        public async Task<UsuarioSistema> GetUsuarioByIdAsync(int id)
+        public async Task<Usuario> GetUsuarioByIdAsync(int id)
         {
-            return await _context.UsuariosSistema.FindAsync(id);
+            return await _context.Usuarios.FindAsync(id);
         }
 
         // Agregar un nuevo usuario
-        public async Task<UsuarioSistema> AddUsuarioAsync(UsuarioSistema usuario)
+        public async Task<Usuario> AddUsuarioAsync(Usuario usuario)
         {
-            _context.UsuariosSistema.Add(usuario);
+            _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
             return usuario;
         }
 
         // Actualizar usuario existente
-        public async Task<UsuarioSistema> UpdateUsuarioAsync(UsuarioSistema usuario)
+        public async Task<Usuario> UpdateUsuarioAsync(Usuario usuario)
         {
-            var existingUsuario = await _context.UsuariosSistema.FindAsync(usuario.IdUsuario);
+            var existingUsuario = await _context.Usuarios.FindAsync(usuario.IdUsuario);
             if (existingUsuario == null)
             {
                 return null;
@@ -63,44 +63,44 @@ namespace SisLabZetino.Infrastructure.Repositories
         // Eliminar usuario por Id
         public async Task<bool> DeleteUsuarioAsync(int id)
         {
-            var usuario = await _context.UsuariosSistema.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
             {
                 return false;
             }
 
-            _context.UsuariosSistema.Remove(usuario);
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;
         }
 
         // Obtener usuarios por IdRol
-        public async Task<IEnumerable<UsuarioSistema>> GetUsuariosByRolAsync(int idRol)
+        public async Task<IEnumerable<Usuario>> GetUsuariosByRolAsync(int idRol)
         {
-            return await _context.UsuariosSistema
+            return await _context.Usuarios
                                  .Where(u => u.IdRol == idRol)
                                  .ToListAsync();
         }
 
         // Obtener usuarios por estado (activo/inactivo)
-        public async Task<IEnumerable<UsuarioSistema>> GetUsuariosByEstadoAsync(int estado)
+        public async Task<IEnumerable<Usuario>> GetUsuariosByEstadoAsync(int estado)
         {
-            return await _context.UsuariosSistema
+            return await _context.Usuarios
                                  .Where(u => u.Estado == estado)
                                  .ToListAsync();
         }
 
         // Obtener usuario por correo
-        public async Task<UsuarioSistema> GetUsuarioByCorreoAsync(string correo)
+        public async Task<Usuario> GetUsuarioByCorreoAsync(string correo)
         {
-            return await _context.UsuariosSistema
+            return await _context.Usuarios
                                  .FirstOrDefaultAsync(u => u.Correo == correo);
         }
 
         // Validar usuario (autenticación)
-        public async Task<UsuarioSistema> ValidateUsuarioAsync(string correo, string clave)
+        public async Task<Usuario> ValidateUsuarioAsync(string correo, string clave)
         {
-            return await _context.UsuariosSistema
+            return await _context.Usuarios
                                  .FirstOrDefaultAsync(u => u.Correo == correo && u.Clave == clave);
         }
     }

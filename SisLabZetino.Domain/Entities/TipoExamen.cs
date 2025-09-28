@@ -12,7 +12,7 @@ namespace SisLabZetino.Domain.Entities
     public class TipoExamen
     {
         [Key]
-        [Column("idTipoexamen")]
+        [Column("idtipoexamen")]
         public int IdTipoExamen { get; set; }
 
         [Required]

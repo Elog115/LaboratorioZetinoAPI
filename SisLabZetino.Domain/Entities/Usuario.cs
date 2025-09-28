@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SisLabZetino.Domain.Entities
 {
-    [Table("t_usuariosistema")]
-    public class UsuarioSistema
+    [Table("t_usuario")]
+    public class Usuario
     {
         [Key]
         [Column("idusuario")]

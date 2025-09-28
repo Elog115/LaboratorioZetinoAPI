@@ -17,7 +17,7 @@ namespace SisLabZetino.Infrastructure.Data
             }
 
             // DbSets = representan las tablas en la BD
-            public DbSet<UsuarioSistema> UsuariosSistema { get; set; }
+            public DbSet<Usuario> Usuarios { get; set; }
             public DbSet<Rol> Roles { get; set; }
             public DbSet<Cita> Citas { get; set; }
             public DbSet<Examen> Examenes { get; set; }
@@ -35,7 +35,7 @@ namespace SisLabZetino.Infrastructure.Data
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
                 // Mapeos de entidades a tablas
-                modelBuilder.Entity<UsuarioSistema>().ToTable("t_usuariosistema");
+                modelBuilder.Entity<Usuario>().ToTable("t_usuariosistema");
                 modelBuilder.Entity<Rol>().ToTable("t_rol");
                 modelBuilder.Entity<Cita>().ToTable("t_Cita");
                 modelBuilder.Entity<Examen>().ToTable("t_Examen");

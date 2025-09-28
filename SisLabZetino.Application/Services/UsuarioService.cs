@@ -10,17 +10,17 @@ using SisLabZetino.Domain.Repositories;
 namespace SisLabZetino.Application.Services
 {
     // Algoritmos con lógica de negocio (UseCase)
-    public class UsuarioSistemaService
+    public class UsuarioService
     {
-        private readonly IUsuarioSistemaRepository _repository;
+        private readonly IUsuarioRepository _repository;
 
-        public UsuarioSistemaService(IUsuarioSistemaRepository repository)
+        public UsuarioService(IUsuarioRepository repository)
         {
             _repository = repository;
         }
 
         // Caso de uso: Buscar un usuario por Id (solo activos)
-        public async Task<UsuarioSistema?> ObtenerUsuarioPorIdAsync(int id)
+        public async Task<Usuario?> ObtenerUsuarioPorIdAsync(int id)
         {
             if (id <= 0)
                 return null; // Id no válido
@@ -34,7 +34,7 @@ namespace SisLabZetino.Application.Services
         }
 
         // Caso de uso: Modificar usuario
-        public async Task<string> ModificarUsuarioAsync(UsuarioSistema usuario)
+        public async Task<string> ModificarUsuarioAsync(Usuario usuario)
         {
             if (usuario.IdUsuario <= 0)
                 return "Error: ID no válido";
@@ -58,13 +58,13 @@ namespace SisLabZetino.Application.Services
         }
 
         // Caso de uso: Obtener solo usuarios activos
-        public async Task<IEnumerable<UsuarioSistema>> ObtenerUsuariosActivosAsync()
+        public async Task<IEnumerable<Usuario>> ObtenerUsuariosActivosAsync()
         {
             return await _repository.GetUsuariosByEstadoAsync(1); // 1 = activos
         }
 
         // Caso de uso: Agregar usuario (validar duplicados por correo)
-        public async Task<string> AgregarUsuarioAsync(UsuarioSistema nuevoUsuario)
+        public async Task<string> AgregarUsuarioAsync(Usuario nuevoUsuario)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace SisLabZetino.Application.Services
         }
 
         // Caso de uso: Validar usuario (autenticación)
-        public async Task<UsuarioSistema?> ValidarUsuarioAsync(string correo, string clave)
+        public async Task<Usuario?> ValidarUsuarioAsync(string correo, string clave)
         {
             return await _repository.ValidateUsuarioAsync(correo, clave);
         }
