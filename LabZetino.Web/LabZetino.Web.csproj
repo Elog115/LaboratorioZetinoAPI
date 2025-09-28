@@ -12,10 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SisLabZetino.Application\SisLabZetino.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\SisLabZetino.Infrastructure\SisLabZetino.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SisLabZetino.Application\SisLabZetino.Application.csproj" />
     <ProjectReference Include="..\SisLabZetino.Domain\SisLabZetino.Domain.csproj" />
   </ItemGroup>
 

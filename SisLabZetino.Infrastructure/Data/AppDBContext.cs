@@ -35,13 +35,13 @@ namespace SisLabZetino.Infrastructure.Data
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
                 // Mapeos de entidades a tablas
-                modelBuilder.Entity<UsuarioSistema>().ToTable("t_usuario_sistema");
+                modelBuilder.Entity<UsuarioSistema>().ToTable("t_usuariosistema");
                 modelBuilder.Entity<Rol>().ToTable("t_rol");
                 modelBuilder.Entity<Cita>().ToTable("t_Cita");
                 modelBuilder.Entity<Examen>().ToTable("t_Examen");
                 modelBuilder.Entity<Muestra>().ToTable("t_Muestra");
-                modelBuilder.Entity<NotificacionEmail>().ToTable("t_NotificacionEmail");
-                modelBuilder.Entity<OrdenExamen>().ToTable("t_OrdenExamen");
+                modelBuilder.Entity<NotificacionEmail>().ToTable("t_notificacionEmail");
+                modelBuilder.Entity<OrdenExamen>().ToTable("t_ordenExamen");
                 modelBuilder.Entity<Resultado>().ToTable("t_Resultado");
             modelBuilder.Entity<TipoExamen>().ToTable("t_TipoExamen");
             modelBuilder.Entity<TipoMuestra>().ToTable("t_TipoMuestra");
