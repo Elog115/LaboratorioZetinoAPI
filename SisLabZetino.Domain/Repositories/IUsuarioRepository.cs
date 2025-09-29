@@ -23,17 +23,5 @@ namespace SisLabZetino.Domain.Repositories
         //Eliminar un usuario por su Id
         Task<bool> DeleteUsuarioAsync(int id);
 
-        //Métodos adicionales (opcionales)
-        //Obtener usuarios por IdRol
-        Task<IEnumerable<Usuario>> GetUsuariosByRolAsync(int idRol);
-
-        //Obtener usuarios por estado (activo/inactivo)
-        Task<IEnumerable<Usuario>> GetUsuariosByEstadoAsync(int estado);
-
-        //Obtener usuario por correo
-        Task<Usuario> GetUsuarioByCorreoAsync(string correo);
-
-        //Autenticación: validar correo y clave
-        Task<Usuario> ValidateUsuarioAsync(string correo, string clave);
     }
 }

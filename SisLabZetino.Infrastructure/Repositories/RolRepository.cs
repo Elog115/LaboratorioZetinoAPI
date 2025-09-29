@@ -71,7 +71,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Obtener roles por estado
-        public async Task<IEnumerable<Rol>> GetRolesByEstadoAsync(int estado)
+        public async Task<IEnumerable<Rol>> GetRolesByEstadoAsync(bool estado)
         {
             return await _context.Roles
                                  .Where(r => r.Estado == estado)

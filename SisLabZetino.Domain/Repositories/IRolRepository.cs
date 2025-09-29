@@ -22,12 +22,7 @@ namespace SisLabZetino.Domain.Repositories
         //Eliminar un rol por su Id
         Task<bool> DeleteRolAsync(int id);
 
-        //Métodos adicionales (opcionales)
-        //Obtener roles por estado (ejemplo: activos/inactivos)
-        Task<IEnumerable<Rol>> GetRolesByEstadoAsync(int estado);
-
-        //Obtener rol por nombre
-        Task<Rol> GetRolByNombreAsync(string nombre);
+        
     }
 }
 

@@ -60,7 +60,8 @@ namespace SisLabZetino.Application.Services
         // Caso de uso: Obtener solo usuarios activos
         public async Task<IEnumerable<Usuario>> ObtenerUsuariosActivosAsync()
         {
-            return await _repository.GetUsuariosByEstadoAsync(1); // 1 = activos
+            var usuarios = await _repository.GetUsuariosAsync();
+            return usuarios.Where(u => u.Estado == true);
         }
 
         // Caso de uso: Agregar usuario (validar duplicados por correo)

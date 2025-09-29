@@ -54,7 +54,8 @@ namespace SisLabZetino.Application.Services
         // Caso de uso: Obtener solo roles activos
         public async Task<IEnumerable<Rol>> ObtenerRolesActivosAsync()
         {
-            return await _repository.GetRolesByEstadoAsync(1); // 1 = activos
+            var roles = await _repository.GetRolesAsync();
+            return roles.Where(r => r.Estado == true);
         }
 
         // Caso de uso: Agregar rol (validar duplicados por nombre)
