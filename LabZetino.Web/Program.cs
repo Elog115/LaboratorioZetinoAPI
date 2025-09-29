@@ -20,8 +20,8 @@ builder.Services.AddScoped<IResultadoRepository, ResultadoRepository>();
 builder.Services.AddScoped<ResultadoService>();
 builder.Services.AddScoped<ITipoExamenRepository, TipoExamenRepository>();
 builder.Services.AddScoped<TipoExamenService>();
-builder.Services.AddScoped<IUsuarioSistemaRepository, UsuarioSistemaRepository>();
-builder.Services.AddScoped<UsuarioSistemaService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<UsuarioService>();
 
 
 
