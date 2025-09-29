@@ -22,14 +22,6 @@ namespace SisLabZetino.Domain.Repositories
         //Eliminar un examen por su Id
         Task<bool> DeleteExamenAsync(int id);
 
-        //Métodos adicionales (opcionales)
-        //Obtener exámenes por IdOrdenExamen
-        Task<IEnumerable<Examen>> GetExamenesByOrdenAsync(int idOrdenExamen);
 
-        //Obtener exámenes por IdTipoExamen
-        Task<IEnumerable<Examen>> GetExamenesByTipoAsync(int idTipoExamen);
-
-        //Obtener exámenes por estado
-        Task<IEnumerable<Examen>> GetExamenesByEstadoAsync(int estado);
-    }
+}
 }

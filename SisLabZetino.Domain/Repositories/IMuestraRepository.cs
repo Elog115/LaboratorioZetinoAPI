@@ -22,18 +22,6 @@ namespace SisLabZetino.Domain.Repositories
         //Eliminar una muestra por su Id
         Task<bool> DeleteMuestraAsync(int id);
 
-        //Métodos adicionales (opcionales)
-        //Obtener muestras por IdOrdenExamen
-        Task<IEnumerable<Muestra>> GetMuestrasByOrdenAsync(int idOrdenExamen);
-
-        //Obtener muestras por IdTipoMuestra
-        Task<IEnumerable<Muestra>> GetMuestrasByTipoAsync(int idTipoMuestra);
-
-        //Obtener muestras por estado
-        Task<IEnumerable<Muestra>> GetMuestrasByEstadoAsync(int estado);
-
-        //Obtener muestras por fecha de recepción
-        Task<IEnumerable<Muestra>> GetMuestrasByFechaRecepcionAsync(DateTime fechaRecepcion);
     }
 }
 

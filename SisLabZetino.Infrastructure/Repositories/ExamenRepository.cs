@@ -74,7 +74,7 @@ namespace SisLabZetino.Infrastructure.Data.Repositories
         }
 
         // Obtener exámenes por Estado
-        public async Task<IEnumerable<Examen>> GetExamenesByEstadoAsync(int estado)
+        public async Task<IEnumerable<Examen>> GetExamenesByEstadoAsync(bool estado)
         {
             return await _context.Examenes
                                  .Where(e => e.Estado == estado)

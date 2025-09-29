@@ -47,22 +47,12 @@ namespace SisLabZetino.Application.Services
             return "Examen modificado correctamente";
         }
 
-        // Caso de uso: Obtener todos los exámenes de una orden
-        public async Task<IEnumerable<Examen>> ObtenerExamenesPorOrdenAsync(int idOrdenExamen)
-        {
-            return await _repository.GetExamenesByOrdenAsync(idOrdenExamen);
-        }
-
-        // Caso de uso: Obtener exámenes por tipo
-        public async Task<IEnumerable<Examen>> ObtenerExamenesPorTipoAsync(int idTipoExamen)
-        {
-            return await _repository.GetExamenesByTipoAsync(idTipoExamen);
-        }
 
         // Caso de uso: Obtener solo exámenes activos (estado = 1)
         public async Task<IEnumerable<Examen>> ObtenerExamenesActivosAsync()
         {
-            return await _repository.GetExamenesByEstadoAsync(1);
+            var examenes = await _repository.GetExamenesAsync();
+            return examenes.Where(e => e.Estado == true);
         }
 
         // Caso de uso: Agregar examen
@@ -70,7 +60,7 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevoExamen.Estado = 1; // Activo por defecto
+                nuevoExamen.Estado = true; // Activo por defecto
                 var examenInsertado = await _repository.AddExamenAsync(nuevoExamen);
 
                 if (examenInsertado == null || examenInsertado.IdExamen <= 0)
@@ -84,29 +74,6 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-        // Caso de uso: Eliminar examen
-        public async Task<string> EliminarExamenAsync(int id)
-        {
-            var eliminado = await _repository.DeleteExamenAsync(id);
-
-            if (!eliminado)
-                return "Error: Examen no encontrado";
-
-            return "Examen eliminado correctamente";
-        }
-
-        // Caso de uso: Cancelar examen (soft delete → estado = 0)
-        public async Task<string> CancelarExamenAsync(int id)
-        {
-            var examen = await _repository.GetExamenByIdAsync(id);
-
-            if (examen == null)
-                return "Error: Examen no encontrado";
-
-            examen.Estado = 0; // 0 = cancelado/inactivo
-            await _repository.UpdateExamenAsync(examen);
-
-            return "Examen cancelado correctamente";
-        }
+       
     }
 }

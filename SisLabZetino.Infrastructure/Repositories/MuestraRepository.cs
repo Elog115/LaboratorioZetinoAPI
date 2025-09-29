@@ -75,7 +75,7 @@ namespace SisLabZetino.Infrastructure.Data.Repositories
         }
 
         // Obtener muestras por Estado
-        public async Task<IEnumerable<Muestra>> GetMuestrasByEstadoAsync(int estado)
+        public async Task<IEnumerable<Muestra>> GetMuestrasByEstadoAsync(bool estado)
         {
             return await _context.Muestras
                                  .Where(m => m.Estado == estado)

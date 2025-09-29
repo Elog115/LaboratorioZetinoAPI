@@ -48,28 +48,13 @@ namespace SisLabZetino.Application.Services
             return "Muestra modificada correctamente";
         }
 
-        // Caso de uso: Obtener todas las muestras de una orden
-        public async Task<IEnumerable<Muestra>> ObtenerMuestrasPorOrdenAsync(int idOrdenExamen)
-        {
-            return await _repository.GetMuestrasByOrdenAsync(idOrdenExamen);
-        }
-
-        // Caso de uso: Obtener muestras por tipo
-        public async Task<IEnumerable<Muestra>> ObtenerMuestrasPorTipoAsync(int idTipoMuestra)
-        {
-            return await _repository.GetMuestrasByTipoAsync(idTipoMuestra);
-        }
+        
 
         // Caso de uso: Obtener solo muestras activas (estado = 1)
         public async Task<IEnumerable<Muestra>> ObtenerMuestrasActivasAsync()
         {
-            return await _repository.GetMuestrasByEstadoAsync(1);
-        }
-
-        // Caso de uso: Obtener muestras por fecha de recepción
-        public async Task<IEnumerable<Muestra>> ObtenerMuestrasPorFechaRecepcionAsync(DateTime fechaRecepcion)
-        {
-            return await _repository.GetMuestrasByFechaRecepcionAsync(fechaRecepcion);
+            var muestras = await _repository.GetMuestrasAsync();
+            return muestras.Where(m => m.Estado == true); 
         }
 
         // Caso de uso: Agregar una muestra
@@ -77,7 +62,7 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevaMuestra.Estado = 1; // Activa por defecto
+                nuevaMuestra.Estado = true; // Activa por defecto
                 var muestraInsertada = await _repository.AddMuestraAsync(nuevaMuestra);
 
                 if (muestraInsertada == null || muestraInsertada.IdMuestra <= 0)
@@ -91,30 +76,7 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-        // Caso de uso: Eliminar muestra (borrado físico)
-        public async Task<string> EliminarMuestraAsync(int id)
-        {
-            var eliminado = await _repository.DeleteMuestraAsync(id);
-
-            if (!eliminado)
-                return "Error: Muestra no encontrada";
-
-            return "Muestra eliminada correctamente";
-        }
-
-        // Caso de uso: Cancelar muestra (soft delete → estado = 0)
-        public async Task<string> CancelarMuestraAsync(int id)
-        {
-            var muestra = await _repository.GetMuestraByIdAsync(id);
-
-            if (muestra == null)
-                return "Error: Muestra no encontrada";
-
-            muestra.Estado = 0; // 0 = cancelada/inactiva
-            await _repository.UpdateMuestraAsync(muestra);
-
-            return "Muestra cancelada correctamente";
-        }
+        
     }
 }
 

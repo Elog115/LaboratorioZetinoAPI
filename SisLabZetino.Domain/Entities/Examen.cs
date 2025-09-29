@@ -34,6 +34,6 @@ namespace SisLabZetino.Domain.Entities
 
         [Required]
         [Column("estado")]
-        public int Estado { get; set; }
+        public bool Estado { get; set; }
     }
 }
