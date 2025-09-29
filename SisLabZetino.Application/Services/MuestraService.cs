@@ -62,7 +62,9 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevaMuestra.Estado = true; // Activa por defecto
+                // Activa por defecto (bool)
+                nuevaMuestra.Estado = true;
+
                 var muestraInsertada = await _repository.AddMuestraAsync(nuevaMuestra);
 
                 if (muestraInsertada == null || muestraInsertada.IdMuestra <= 0)
@@ -76,7 +78,7 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-        
+
     }
 }
 

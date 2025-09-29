@@ -27,8 +27,8 @@ namespace SisLabZetino.Application.Services
 
             var usuario = await _repository.GetUsuarioByIdAsync(id);
 
-            if (usuario != null && usuario.Estado == 1) // 1 = activo
-                return usuario;
+            if (usuario != null && usuario.Estado == true)
+                return usuario; // Solo devolver si está activo
 
             return null; // No encontrado o inactivo
         }
@@ -51,7 +51,7 @@ namespace SisLabZetino.Application.Services
             existente.FechaNacimiento = usuario.FechaNacimiento;
             existente.Telefono = usuario.Telefono;
             existente.IdRol = usuario.IdRol;
-            existente.Estado = usuario.Estado; // Permitir activar/inactivar
+            existente.Estado = usuario.Estado;
 
             await _repository.UpdateUsuarioAsync(existente);
             return "Usuario modificado correctamente";
@@ -69,22 +69,24 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                var existente = await _repository.GetUsuarioByCorreoAsync(nuevoUsuario.Correo);
+                var usuarios = await _repository.GetUsuariosAsync();
 
-                if (existente != null)
-                    return "Error: Ya existe un usuario con el mismo correo";
+                if (usuarios.Any(p => p.Nombre.ToLower() == nuevoUsuario.Nombre.ToLower()))
+                    return "Error: Ya existe un usuario con el mismo nombre";
 
-                nuevoUsuario.Estado = 1; // Activo por defecto
-                var usuarioInsertado = await _repository.AddUsuarioAsync(nuevoUsuario);
+                nuevoUsuario.Estado = true; //Activo por defecto
+                var usuarioinsertado = await _repository.AddUsuarioAsync(nuevoUsuario);
 
-                if (usuarioInsertado == null || usuarioInsertado.IdUsuario <= 0)
-                    return "Error: No se pudo agregar el usuario";
+                if (usuarioinsertado == null || usuarioinsertado.IdUsuario <= 0)
+                    return "Error: No se pudo agregar el Usuario";
 
-                return "Usuario agregado correctamente";
+                return "Producto agregado correctamente";
             }
+
             catch (Exception ex)
             {
-                return $"Error de servidor: {ex.Message}";
+
+                return "Error de servidor:" + ex.Message;
             }
         }
 
@@ -99,10 +101,18 @@ namespace SisLabZetino.Application.Services
             return "Usuario eliminado correctamente";
         }
 
-        // Caso de uso: Validar usuario (autenticación)
-        public async Task<Usuario?> ValidarUsuarioAsync(string correo, string clave)
+        // 🚀 Caso de uso: Validar login
+        public async Task<Usuario?> ValidateUsuarioAsync(string correo, string clave)
         {
-            return await _repository.ValidateUsuarioAsync(correo, clave);
+            if (string.IsNullOrWhiteSpace(correo) || string.IsNullOrWhiteSpace(clave))
+                return null;
+
+            var usuario = await _repository.ValidateUsuarioAsync(correo, clave);
+
+            if (usuario != null && usuario.Estado == true) // solo usuarios activos
+                return usuario;
+
+            return null;
         }
     }
 }

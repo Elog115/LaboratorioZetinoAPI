@@ -23,5 +23,7 @@ namespace SisLabZetino.Domain.Repositories
         //Eliminar un usuario por su Id
         Task<bool> DeleteUsuarioAsync(int id);
 
+        //Autenticación: validar correo y clave
+        Task<Usuario> ValidateUsuarioAsync(string correo, string clave);
     }
 }
