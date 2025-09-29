@@ -3,6 +3,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SisLabZetino.Application.Services;
 using SisLabZetino.Domain.Repositories;
 using SisLabZetino.Infrastructure.Data;
+using SisLabZetino.Infrastructure.Data.Repositories;
 using SisLabZetino.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +23,14 @@ builder.Services.AddScoped<ITipoExamenRepository, TipoExamenRepository>();
 builder.Services.AddScoped<TipoExamenService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
-
+builder.Services.AddScoped<ICitaRepository, CitaRepository>();
+builder.Services.AddScoped<CitaService>();
+builder.Services.AddScoped<IExamenRepository, ExamenRepository>();
+builder.Services.AddScoped<ExamenService>();
+builder.Services.AddScoped<IMuestraRepository, MuestraRepository>();
+builder.Services.AddScoped<MuestraService>();
+builder.Services.AddScoped<IRolRepository, RolRepository>();
+builder.Services.AddScoped<RolService>();
 
 
 // Controladores y Swagger
