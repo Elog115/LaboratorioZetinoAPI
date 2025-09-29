@@ -31,7 +31,12 @@ builder.Services.AddScoped<IMuestraRepository, MuestraRepository>();
 builder.Services.AddScoped<MuestraService>();
 builder.Services.AddScoped<IRolRepository, RolRepository>();
 builder.Services.AddScoped<RolService>();
-
+builder.Services.AddScoped<IOrdenExamenRepository, OrdenExamenRepository>();
+builder.Services.AddScoped<OrdenExamenService>();
+builder.Services.AddScoped<INotificacionEmailRepository, NotificacionEmailRepository>();
+builder.Services.AddScoped<NotificacionEmailService>();
+builder.Services.AddScoped<ITipoMuestraRepository, TipoMuestraRepository>();
+builder.Services.AddScoped<TipoMuestraService>();
 
 // Controladores y Swagger
 builder.Services.AddControllers();
