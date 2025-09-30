@@ -77,6 +77,16 @@ namespace LabZetino.Web.Controllers
             }
         }
 
-        
+        //DELETE api/examen/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var resultado = await _muestraService.EliminarMuestraAsync(id);
+            if (resultado.StartsWith("Error"))
+                return BadRequest(resultado);
+            return Ok(resultado);
+        }
+
+
     }
 }

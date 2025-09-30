@@ -77,8 +77,7 @@ namespace SisLabZetino.Application.Services
                 return $"Error de servidor: {ex.Message}";
             }
         }
-
-<<<<<<< HEAD
+ 
         // Caso de uso: Eliminar Muestra (borrado lógico)
         public async Task<string> EliminarMuestraAsync(int id)
         {
@@ -96,9 +95,7 @@ namespace SisLabZetino.Application.Services
             await _repository.UpdateMuestraAsync(muestra);
 
             return "Muestra eliminado correctamente (inactivo)";
-        }
-=======
->>>>>>> 61170f19f4eb60b1acc886ce4391ab4271ffc732
+        } 
 
     }
 }
