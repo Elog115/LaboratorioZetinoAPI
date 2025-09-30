@@ -27,7 +27,8 @@ namespace SisLabZetino.Application.Services
 
             var rol = await _repository.GetRolByIdAsync(id);
 
-            if (rol != null && rol.Estado == 1) // 1 = activo
+            if (rol != null && rol.Estado == true)
+                // 1 = activo
                 return rol;
 
             return null; // No encontrado o inactivo
@@ -63,12 +64,13 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                var existente = await _repository.GetRolByNombreAsync(nuevoRol.Nombre);
+                var roles = await _repository.GetRolesAsync();
 
-                if (existente != null)
+                // Validar duplicados por nombre (ignorando mayúsculas/minúsculas)
+                if (roles.Any(r => r.Nombre.ToLower() == nuevoRol.Nombre.ToLower()))
                     return "Error: Ya existe un rol con el mismo nombre";
 
-                nuevoRol.Estado = 1; // Activo por defecto
+                nuevoRol.Estado = true; // Activo por defecto (bool)
                 var rolInsertado = await _repository.AddRolAsync(nuevoRol);
 
                 if (rolInsertado == null || rolInsertado.IdRol <= 0)
@@ -81,6 +83,7 @@ namespace SisLabZetino.Application.Services
                 return $"Error de servidor: {ex.Message}";
             }
         }
+
 
         // Caso de uso: Eliminar rol
         public async Task<string> EliminarRolAsync(int id)

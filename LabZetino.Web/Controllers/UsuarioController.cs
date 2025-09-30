@@ -80,7 +80,7 @@ namespace SisLabZetino.WebAPI.Controllers
             if (login == null || string.IsNullOrEmpty(login.Correo) || string.IsNullOrEmpty(login.Clave))
                 return BadRequest(new { message = "Correo y clave son requeridos" });
 
-            var usuario = await _usuarioService.ValidarUsuarioAsync(login.Correo, login.Clave);
+            var usuario = await _usuarioService.ValidateUsuarioAsync(login.Correo, login.Clave);
 
             if (usuario == null)
                 return Unauthorized(new { message = "Credenciales incorrectas" });

@@ -90,6 +90,18 @@ namespace SisLabZetino.Infrastructure.Repositories
                                  .ToListAsync();
         }
 
-       
+        // Obtener usuario por correo
+        public async Task<Usuario> GetUsuarioByCorreoAsync(string correo)
+        {
+            return await _context.Usuarios
+                                 .FirstOrDefaultAsync(u => u.Correo == correo);
+        }
+
+        // Validar usuario (autenticación)
+        public async Task<Usuario> ValidateUsuarioAsync(string correo, string clave)
+        {
+            return await _context.Usuarios
+                                 .FirstOrDefaultAsync(u => u.Correo == correo && u.Clave == clave);
+        }
     }
 }

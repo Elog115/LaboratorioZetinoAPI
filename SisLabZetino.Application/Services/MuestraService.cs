@@ -62,7 +62,9 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevaMuestra.Estado = true; // Activa por defecto
+                // Activa por defecto (bool)
+                nuevaMuestra.Estado = true;
+
                 var muestraInsertada = await _repository.AddMuestraAsync(nuevaMuestra);
 
                 if (muestraInsertada == null || muestraInsertada.IdMuestra <= 0)
@@ -76,6 +78,7 @@ namespace SisLabZetino.Application.Services
             }
         }
 
+<<<<<<< HEAD
         // Caso de uso: Eliminar Muestra (borrado lógico)
         public async Task<string> EliminarMuestraAsync(int id)
         {
@@ -94,6 +97,8 @@ namespace SisLabZetino.Application.Services
 
             return "Muestra eliminado correctamente (inactivo)";
         }
+=======
+>>>>>>> 61170f19f4eb60b1acc886ce4391ab4271ffc732
 
     }
 }
