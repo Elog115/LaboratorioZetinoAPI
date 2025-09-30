@@ -47,8 +47,7 @@ namespace SisLabZetino.Application.Services
             return "Examen modificado correctamente";
         }
 
-
-        // Caso de uso: Obtener solo exámenes activos (estado = 1)
+        // Caso de uso: Obtener solo exámenes activos (estado = true)
         public async Task<IEnumerable<Examen>> ObtenerExamenesActivosAsync()
         {
             var examenes = await _repository.GetExamenesAsync();
@@ -74,6 +73,24 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-       
+        // Caso de uso: Eliminar examen (borrado lógico)
+        public async Task<string> EliminarExamenAsync(int id)
+        {
+            if (id <= 0)
+                return "Error: ID no válido";
+
+            var examen = await _repository.GetExamenByIdAsync(id);
+
+            if (examen == null)
+                return "Error: Examen no encontrado";
+
+            // 🔹 Borrado lógico → marcar como inactivo
+            examen.Estado = false;
+
+            await _repository.UpdateExamenAsync(examen);
+
+            return "Examen eliminado correctamente (inactivo)";
+        }
+
     }
 }

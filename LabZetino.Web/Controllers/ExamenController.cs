@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SisLabZetino.Application.Services;
 using SisLabZetino.Domain.Entities;
+using SisLabZetino.Domain.Repositories;
 
 namespace LabZetino.Web.Controllers
 {

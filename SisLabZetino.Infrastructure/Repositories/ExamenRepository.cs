@@ -45,17 +45,6 @@ namespace SisLabZetino.Infrastructure.Data.Repositories
             return examen;
         }
 
-        // Eliminar examen
-        public async Task<bool> DeleteExamenAsync(int id)
-        {
-            var examen = await _context.Examenes.FindAsync(id);
-            if (examen == null)
-                return false;
-
-            _context.Examenes.Remove(examen);
-            await _context.SaveChangesAsync();
-            return true;
-        }
 
         // Obtener exámenes por IdOrdenExamen
         public async Task<IEnumerable<Examen>> GetExamenesByOrdenAsync(int idOrdenExamen)

@@ -46,17 +46,6 @@ namespace SisLabZetino.Infrastructure.Data.Repositories
             return muestra;
         }
 
-        // Eliminar una muestra por Id
-        public async Task<bool> DeleteMuestraAsync(int id)
-        {
-            var muestra = await _context.Muestras.FindAsync(id);
-            if (muestra == null)
-                return false;
-
-            _context.Muestras.Remove(muestra);
-            await _context.SaveChangesAsync();
-            return true;
-        }
 
         // Obtener muestras por IdOrdenExamen
         public async Task<IEnumerable<Muestra>> GetMuestrasByOrdenAsync(int idOrdenExamen)

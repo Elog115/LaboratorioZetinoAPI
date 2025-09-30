@@ -76,7 +76,25 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-        
+        // Caso de uso: Eliminar Muestra (borrado lógico)
+        public async Task<string> EliminarMuestraAsync(int id)
+        {
+            if (id <= 0)
+                return "Error: ID no válido";
+
+            var muestra = await _repository.GetMuestraByIdAsync(id);
+
+            if (muestra == null)
+                return "Error: Muestra no encontrado";
+
+            // 🔹 Borrado lógico → marcar como inactivo
+            muestra.Estado = false;
+
+            await _repository.UpdateMuestraAsync(muestra);
+
+            return "Muestra eliminado correctamente (inactivo)";
+        }
+
     }
 }
 

@@ -16,11 +16,9 @@ namespace SisLabZetino.Domain.Repositories
         //Agregar una nueva muestra
         Task<Muestra> AddMuestraAsync(Muestra muestra);
 
-        //Actualizar una muestra existente
+        //Actualizar una muestra existente (sirve también para borrado lógico)
         Task<Muestra> UpdateMuestraAsync(Muestra muestra);
 
-        //Eliminar una muestra por su Id
-        Task<bool> DeleteMuestraAsync(int id);
 
     }
 }
