@@ -75,7 +75,7 @@ namespace SisLabZetino.Infrastructure.Data.Repositories
         }
 
         // Obtener notificaciones por estado
-        public async Task<IEnumerable<NotificacionEmail>> GetNotificacionesByEstadoAsync(int estado)
+        public async Task<IEnumerable<NotificacionEmail>> GetNotificacionesByEstadoAsync(bool estado)
         {
             return await _context.NotificacionesEmail
                                  .Where(n => n.Estado == estado)

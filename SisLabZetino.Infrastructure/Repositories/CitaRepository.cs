@@ -74,7 +74,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Obtener citas por estado (activas, canceladas, etc.)
-        public async Task<IEnumerable<Cita>> GetCitasByEstadoAsync(int estado)
+        public async Task<IEnumerable<Cita>> GetCitasByEstadoAsync(bool estado)
         {
             return await _context.Citas
                                  .Where(c => c.Estado == estado)

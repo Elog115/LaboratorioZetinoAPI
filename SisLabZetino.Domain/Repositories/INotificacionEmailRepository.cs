@@ -30,7 +30,7 @@ namespace SisLabZetino.Domain.Repositories
         Task<IEnumerable<NotificacionEmail>> GetNotificacionesByEstadoEnvioAsync(string estadoEnvio);
 
         //Obtener notificaciones por estado (ejemplo: activas/inactivas)
-        Task<IEnumerable<NotificacionEmail>> GetNotificacionesByEstadoAsync(int estado);
+        Task<IEnumerable<NotificacionEmail>> GetNotificacionesByEstadoAsync(bool estado);
     }
 }
 

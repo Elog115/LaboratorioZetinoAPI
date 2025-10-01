@@ -71,7 +71,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Obtener tipos de examen por estado
-        public async Task<IEnumerable<TipoExamen>> GetTiposExamenByEstadoAsync(int estado)
+        public async Task<IEnumerable<TipoExamen>> GetTiposExamenByEstadoAsync(bool estado)
         {
             return await _context.TiposExamen
                 .Where(t => t.Estado == estado)

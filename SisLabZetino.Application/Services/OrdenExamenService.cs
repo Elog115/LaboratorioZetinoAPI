@@ -69,7 +69,7 @@ namespace SisLabZetino.Application.Services
         // Caso de uso: Obtener órdenes activas (estado = 1)
         public async Task<IEnumerable<OrdenExamen>> ObtenerOrdenesActivasAsync()
         {
-            return await _repository.GetOrdenesByEstadoAsync(1);
+            return await _repository.GetOrdenesByEstadoAsync(true);
         }
 
         // Caso de uso: Obtener órdenes por fecha de solicitud
@@ -83,7 +83,7 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevaOrden.Estado = 1; // Activa por defecto
+                nuevaOrden.Estado = true; // Activa por defecto
                 var ordenInsertada = await _repository.AddOrdenExamenAsync(nuevaOrden);
 
                 if (ordenInsertada == null || ordenInsertada.IdOrdenExamen <= 0)
@@ -116,7 +116,7 @@ namespace SisLabZetino.Application.Services
             if (orden == null)
                 return "Error: Orden no encontrada";
 
-            orden.Estado = 0; // 0 = cancelada/inactiva
+            orden.Estado = false; // false = cancelada/inactiva
             await _repository.UpdateOrdenExamenAsync(orden);
 
             return "Orden cancelada correctamente";

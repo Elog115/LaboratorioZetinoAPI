@@ -66,7 +66,7 @@ namespace SisLabZetino.Application.Services
         // Caso de uso: Obtener solo notificaciones activas (estado = 1)
         public async Task<IEnumerable<NotificacionEmail>> ObtenerNotificacionesActivasAsync()
         {
-            return await _repository.GetNotificacionesByEstadoAsync(1);
+            return await _repository.GetNotificacionesByEstadoAsync(true);
         }
 
         // Caso de uso: Agregar una notificación
@@ -74,7 +74,7 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevaNotificacion.Estado = 1; // Activa por defecto
+                nuevaNotificacion.Estado = true; // Activa por defecto
                 var notificacionInsertada = await _repository.AddNotificacionAsync(nuevaNotificacion);
 
                 if (notificacionInsertada == null || notificacionInsertada.IdNotificacion <= 0)
@@ -107,7 +107,7 @@ namespace SisLabZetino.Application.Services
             if (notificacion == null)
                 return "Error: Notificación no encontrada";
 
-            notificacion.Estado = 0; // 0 = cancelada/inactiva
+            notificacion.Estado = false; // false = cancelada/inactiva
             await _repository.UpdateNotificacionAsync(notificacion);
 
             return "Notificación cancelada correctamente";

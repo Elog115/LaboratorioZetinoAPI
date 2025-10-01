@@ -85,7 +85,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Obtener órdenes de examen por estado
-        public async Task<IEnumerable<OrdenExamen>> GetOrdenesByEstadoAsync(int estado)
+        public async Task<IEnumerable<OrdenExamen>> GetOrdenesByEstadoAsync(bool estado)
         {
             return await _context.OrdenesExamen
                                  .Where(o => o.Estado == estado)

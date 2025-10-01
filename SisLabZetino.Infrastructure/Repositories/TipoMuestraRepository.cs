@@ -70,7 +70,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Obtener tipos de muestra por estado
-        public async Task<IEnumerable<TipoMuestra>> GetTiposMuestraByEstadoAsync(int estado)
+        public async Task<IEnumerable<TipoMuestra>> GetTiposMuestraByEstadoAsync(bool estado)
         {
             return await _context.TiposMuestra
                 .Where(t => t.Estado == estado)

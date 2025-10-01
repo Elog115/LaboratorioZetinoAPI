@@ -27,6 +27,6 @@ namespace SisLabZetino.Domain.Repositories
         Task<TipoMuestra> GetTipoMuestraByNombreAsync(string nombre);
 
         //Obtener tipos de muestra por estado (activo/inactivo)
-        Task<IEnumerable<TipoMuestra>> GetTiposMuestraByEstadoAsync(int estado);
+        Task<IEnumerable<TipoMuestra>> GetTiposMuestraByEstadoAsync(bool estado);
     }
 }

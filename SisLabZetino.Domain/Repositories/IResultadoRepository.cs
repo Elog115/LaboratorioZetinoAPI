@@ -31,6 +31,6 @@ namespace SisLabZetino.Domain.Repositories
         Task<IEnumerable<Resultado>> GetResultadosByFechaEntregaAsync(DateTime fechaEntrega);
 
         //Obtener resultados por estado
-        Task<IEnumerable<Resultado>> GetResultadosByEstadoAsync(int estado);
+        Task<IEnumerable<Resultado>> GetResultadosByEstadoAsync(bool estado);
     }
 }

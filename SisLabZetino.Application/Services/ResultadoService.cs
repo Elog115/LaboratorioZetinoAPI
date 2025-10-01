@@ -66,7 +66,7 @@ namespace SisLabZetino.Application.Services
         // Caso de uso: Obtener solo resultados activos (estado = 1)
         public async Task<IEnumerable<Resultado>> ObtenerResultadosActivosAsync()
         {
-            return await _repository.GetResultadosByEstadoAsync(1);
+            return await _repository.GetResultadosByEstadoAsync(true);
         }
 
         // Caso de uso: Agregar un resultado
@@ -74,7 +74,7 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevoResultado.Estado = 1; // Activo por defecto
+                nuevoResultado.Estado = true; // Activo por defecto
                 var resultadoInsertado = await _repository.AddResultadoAsync(nuevoResultado);
 
                 if (resultadoInsertado == null || resultadoInsertado.IdResultado <= 0)
@@ -107,7 +107,7 @@ namespace SisLabZetino.Application.Services
             if (resultado == null)
                 return "Error: Resultado no encontrado";
 
-            resultado.Estado = 0; // 0 = cancelado/inactivo
+            resultado.Estado = false; // false = cancelado/inactivo
             await _repository.UpdateResultadoAsync(resultado);
 
             return "Resultado cancelado correctamente";

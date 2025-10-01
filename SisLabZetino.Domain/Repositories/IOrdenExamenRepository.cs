@@ -34,6 +34,6 @@ namespace SisLabZetino.Domain.Repositories
         Task<IEnumerable<OrdenExamen>> GetOrdenesByFechaSolicitudAsync(DateTime fechaSolicitud);
 
         //Obtener órdenes de examen por estado
-        Task<IEnumerable<OrdenExamen>> GetOrdenesByEstadoAsync(int estado);
+        Task<IEnumerable<OrdenExamen>> GetOrdenesByEstadoAsync(bool estado);
     }
 }

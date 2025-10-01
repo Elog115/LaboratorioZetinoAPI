@@ -54,10 +54,10 @@ namespace SisLabZetino.Application.Services
             return await _repository.GetCitasByUsuarioAsync(idUsuario);
         }
 
-        // Caso de uso: Obtener solo citas activas (estado = 1)
+        // Caso de uso: Obtener solo citas activas (estado = true)
         public async Task<IEnumerable<Cita>> ObtenerCitasActivasAsync()
         {
-            return await _repository.GetCitasByEstadoAsync(1);
+            return await _repository.GetCitasByEstadoAsync(true);
         }
 
         // Caso de uso: Agregar una cita (validar que el usuario no tenga otra en la misma fecha y hora)
@@ -70,7 +70,7 @@ namespace SisLabZetino.Application.Services
                 if (citasUsuario.Any(c => c.FechaHora == nuevaCita.FechaHora))
                     return "Error: El usuario ya tiene una cita en la misma fecha y hora";
 
-                nuevaCita.Estado = 1; // Activa por defecto
+                nuevaCita.Estado = true; // Activa por defecto
                 var citaInsertada = await _repository.AddCitaAsync(nuevaCita);
 
                 if (citaInsertada == null || citaInsertada.IdCita <= 0)
@@ -103,7 +103,7 @@ namespace SisLabZetino.Application.Services
             if (cita == null)
                 return "Error: Cita no encontrada";
 
-            cita.Estado = 0; // 0 = cancelada
+            cita.Estado = false; // false = cancelada
             await _repository.UpdateCitaAsync(cita);
 
             return "Cita cancelada correctamente";

@@ -52,7 +52,7 @@ namespace SisLabZetino.Application.Services
         // Caso de uso: Obtener tipos de muestra activos
         public async Task<IEnumerable<TipoMuestra>> ObtenerTiposMuestraActivosAsync()
         {
-            return await _repository.GetTiposMuestraByEstadoAsync(1);
+            return await _repository.GetTiposMuestraByEstadoAsync(true);
         }
 
         // Caso de uso: Obtener tipo de muestra por nombre
@@ -69,7 +69,7 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevoTipo.Estado = 1; // Activo por defecto
+                nuevoTipo.Estado = true; // Activo por defecto
                 var tipoInsertado = await _repository.AddTipoMuestraAsync(nuevoTipo);
 
                 if (tipoInsertado == null || tipoInsertado.IdTipoMuestra <= 0)
@@ -102,7 +102,7 @@ namespace SisLabZetino.Application.Services
             if (tipoMuestra == null)
                 return "Error: Tipo de muestra no encontrado";
 
-            tipoMuestra.Estado = 0;
+            tipoMuestra.Estado = false; // cancelado/inactivo
             await _repository.UpdateTipoMuestraAsync(tipoMuestra);
 
             return "Tipo de muestra cancelado correctamente";

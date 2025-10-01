@@ -27,7 +27,7 @@ namespace SisLabZetino.Domain.Repositories
         Task<TipoExamen> GetTipoExamenByNombreAsync(string nombre);
 
         //Obtener tipos de examen por estado (activo/inactivo)
-        Task<IEnumerable<TipoExamen>> GetTiposExamenByEstadoAsync(int estado);
+        Task<IEnumerable<TipoExamen>> GetTiposExamenByEstadoAsync(bool estado);
 
         //Obtener tipos de examen por rango de precio
         Task<IEnumerable<TipoExamen>> GetTiposExamenByPrecioAsync(decimal precioMin, decimal precioMax);

@@ -53,7 +53,7 @@ namespace SisLabZetino.Application.Services
         // Caso de uso: Obtener tipos de examen por estado
         public async Task<IEnumerable<TipoExamen>> ObtenerTiposExamenActivosAsync()
         {
-            return await _repository.GetTiposExamenByEstadoAsync(1);
+            return await _repository.GetTiposExamenByEstadoAsync(true);
         }
 
         // Caso de uso: Obtener tipo de examen por nombre
@@ -76,7 +76,7 @@ namespace SisLabZetino.Application.Services
         {
             try
             {
-                nuevoTipo.Estado = 1; // Activo por defecto
+                nuevoTipo.Estado = true; // Activo por defecto
                 var tipoInsertado = await _repository.AddTipoExamenAsync(nuevoTipo);
 
                 if (tipoInsertado == null || tipoInsertado.IdTipoExamen <= 0)
@@ -109,7 +109,7 @@ namespace SisLabZetino.Application.Services
             if (tipoExamen == null)
                 return "Error: Tipo de examen no encontrado";
 
-            tipoExamen.Estado = 0;
+            tipoExamen.Estado = false; //calcelado/inactivo
             await _repository.UpdateTipoExamenAsync(tipoExamen);
 
             return "Tipo de examen cancelado correctamente";

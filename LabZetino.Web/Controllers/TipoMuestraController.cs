@@ -54,7 +54,7 @@ namespace SisLabZetino.WebAPI.Controllers
 
         // ✅ GET: api/NotificacionEmail/estado/1
         [HttpGet("estado/{estado:int}")]
-        public async Task<IActionResult> GetByEstado(int estado)
+        public async Task<IActionResult> GetByEstado(bool estado)
         {
             var notificaciones = await _repository.GetNotificacionesByEstadoAsync(estado);
             return Ok(notificaciones);

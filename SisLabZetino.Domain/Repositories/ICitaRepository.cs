@@ -28,7 +28,7 @@ namespace SisLabZetino.Domain.Repositories
         Task<IEnumerable<Cita>> GetCitasByUsuarioAsync(int idUsuario);
 
         //Obtener citas por estado (ejemplo: activas, canceladas, completadas)
-        Task<IEnumerable<Cita>> GetCitasByEstadoAsync(int estado);
+        Task<IEnumerable<Cita>> GetCitasByEstadoAsync(bool estado);
     }
 }
 

@@ -77,7 +77,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Obtener resultados por estado
-        public async Task<IEnumerable<Resultado>> GetResultadosByEstadoAsync(int estado)
+        public async Task<IEnumerable<Resultado>> GetResultadosByEstadoAsync(bool estado)
         {
             return await _context.Resultados
                                  .Where(r => r.Estado == estado)
