@@ -4,7 +4,7 @@ using SisLabZetino.Domain.Entities;
 
 namespace LabZetino.Web.Controllers
 {
-    [Route("api/notificacionemail")]
+    [Route("api/notificacion-email")]
     [ApiController]
     public class NotificacionEmailController : ControllerBase
     {
@@ -88,6 +88,7 @@ namespace LabZetino.Web.Controllers
         }
 
         // ✅ POST: api/notificacionemail
+   
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] NotificacionEmail notificacion)
         {
@@ -97,10 +98,11 @@ namespace LabZetino.Web.Controllers
             var resultado = await _notificacionService.AgregarNotificacionAsync(notificacion);
 
             if (resultado.StartsWith("Error"))
-                return BadRequest(resultado);
+                return BadRequest(new { message = resultado });
 
-            return Ok(resultado);
+            return Ok(new { message = resultado });
         }
+
 
         // ✅ PUT: api/notificacionemail/5
         [HttpPut("{id}")]

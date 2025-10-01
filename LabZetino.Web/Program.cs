@@ -10,11 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Base de datos MySQL
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 36))
-    )
-);
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    new MySqlServerVersion(new Version(8, 0, 36)),
+    mySqlOptions => mySqlOptions.EnableRetryOnFailure()));
 
 // Inyección de dependencias
 builder.Services.AddScoped<IResultadoRepository, ResultadoRepository>();

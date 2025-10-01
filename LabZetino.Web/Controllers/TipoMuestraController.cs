@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SisLabZetino.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/tipo-muestra")]
     public class NotificacionEmailController : ControllerBase
     {
         private readonly INotificacionEmailRepository _repository;

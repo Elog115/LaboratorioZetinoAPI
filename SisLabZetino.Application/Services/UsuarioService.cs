@@ -80,7 +80,7 @@ namespace SisLabZetino.Application.Services
                 if (usuarioinsertado == null || usuarioinsertado.IdUsuario <= 0)
                     return "Error: No se pudo agregar el Usuario";
 
-                return "Producto agregado correctamente";
+                return "Usuario agregado correctamente";
             }
 
             catch (Exception ex)

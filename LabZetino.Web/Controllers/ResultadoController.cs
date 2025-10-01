@@ -5,7 +5,7 @@ using SisLabZetino.Domain.Entities;
 namespace SisLabZetino.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/resultado")]
     public class ResultadoController : ControllerBase
     {
         private readonly ResultadoService _resultadoService;

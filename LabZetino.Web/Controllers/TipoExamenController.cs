@@ -5,7 +5,7 @@ using SisLabZetino.Domain.Entities;
 namespace SisLabZetino.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/tipo-examen")]
     public class TipoExamenController : ControllerBase
     {
         private readonly TipoExamenService _tipoExamenService;
