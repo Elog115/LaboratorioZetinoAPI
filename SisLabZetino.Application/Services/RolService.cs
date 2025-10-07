@@ -11,7 +11,7 @@ namespace SisLabZetino.Application.Services
 {
     // Algoritmos con lógica de negocio (UseCase)
     public class RolService
-    {
+    {   
         private readonly IRolRepository _repository;
 
         public RolService(IRolRepository repository)
