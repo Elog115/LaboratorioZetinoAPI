@@ -7,24 +7,32 @@ using SisLabZetino.Domain.Repositories;
 
 namespace SisLabZetino.Application.Services
 {
+
     // Algoritmos con lógica de negocio (UseCase)
     public class ExamenService
     {
-        private readonly IExamenRepository _repository;
+        public readonly IExamenRepository _repository;
 
         public ExamenService(IExamenRepository repository)
         {
             _repository = repository;
         }
 
-        // Caso de uso: Buscar un examen por Id
+        // Caso de uso: Buscar un examen por Id (solo activos)
         public async Task<Examen?> ObtenerExamenPorIdAsync(int id)
         {
             if (id <= 0)
                 return null; // Id no válido
 
-            return await _repository.GetExamenByIdAsync(id);
+            var examen = await _repository.GetExamenByIdAsync(id);
+
+            // 🔹 Solo retornar si el examen está activo
+            if (examen == null || examen.Estado == false)
+                return null;
+
+            return examen;
         }
+
 
         // Caso de uso: Modificar examen
         public async Task<string> ModificarExamenAsync(Examen examen)
