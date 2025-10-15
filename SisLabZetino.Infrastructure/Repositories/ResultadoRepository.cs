@@ -48,7 +48,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Eliminar un resultado por su Id
-        public async Task<bool> DeleteResultadoAsync(int id)
+        public async Task<bool> EliminarResultadoAsync(int id)
         {
             var resultado = await _context.Resultados.FindAsync(id);
             if (resultado == null)

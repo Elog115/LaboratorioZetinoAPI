@@ -88,18 +88,21 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-        // Caso de uso: Eliminar resultado (borrado físico)
+        // Caso de uso: Eliminar resultado (borrado lógico → estado = false)
         public async Task<string> EliminarResultadoAsync(int id)
         {
-            var eliminado = await _repository.DeleteResultadoAsync(id);
+            var resultado = await _repository.GetResultadoByIdAsync(id);
 
-            if (!eliminado)
+            if (resultado == null)
                 return "Error: Resultado no encontrado";
+
+            resultado.Estado = false; // Marcado como inactivo (borrado lógico)
+            await _repository.UpdateResultadoAsync(resultado);
 
             return "Resultado eliminado correctamente";
         }
 
-        // Caso de uso: Cancelar resultado (soft delete → estado = 0)
+        // Caso de uso: Cancelar resultado (soft delete → estado = false)
         public async Task<string> CancelarResultadoAsync(int id)
         {
             var resultado = await _repository.GetResultadoByIdAsync(id);
@@ -112,5 +115,6 @@ namespace SisLabZetino.Application.Services
 
             return "Resultado cancelado correctamente";
         }
+
     }
 }

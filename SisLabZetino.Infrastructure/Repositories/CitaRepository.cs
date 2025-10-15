@@ -54,7 +54,7 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Eliminar una cita por su Id
-        public async Task<bool> DeleteCitaAsync(int id)
+        public async Task<bool> EliminarCitaAsync(int id)
         {
             var cita = await _context.Citas.FindAsync(id);
             if (cita == null)

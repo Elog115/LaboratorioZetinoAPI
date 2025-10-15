@@ -21,7 +21,7 @@ namespace SisLabZetino.Domain.Repositories
         Task<Resultado> UpdateResultadoAsync(Resultado resultado);
 
         //Eliminar un resultado por su Id
-        Task<bool> DeleteResultadoAsync(int id);
+        Task<bool> EliminarResultadoAsync(int id);
 
         //Métodos adicionales (opcionales)
         //Obtener resultados por IdExamen

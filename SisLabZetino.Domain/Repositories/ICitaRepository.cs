@@ -21,7 +21,7 @@ namespace SisLabZetino.Domain.Repositories
         Task<Cita> UpdateCitaAsync(Cita cita);
 
         //Eliminar una cita por su Id
-        Task<bool> DeleteCitaAsync(int id);
+        Task<bool> EliminarCitaAsync(int id);
 
         //Métodos adicionales (opcionales):
         //Obtener citas por IdUsuario

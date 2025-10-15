@@ -84,13 +84,16 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-        // Caso de uso: Eliminar cita
+        // Caso de uso: Eliminar cita (borrado lógico → estado = false)
         public async Task<string> EliminarCitaAsync(int id)
         {
-            var eliminado = await _repository.DeleteCitaAsync(id);
+            var cita = await _repository.GetCitaByIdAsync(id);
 
-            if (!eliminado)
+            if (cita == null)
                 return "Error: Cita no encontrada";
+
+            cita.Estado = false; // Desactivar cita en lugar de eliminar físicamente
+            await _repository.UpdateCitaAsync(cita);
 
             return "Cita eliminada correctamente";
         }
@@ -110,4 +113,3 @@ namespace SisLabZetino.Application.Services
         }
     }
 }
-
