@@ -62,15 +62,18 @@ namespace SisLabZetino.Infrastructure.Repositories
         }
 
         // Eliminar usuario por Id
+        // 🔹 Borrado lógico
         public async Task<bool> DeleteUsuarioAsync(int id)
         {
             var usuario = await _ctx.Usuarios.FindAsync(id);
             if (usuario == null) return false;
 
-            _ctx.Usuarios.Remove(usuario);
+            usuario.Estado = false;
+            _ctx.Usuarios.Update(usuario);
             await _ctx.SaveChangesAsync();
             return true;
         }
+
 
         // Validar usuario (login)
         public async Task<Usuario?> ValidateUsuarioAsync(string email, string password)

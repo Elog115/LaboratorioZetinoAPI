@@ -215,6 +215,7 @@ namespace SisLabZetino.Tests.Functional
         [TestMethod]
         public async Task ObtenerNotificacionesPorResultadoAsync_DeberiaRetornarSoloNotificacionesDelResultado()
         {
+            // Arrange
             var idResultadoBuscado = 101;
             var notificacionResultadoCorrecto = new NotificacionEmail
             {
@@ -232,15 +233,21 @@ namespace SisLabZetino.Tests.Functional
                 EstadoEnvio = "Pendiente",
                 Estado = true
             };
+
+            // Act
             await _repository.AddNotificacionAsync(notificacionResultadoCorrecto);
             await _repository.AddNotificacionAsync(notificacionResultadoIncorrecto);
 
             var resultado = await _service.ObtenerNotificacionesPorResultadoAsync(idResultadoBuscado);
 
-            Assert.IsTrue(resultado.Any(n => n.IdNotificacion == notificacionResultadoCorrecto.IdNotificacion));
-            Assert.IsFalse(resultado.Any(n => n.IdNotificacion == notificacionResultadoIncorrecto.IdNotificacion));
-            Assert.AreEqual(1, resultado.Count());
+            // Assert
+            Assert.IsTrue(resultado.Any(n => n.Asunto == notificacionResultadoCorrecto.Asunto),
+                "Debe contener la notificación con el IdResultado buscado.");
+            Assert.IsFalse(resultado.Any(n => n.Asunto == notificacionResultadoIncorrecto.Asunto),
+                "No debe contener notificaciones de otros IdResultado.");
+            Assert.AreEqual(1, resultado.Count(), "Debe devolver solo una notificación.");
         }
+
     }
 }
 

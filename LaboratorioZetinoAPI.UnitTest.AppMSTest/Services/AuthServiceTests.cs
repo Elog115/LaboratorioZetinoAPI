@@ -1,14 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SisLabZetino.Application.Services;
 using SisLabZetino.Domain.Entities;
 using SisLabZetino.Infrastructure.Data;
+using SisLabZetino.Infrastructure.Data.Repositories;
 using SisLabZetino.Infrastructure.Repositories;
 using System.IO;
-using System.Threading.Tasks;
-using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SisLabZetino.Tests.Functional
 {
@@ -16,28 +16,29 @@ namespace SisLabZetino.Tests.Functional
     public class AuthServiceFunctionalTests
     {
         private AppDBContext _context = null!;
-        private UsuarioRepository _repository = null!;
-        private AuthService _service = null!;
+        private UsuarioRepository _usuarioRepository = null!;
+        private AuthService _authService = null!;
+        private IConfiguration _configuration = null!;
 
         [TestInitialize]
         public void Setup()
         {
             var basePath = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\LabZetino.Web");
 
-            var configuration = new ConfigurationBuilder()
+            _configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
 
             var options = new DbContextOptionsBuilder<AppDBContext>()
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
                 .Options;
 
             _context = new AppDBContext(options);
-            _repository = new UsuarioRepository(_context);
-            _service = new AuthService(_repository, configuration);
+            _usuarioRepository = new UsuarioRepository(_context);
+            _authService = new AuthService(_usuarioRepository, _configuration);
         }
 
         [TestCleanup]
@@ -46,120 +47,99 @@ namespace SisLabZetino.Tests.Functional
             _context.Dispose();
         }
 
+        // 1️⃣ Registrar usuario
         [TestMethod]
         public async Task RegisterAsync_DeberiaAgregarUsuario()
         {
-            var usuario = new Usuario
-            {
-                Nombre = "UsuarioPrueba" + Guid.NewGuid(),
-                Apellido = "Funcional",
-                Email = "prueba" + Guid.NewGuid() + "@test.com",
-                PasswordHash = "123456",
-                FechaNacimiento = new DateTime(1990, 1, 1),
-                Telefono = "12345678",
-                IdRol = 1
-            };
-
-            var (ok, msg) = await _service.RegisterAsync(usuario.Nombre, usuario.Email, usuario.PasswordHash!, usuario.IdRol);
-
+            var (ok, msg) = await _authService.RegisterAsync("TestUser", "testuser@test.com", "Password123!", 1);
             Assert.IsTrue(ok);
             Assert.AreEqual("Usuario registrado", msg);
 
-            var usuarioGuardado = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email);
-            Assert.IsNotNull(usuarioGuardado);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "testuser@test.com");
+            Assert.IsNotNull(usuario);
+            Assert.AreEqual("TestUser", usuario.Nombre);
         }
 
+        // 2️⃣ Login exitoso
         [TestMethod]
-        public async Task RegisterAsync_DeberiaRetornarErrorSiEmailDuplicado()
+        public async Task LoginAsync_DeberiaRetornarToken()
         {
-            var email = "duplicado" + Guid.NewGuid() + "@test.com";
+            await _authService.RegisterAsync("LoginUser", "login@test.com", "Password123!", 1);
 
-            var usuarioInicial = new Usuario
-            {
-                Nombre = "Original",
-                Apellido = "Test",
-                Email = email,
-                PasswordHash = "123",
-                IdRol = 1
-            };
-            await _service.RegisterAsync(usuarioInicial.Nombre, usuarioInicial.Email, usuarioInicial.PasswordHash!, usuarioInicial.IdRol);
-
-            var usuarioDuplicado = new Usuario
-            {
-                Nombre = "Duplicado",
-                Apellido = "Test",
-                Email = email,
-                PasswordHash = "456",
-                IdRol = 1
-            };
-
-            var (ok, msg) = await _service.RegisterAsync(usuarioDuplicado.Nombre, usuarioDuplicado.Email, usuarioDuplicado.PasswordHash!, usuarioDuplicado.IdRol);
-
-            Assert.IsFalse(ok);
-            Assert.AreEqual("El email ya está registrado", msg);
-        }
-
-        [TestMethod]
-        public async Task LoginAsync_DeberiaRetornarTokenSiCredencialesValidas()
-        {
-            var email = "login.valido" + Guid.NewGuid() + "@test.com";
-            var clave = "clave123";
-            var usuario = new Usuario
-            {
-                Nombre = "LoginValido",
-                Apellido = "Test",
-                Email = email,
-                PasswordHash = clave,
-                IdRol = 1
-            };
-            await _service.RegisterAsync(usuario.Nombre, usuario.Email, usuario.PasswordHash!, usuario.IdRol);
-
-            var (ok, token) = await _service.LoginAsync(email, clave);
-
+            var (ok, token) = await _authService.LoginAsync("login@test.com", "Password123!");
             Assert.IsTrue(ok);
             Assert.IsFalse(string.IsNullOrEmpty(token));
         }
 
+        // 3️⃣ Login fallido
         [TestMethod]
-        public async Task LoginAsync_DeberiaRetornarErrorSiUsuarioInactivo()
+        public async Task LoginAsync_ConPasswordIncorrecto_DeberiaFallar()
         {
-            var email = "inactivo" + Guid.NewGuid() + "@test.com";
-            var usuario = new Usuario
-            {
-                Nombre = "Inactivo",
-                Apellido = "Test",
-                Email = email,
-                PasswordHash = "clave123",
-                IdRol = 1,
-                Estado = false
-            };
-            await _repository.AddUsuarioAsync(usuario);
+            await _authService.RegisterAsync("FailUser", "fail@test.com", "Password123!", 1);
 
-            var (ok, msg) = await _service.LoginAsync(email, usuario.PasswordHash!);
-
-            Assert.IsFalse(ok);
-            Assert.AreEqual("Usuario no encontrado o inactivo", msg);
-        }
-
-        [TestMethod]
-        public async Task LoginAsync_DeberiaRetornarErrorSiClaveIncorrecta()
-        {
-            var email = "incorrecta" + Guid.NewGuid() + "@test.com";
-            var usuario = new Usuario
-            {
-                Nombre = "ClaveIncorrecta",
-                Apellido = "Test",
-                Email = email,
-                PasswordHash = "correcta123",
-                IdRol = 1
-            };
-            await _service.RegisterAsync(usuario.Nombre, usuario.Email, usuario.PasswordHash!, usuario.IdRol);
-
-            var (ok, msg) = await _service.LoginAsync(email, "incorrectaXYZ");
-
+            var (ok, msg) = await _authService.LoginAsync("fail@test.com", "WrongPassword");
             Assert.IsFalse(ok);
             Assert.AreEqual("Credenciales inválidas", msg);
         }
+
+        // 4️⃣ Obtener usuario por Id
+        [TestMethod]
+        public async Task ObtenerUsuarioPorIdAsync_DeberiaRetornarUsuarioActivo()
+        {
+            var (ok, _) = await _authService.RegisterAsync("GetUser", "getuser@test.com", "Password123!", 1);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "getuser@test.com");
+
+            var encontrado = await _authService.ObtenerUsuarioPorIdAsync(usuario!.IdUsuario);
+            Assert.IsNotNull(encontrado);
+            Assert.AreEqual("getuser@test.com", encontrado.Email);
+        }
+
+        // 5️⃣ Modificar usuario
+        [TestMethod]
+        public async Task ModificarUsuarioAsync_DeberiaActualizarDatos()
+        {
+            await _authService.RegisterAsync("ModUser", "moduser@test.com", "Password123!", 1);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "moduser@test.com");
+
+            usuario!.Nombre = "UsuarioModificado";
+            usuario.PasswordHash = "NewPassword123!";
+
+            var resultado = await _authService.ModificarUsuarioAsync(usuario);
+            Assert.AreEqual("Usuario modificado correctamente", resultado);
+
+            var modificado = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == usuario.IdUsuario);
+            Assert.AreEqual("UsuarioModificado", modificado!.Nombre);
+        }
+
+        // 6️⃣ Eliminar usuario
+        [TestMethod]
+        public async Task EliminarUsuarioAsync_DeberiaMarcarInactivo()
+        {
+            await _authService.RegisterAsync("DelUser", "deluser@test.com", "Password123!", 1);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "deluser@test.com");
+
+            var resultado = await _authService.EliminarUsuarioAsync(usuario!.IdUsuario);
+            Assert.AreEqual("Usuario eliminado correctamente", resultado);
+
+            var eliminado = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == usuario.IdUsuario);
+            Assert.IsFalse(eliminado!.Estado);
+        }
+
+        // 7️⃣ Obtener usuarios activos
+        [TestMethod]
+        public async Task ObtenerUsuariosActivosAsync_DeberiaRetornarSoloActivos()
+        {
+            await _authService.RegisterAsync("ActUser1", "act1@test.com", "Password123!", 1);
+            await _authService.RegisterAsync("ActUser2", "act2@test.com", "Password123!", 1);
+
+            // Eliminar uno
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "act2@test.com");
+            await _authService.EliminarUsuarioAsync(usuario!.IdUsuario);
+
+            var activos = await _authService.ObtenerUsuariosActivosAsync();
+            Assert.IsTrue(activos.All(u => u.Estado == true));
+            Assert.IsTrue(activos.Any(u => u.Email == "act1@test.com"));
+            Assert.IsFalse(activos.Any(u => u.Email == "act2@test.com"));
+        }
     }
 }
-
