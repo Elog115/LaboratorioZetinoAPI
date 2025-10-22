@@ -48,17 +48,25 @@ namespace SisLabZetino.Tests.Functional
         }
 
         // 1️⃣ Registrar usuario
-        [TestMethod]
-        public async Task RegisterAsync_DeberiaAgregarUsuario()
-        {
-            var (ok, msg) = await _authService.RegisterAsync("TestUser", "testuser@test.com", "Password123!", 1);
-            Assert.IsTrue(ok);
-            Assert.AreEqual("Usuario registrado", msg);
+       [TestMethod]
+public async Task RegisterAsync_DeberiaAgregarUsuario()
+{
+    // 🔹 Generamos un email único para esta prueba
+    var emailUnico = $"testuser_{Guid.NewGuid()}@test.com";
 
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "testuser@test.com");
-            Assert.IsNotNull(usuario);
-            Assert.AreEqual("TestUser", usuario.Nombre);
-        }
+    // 🔹 Registramos el usuario
+    var (ok, msg) = await _authService.RegisterAsync("TestUser", emailUnico, "Password123!", 1);
+
+    // 🔹 Validamos que se haya registrado correctamente
+    Assert.IsTrue(ok, "El registro debería devolver 'true'");
+    Assert.AreEqual("Usuario registrado", msg, "El mensaje de registro no coincide");
+
+    // 🔹 Verificamos que el usuario exista en la base de datos
+    var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailUnico);
+    Assert.IsNotNull(usuario, "El usuario debería existir en la base de datos");
+    Assert.AreEqual("TestUser", usuario.Nombre, "El nombre del usuario no coincide");
+}
+
 
         // 2️⃣ Login exitoso
         [TestMethod]

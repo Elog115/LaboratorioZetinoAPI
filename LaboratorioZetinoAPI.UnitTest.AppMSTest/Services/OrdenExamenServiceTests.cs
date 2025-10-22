@@ -176,12 +176,27 @@ namespace SisLabZetino.Tests.Functional
         [TestMethod]
         public async Task ObtenerOrdenesPorUsuarioAsync_DeberiaRetornarSoloOrdenesDelUsuario()
         {
-            var idUsuarioPrueba = 15;
+            // 🔹 Generamos un ID de usuario único para esta prueba
+            var idUsuarioPrueba = new Random().Next(1000, 9999);
+
             var cita1 = await CrearCitaDePruebaAsync(idUsuarioPrueba);
             var cita2 = await CrearCitaDePruebaAsync(idUsuarioPrueba + 1); // Otro usuario
 
-            var ordenUsuario1 = new OrdenExamen { IdUsuario = idUsuarioPrueba, IdCita = cita1.IdCita, FechaSolicitud = DateTime.Now.Date, Estado = true };
-            var ordenUsuario2 = new OrdenExamen { IdUsuario = idUsuarioPrueba + 1, IdCita = cita2.IdCita, FechaSolicitud = DateTime.Now.Date, Estado = true };
+            var ordenUsuario1 = new OrdenExamen
+            {
+                IdUsuario = idUsuarioPrueba,
+                IdCita = cita1.IdCita,
+                FechaSolicitud = DateTime.Now.Date,
+                Estado = true
+            };
+            var ordenUsuario2 = new OrdenExamen
+            {
+                IdUsuario = idUsuarioPrueba + 1,
+                IdCita = cita2.IdCita,
+                FechaSolicitud = DateTime.Now.Date,
+                Estado = true
+            };
+
             await _repository.AddOrdenExamenAsync(ordenUsuario1);
             await _repository.AddOrdenExamenAsync(ordenUsuario2);
 
@@ -190,6 +205,7 @@ namespace SisLabZetino.Tests.Functional
             Assert.AreEqual(1, resultado.Count());
             Assert.IsTrue(resultado.All(o => o.IdUsuario == idUsuarioPrueba));
         }
+
 
         // 7️⃣ Obtener órdenes por fecha de solicitud
         [TestMethod]
@@ -228,4 +244,4 @@ namespace SisLabZetino.Tests.Functional
             Assert.AreEqual("Error: Orden no encontrada", resultado);
         }
     }
-}
+}

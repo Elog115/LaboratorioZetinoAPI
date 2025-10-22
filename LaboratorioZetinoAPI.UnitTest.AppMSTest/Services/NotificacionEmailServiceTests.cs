@@ -212,11 +212,13 @@ namespace SisLabZetino.Tests.Functional
         }
 
         // 8️⃣ Obtener notificaciones por resultado
+
         [TestMethod]
         public async Task ObtenerNotificacionesPorResultadoAsync_DeberiaRetornarSoloNotificacionesDelResultado()
         {
-            // Arrange
-            var idResultadoBuscado = 101;
+            // 🔹 Generamos un IdResultado único para esta prueba
+            var idResultadoBuscado = new Random().Next(1000, 9999);
+
             var notificacionResultadoCorrecto = new NotificacionEmail
             {
                 IdResultado = idResultadoBuscado,
@@ -225,29 +227,30 @@ namespace SisLabZetino.Tests.Functional
                 EstadoEnvio = "Pendiente",
                 Estado = true
             };
+
             var notificacionResultadoIncorrecto = new NotificacionEmail
             {
-                IdResultado = 102, // Otro IdResultado
+                IdResultado = idResultadoBuscado + 1, // Otro IdResultado
                 Asunto = "Resultado Incorrecto " + Guid.NewGuid(),
                 Mensaje = "Mensaje para otro resultado.",
                 EstadoEnvio = "Pendiente",
                 Estado = true
             };
 
-            // Act
+            // 🔹 Insertamos ambas notificaciones
             await _repository.AddNotificacionAsync(notificacionResultadoCorrecto);
             await _repository.AddNotificacionAsync(notificacionResultadoIncorrecto);
 
+            // 🔹 Ejecutamos el método a probar
             var resultado = await _service.ObtenerNotificacionesPorResultadoAsync(idResultadoBuscado);
 
-            // Assert
+            // 🔹 Validaciones
             Assert.IsTrue(resultado.Any(n => n.Asunto == notificacionResultadoCorrecto.Asunto),
                 "Debe contener la notificación con el IdResultado buscado.");
             Assert.IsFalse(resultado.Any(n => n.Asunto == notificacionResultadoIncorrecto.Asunto),
                 "No debe contener notificaciones de otros IdResultado.");
             Assert.AreEqual(1, resultado.Count(), "Debe devolver solo una notificación.");
         }
-
     }
 }
 
