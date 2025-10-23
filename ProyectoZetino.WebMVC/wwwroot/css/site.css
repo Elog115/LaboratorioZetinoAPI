@@ -1,0 +1,7 @@
+body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: #f7fbfd; }
+.navbar-brand { font-weight: 700; color: #0b5e6f; }
+h1, h2, h3 { color: #0b5e6f; }
+.btn-primary { background-color: #0b91a4; border-color: #0b91a4; }
+.btn-success { background-color: #19a974; border-color: #19a974; }
+.table thead { background: linear-gradient(90deg,#eaf3ff,#f0fff9); }
+.card { border: none; }

@@ -1,0 +1,40 @@
+@model ProyectoZetino.WebMVC.Models.RolDto
+@{
+    ViewData["Title"] = "Eliminar Rol";
+}
+<h2>Eliminar Rol</h2>
+<div class="alert alert-warning">¿Seguro que deseas eliminar este rol?</div>
+<dl class="row">
+    <dt class="col-sm-2">Id</dt><dd class="col-sm-10">@Model.IdRol</dd>
+    <dt class="col-sm-2">Nombre</dt><dd class="col-sm-10">@Model.Nombre</dd>
+    <dt class="col-sm-2">Descripcion</dt><dd class="col-sm-10">@Model.Descripcion</dd>
+</dl>
+<form method="post" id="deleteForm">
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">Eliminar</button>
+    <a class="btn btn-secondary" href="/Rol">Cancelar</a>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Esta acción eliminará el rol permanentemente. ¿Deseas continuar?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmBtn">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.getElementById('confirmBtn').addEventListener('click', function(){
+        document.getElementById('deleteForm').submit();
+    });
+</script>

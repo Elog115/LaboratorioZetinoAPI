@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,9 +10,8 @@ using SisLabZetino.Domain.Repositories;
 
 namespace SisLabZetino.Application.Services
 {
-    // Algoritmos con lógica de negocio (UseCase)
     public class RolService
-    {   
+    {
         private readonly IRolRepository _repository;
 
         public RolService(IRolRepository repository)
@@ -19,22 +19,19 @@ namespace SisLabZetino.Application.Services
             _repository = repository;
         }
 
-        // Caso de uso: Buscar un rol por Id (solo activos)
+        // Caso de uso: Buscar un rol por Id (Devuelve activos e inactivos)
         public async Task<Rol?> ObtenerRolPorIdAsync(int id)
         {
             if (id <= 0)
-                return null; // Id no válido
+                return null;
 
             var rol = await _repository.GetRolByIdAsync(id);
 
-            if (rol != null && rol.Estado == true)
-                // 1 = activo
-                return rol;
-
-            return null; // No encontrado o inactivo
+            // Devuelve el rol sin importar el estado (necesario para el Toggle)
+            return rol;
         }
 
-        // Caso de uso: Modificar rol
+        // Caso de uso: Modificar rol (Actualizado para el Toggle)
         public async Task<string> ModificarRolAsync(Rol rol)
         {
             if (rol.IdRol <= 0)
@@ -45,8 +42,9 @@ namespace SisLabZetino.Application.Services
             if (existente == null)
                 return "Error: Rol no encontrado";
 
+            // Actualizamos los campos que nos manda el MVC
             existente.Nombre = rol.Nombre;
-            existente.Estado = rol.Estado;
+            existente.Estado = rol.Estado; 
 
             await _repository.UpdateRolAsync(existente);
             return "Rol modificado correctamente";
@@ -59,6 +57,13 @@ namespace SisLabZetino.Application.Services
             return roles.Where(r => r.Estado == true);
         }
 
+        // Caso de uso: Obtener TODOS los roles (activos e inactivos)
+        public async Task<IEnumerable<Rol>> ObtenerTodosLosRolesAsync()
+        {
+            // Simplemente llamamos al método del repositorio que ya trae todo
+            return await _repository.GetRolesAsync();
+        }
+
         // Caso de uso: Agregar rol (validar duplicados por nombre)
         public async Task<string> AgregarRolAsync(Rol nuevoRol)
         {
@@ -66,11 +71,10 @@ namespace SisLabZetino.Application.Services
             {
                 var roles = await _repository.GetRolesAsync();
 
-                // Validar duplicados por nombre (ignorando mayúsculas/minúsculas)
                 if (roles.Any(r => r.Nombre.ToLower() == nuevoRol.Nombre.ToLower()))
                     return "Error: Ya existe un rol con el mismo nombre";
 
-                nuevoRol.Estado = true; // Activo por defecto (bool)
+                nuevoRol.Estado = true;
                 var rolInsertado = await _repository.AddRolAsync(nuevoRol);
 
                 if (rolInsertado == null || rolInsertado.IdRol <= 0)
@@ -84,17 +88,17 @@ namespace SisLabZetino.Application.Services
             }
         }
 
-
-        // Caso de uso: Eliminar rol
+        // Caso de uso: Eliminar rol (Borrado lógico)
         public async Task<string> EliminarRolAsync(int id)
         {
-            var eliminado = await _repository.DeleteRolAsync(id);
-
-            if (!eliminado)
+            var existente = await _repository.GetRolByIdAsync(id);
+            if (existente == null)
                 return "Error: Rol no encontrado";
 
-            return "Rol eliminado correctamente";
+            existente.Estado = false; // Borrado lógico
+            await _repository.UpdateRolAsync(existente);
+
+            return "Rol desactivado correctamente";
         }
     }
 }
-

@@ -1,0 +1,57 @@
+@model ProyectoZetino.WebMVC.Models.RegisterModel
+@{
+    ViewData["Title"] = "Registro";
+}
+<div class="d-flex justify-content-center align-items-center" style="min-height:60vh;">
+    <div class="card p-4" style="width:480px; border-radius:12px; box-shadow:0 4px 18px rgba(11,94,111,0.06)">
+        <div class="text-center mb-3">
+            <h4 style="color:#0b5e6f">Crear una cuenta</h4>
+        </div>
+        <form method="post" class="mt-2">
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                @* ?? CAMPO NUEVO ?? *@
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            @* ?? CAMPO NUEVO ?? *@
+            <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                <input asp-for="Telefono" class="form-control" placeholder="Ej: 77889900" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+
+            @* ?? CAMPO NUEVO ?? *@
+            <div class="mb-3">
+                <label class="form-label">Fecha de Nacimiento</label>
+                <input asp-for="FechaNacimiento" type="date" class="form-control" />
+                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid"><button class="btn btn-success">Registrar</button></div>
+            <div class="text-center mt-3"><a href="/Account/Login">Ya tengo cuenta</a></div>
+        </form>
+    </div>
+</div>

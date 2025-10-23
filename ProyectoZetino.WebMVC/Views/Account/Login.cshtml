@@ -1,0 +1,28 @@
+@model ProyectoZetino.WebMVC.Models.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="d-flex justify-content-center align-items-center" style="min-height:60vh;">
+    <div class="card p-4" style="width:380px; border-radius:12px; box-shadow:0 4px 18px rgba(11,94,111,0.08)">
+        <div class="text-center mb-3">
+            <img src="~/images/logo.svg" style="height:56px" />
+            <h4 class="mt-2" style="color:#0b5e6f">Iniciar sesión</h4>
+        </div>
+        <form method="post" class="mt-2">
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary">Entrar</button>
+            </div>
+            <div class="text-center mt-3"><a href="/Account/Register">Crear cuenta</a></div>
+        </form>
+    </div>
+</div>
