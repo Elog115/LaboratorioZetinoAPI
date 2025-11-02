@@ -20,6 +20,10 @@ namespace SisLabZetino.Domain.Entities
         [StringLength(150)]
         public string Nombre { get; set; }
 
+        [Column("descripcion")] 
+        [StringLength(500)]
+        public string? Descripcion { get; set; } // La hacemos 'nullable' (string?)
+
         [Required]
         [Column("estado")]
         public bool Estado { get; set; }

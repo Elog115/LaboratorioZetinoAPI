@@ -1,4 +1,3 @@
-
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -6,6 +5,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProyectoZetino.WebMVC.Models;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
 
 namespace ProyectoZetino.WebMVC.Services
 {
@@ -15,43 +16,78 @@ namespace ProyectoZetino.WebMVC.Services
 
         private class LoginResponse
         {
-            [JsonPropertyName("token")] // Asegura que coincida con el JSON ("token" en minúscula)
+            [JsonPropertyName("token")]
             public string? Token { get; set; }
         }
 
-        public ApiClient(HttpClient httpClient)
+        // Constructor con JWT (Esto está bien)
+        public ApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            var token = httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
         }
 
-        // --- Roles (Estos ya estaban bien) ---
+        // --- Roles ---
+
+        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<IEnumerable<RolDto>> GetRolesAsync()
         {
             return await _httpClient.GetFromJsonAsync<IEnumerable<RolDto>>("api/rol") ?? new List<RolDto>();
         }
+
+        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<RolDto> GetRolAsync(int id)
         {
             return await _httpClient.GetFromJsonAsync<RolDto>($"api/rol/{id}");
         }
+
+        // ?? --- CÓDIGO CORREGIDO (CON DESCRIPCION) --- ??
         public async Task<bool> CreateRolAsync(RolDto rol)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/rol", rol);
+            // Ahora enviamos el RolDto completo, ya que la API lo acepta
+            var payload = new
+            {
+                rol.Nombre,
+                rol.Estado,
+                rol.Descripcion // <--- ¡LÍNEA AÑADIDA!
+            };
+            var response = await _httpClient.PostAsJsonAsync("api/rol", payload);
             return response.IsSuccessStatusCode;
         }
+
+        // ?? --- CÓDIGO CORREGIDO (CON DESCRIPCION) --- ??
         public async Task<bool> UpdateRolAsync(int id, RolDto rol)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/rol/{id}", rol);
+            // Ahora enviamos el RolDto completo
+            var payload = new
+            {
+                rol.IdRol,
+                rol.Nombre,
+                rol.Estado,
+                rol.Descripcion // <--- ¡LÍNEA AÑADIDA!
+            };
+            var response = await _httpClient.PutAsJsonAsync($"api/rol/{id}", payload);
             return response.IsSuccessStatusCode;
         }
+
+        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<bool> DeleteRolAsync(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/rol/{id}");
             return response.IsSuccessStatusCode;
         }
 
+        // --- Login y Register (Restaurados) ---
+
+        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<string?> LoginAsync(string username, string password)
         {
-            // El payload con datos de relleno (esto está bien)
             var payload = new
             {
                 Email = username,
@@ -67,23 +103,22 @@ namespace ProyectoZetino.WebMVC.Services
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", payload);
             if (!response.IsSuccessStatusCode) return null;
 
-            // ?? CORREGIDO: Usamos la clase 'LoginResponse' en lugar de 'dynamic'
             try
             {
                 var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
                 if (loginResponse != null && !string.IsNullOrEmpty(loginResponse.Token))
                 {
-                    return loginResponse.Token; // ¡Éxito!
+                    return loginResponse.Token;
                 }
-                return null; // No vino el token
+                return null;
             }
             catch
             {
-                return null; // Error al leer el JSON
+                return null;
             }
         }
 
-        // --- Register (Este ya está corregido) ---
+        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<bool> RegisterAsync(RegisterModel model)
         {
             var payload = new
@@ -91,8 +126,7 @@ namespace ProyectoZetino.WebMVC.Services
                 Nombre = model.Nombre,
                 Email = model.Email,
                 PasswordHash = model.Password,
-                IdRol = 2, // 2 = Doctor
-
+                IdRol = 2,
                 Apellido = model.Apellido,
                 Telefono = model.Telefono,
                 FechaNacimiento = model.FechaNacimiento,

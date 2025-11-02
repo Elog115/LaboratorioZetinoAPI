@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace SisLabZetino.Application.Services
             return rol;
         }
 
-        // Caso de uso: Modificar rol (Actualizado para el Toggle)
+        // Caso de uso: Modificar rol (Actualizado para el Toggle Y Descripcion)
         public async Task<string> ModificarRolAsync(Rol rol)
         {
             if (rol.IdRol <= 0)
@@ -44,7 +43,8 @@ namespace SisLabZetino.Application.Services
 
             // Actualizamos los campos que nos manda el MVC
             existente.Nombre = rol.Nombre;
-            existente.Estado = rol.Estado; 
+            existente.Estado = rol.Estado;
+            existente.Descripcion = rol.Descripcion; // <--- ¡ESTA ES LA LÍNEA NUEVA!
 
             await _repository.UpdateRolAsync(existente);
             return "Rol modificado correctamente";
@@ -74,6 +74,8 @@ namespace SisLabZetino.Application.Services
                 if (roles.Any(r => r.Nombre.ToLower() == nuevoRol.Nombre.ToLower()))
                     return "Error: Ya existe un rol con el mismo nombre";
 
+                // El 'nuevoRol' que viene del ApiClient ya tendrá la Descripcion,
+                // así que solo lo pasamos al repositorio.
                 nuevoRol.Estado = true;
                 var rolInsertado = await _repository.AddRolAsync(nuevoRol);
 
