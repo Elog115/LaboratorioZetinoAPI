@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace ProyectoZetino.WebMVC.Services
             public string? Token { get; set; }
         }
 
-        // Constructor con JWT (Esto está bien)
+        // Constructor con JWT (Esto estÃ¡ bien)
         public ApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
@@ -35,57 +35,63 @@ namespace ProyectoZetino.WebMVC.Services
 
         // --- Roles ---
 
-        // ?? --- CÓDIGO RESTAURADO --- ??
-        public async Task<IEnumerable<RolDto>> GetRolesAsync()
+        // ----- ðŸ‘‡ CÃ“DIGO MODIFICADO PARA EL BUSCADOR ðŸ‘‡ -----
+        public async Task<IEnumerable<RolDto>> GetRolesAsync(string searchTerm = null)
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<RolDto>>("api/rol") ?? new List<RolDto>();
-        }
+            // 1. Construimos la URL base
+            var url = "api/rol";
 
-        // ?? --- CÓDIGO RESTAURADO --- ??
+            // 2. Si hay un tÃ©rmino de bÃºsqueda, lo aÃ±adimos como query string
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                // AsegÃºrate de que tu API pueda recibir un parÃ¡metro "search"
+                // El Url.Encode es una buena prÃ¡ctica por si buscan "Rol con espacio"
+                url += $"?search={System.Net.WebUtility.UrlEncode(searchTerm)}";
+            }
+
+            // 3. Hacemos la llamada a la URL (con o sin el ?search=)
+            return await _httpClient.GetFromJsonAsync<IEnumerable<RolDto>>(url) ?? new List<RolDto>();
+        }
+        // ----- ðŸ‘† FIN DE LA MODIFICACIÃ“N ðŸ‘† -----
+
         public async Task<RolDto> GetRolAsync(int id)
         {
             return await _httpClient.GetFromJsonAsync<RolDto>($"api/rol/{id}");
         }
 
-        // ?? --- CÓDIGO CORREGIDO (CON DESCRIPCION) --- ??
         public async Task<bool> CreateRolAsync(RolDto rol)
         {
-            // Ahora enviamos el RolDto completo, ya que la API lo acepta
             var payload = new
             {
                 rol.Nombre,
                 rol.Estado,
-                rol.Descripcion // <--- ¡LÍNEA AÑADIDA!
+                rol.Descripcion
             };
             var response = await _httpClient.PostAsJsonAsync("api/rol", payload);
             return response.IsSuccessStatusCode;
         }
 
-        // ?? --- CÓDIGO CORREGIDO (CON DESCRIPCION) --- ??
         public async Task<bool> UpdateRolAsync(int id, RolDto rol)
         {
-            // Ahora enviamos el RolDto completo
             var payload = new
             {
                 rol.IdRol,
                 rol.Nombre,
                 rol.Estado,
-                rol.Descripcion // <--- ¡LÍNEA AÑADIDA!
+                rol.Descripcion
             };
             var response = await _httpClient.PutAsJsonAsync($"api/rol/{id}", payload);
             return response.IsSuccessStatusCode;
         }
 
-        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<bool> DeleteRolAsync(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/rol/{id}");
             return response.IsSuccessStatusCode;
         }
 
-        // --- Login y Register (Restaurados) ---
+        // --- Login y Register (Sin cambios) ---
 
-        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<string?> LoginAsync(string username, string password)
         {
             var payload = new
@@ -118,7 +124,6 @@ namespace ProyectoZetino.WebMVC.Services
             }
         }
 
-        // ?? --- CÓDIGO RESTAURADO --- ??
         public async Task<bool> RegisterAsync(RegisterModel model)
         {
             var payload = new

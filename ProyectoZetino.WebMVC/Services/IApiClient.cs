@@ -8,7 +8,7 @@ namespace ProyectoZetino.WebMVC.Services
     public interface IApiClient
     {
         // Métodos para Roles
-        Task<IEnumerable<RolDto>> GetRolesAsync();
+        Task<IEnumerable<RolDto>> GetRolesAsync(string searchTerm = null);
         Task<RolDto> GetRolAsync(int id);
         Task<bool> CreateRolAsync(RolDto rol);
         Task<bool> UpdateRolAsync(int id, RolDto rol);

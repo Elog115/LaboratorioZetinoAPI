@@ -6,9 +6,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ProyectoZetino</title>
+    <title>@ViewData["Title"] - Laboratorio Zetino</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body style="background-color: #f7fbfd;">
     <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg,#e8f7f5,#eaf3ff);">
@@ -24,6 +25,7 @@
                 <ul class="navbar-nav me-auto">
                     @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
                     {
+                        // Estos son tus enlaces del panel de admin
                         <li class="nav-item"><a class="nav-link" href="/Rol">Roles</a></li>
                     }
                 </ul>
@@ -34,6 +36,7 @@
                     }
                     else
                     {
+                        // Estos son tus enlaces públicos
                         <li class="nav-item"><a class="nav-link" href="/Account/Login">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="/Account/Register">Registro</a></li>
                     }
@@ -43,21 +46,33 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2 p-3" style="background:#fff; border-right:1px solid #e6eef8; min-height:80vh;">
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2"><a class="nav-link" href="/">Inicio</a></li>
-
-                    @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
-                    {
+        @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
+        {
+            // --- VISTA DE ADMIN (Autenticado) ---
+            // Muestra el layout de 2 columnas con sidebar
+            <div class="row">
+                <div class="col-md-2 p-3" style="background:#fff; border-right:1px solid #e6eef8; min-height:80vh;">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a class="nav-link" href="/">Inicio</a></li>
                         <li class="nav-item mb-2"><a class="nav-link" href="/Rol">Roles</a></li>
-                    }
-                </ul>
+                    </ul>
+                </div>
+                <div class="col-md-10 p-4">
+                    @RenderBody()
+                </div>
             </div>
-            <div class="col-md-10 p-4">
-                @RenderBody()
+        }
+        else
+        {
+            // --- VISTA PÚBLICA (No Autenticado) ---
+            // Muestra el contenido a página completa (Landing, Login, Registro)
+            <div class="row">
+                <div class="col-12 p-0">
+                    @* p-0 para que el hero ocupe todo *@
+                    @RenderBody()
+                </div>
             </div>
-        </div>
+        }
     </div>
 
     <footer class="text-center p-3 mt-4" style="background:#ffffff; border-top:1px solid #e6eef8;">
@@ -67,7 +82,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    @* 👇 DESHABILITAMOS LOS SCRIPTS ROTOS OTRA VEZ 👇 *@
+    @* Tus scripts deshabilitados *@
     @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script> *@
     @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script> *@
 </body>

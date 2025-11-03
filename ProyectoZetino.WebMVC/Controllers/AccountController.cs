@@ -23,7 +23,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             // Si ya está logueado, que lo mande a Roles
             if (Request.Cookies.ContainsKey("AuthToken"))
             {
-                return RedirectToAction("Index", "Rol");
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
@@ -51,9 +51,8 @@ namespace ProyectoZetino.WebMVC.Controllers
                 };
                 Response.Cookies.Append("AuthToken", token, cookieOptions);
 
-               
-                // Redirigimos a la lista de Roles, no a "Home"
-                return RedirectToAction("Index", "Rol");
+
+                return RedirectToAction("Index", "Home");
             }
 
             // Si el token es null, el login falló

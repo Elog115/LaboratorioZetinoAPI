@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ProyectoZetino.WebMVC.Models;
 using ProyectoZetino.WebMVC.Services;
 using System.Threading.Tasks;
@@ -15,9 +15,16 @@ namespace ProyectoZetino.WebMVC.Controllers
         }
 
         // GET: /Rol/
-        public async Task<IActionResult> Index()
+        // ----- 👇 CAMBIO AQUÍ 👇 -----
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            var roles = await _api.GetRolesAsync();
+            // 1. Guardamos el filtro para que el <input> lo muestre
+            ViewData["CurrentFilter"] = searchTerm;
+
+            // 2. Llamamos a la API CON el término de búsqueda
+            // (Ver Paso 3 para modificar IApiClient)
+            var roles = await _api.GetRolesAsync(searchTerm);
+
             return View(roles);
         }
 
@@ -78,18 +85,14 @@ namespace ProyectoZetino.WebMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> ToggleEstado(int id)
         {
-            // 1. Obtenemos el rol actual de la API
             var rol = await _api.GetRolAsync(id);
             if (rol == null)
             {
-                TempData["Error"] = "No se encontr� el rol.";
+                TempData["Error"] = "No se encontró el rol.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // 2. Invertimos su estado
             rol.Estado = !rol.Estado;
-
-            // 3. Llamamos a Update (no a Delete) para guardar el cambio
             var success = await _api.UpdateRolAsync(id, rol);
 
             if (!success)
@@ -97,7 +100,6 @@ namespace ProyectoZetino.WebMVC.Controllers
                 TempData["Error"] = "Error al cambiar el estado del rol.";
             }
 
-            // 4. Recargamos la lista
             return RedirectToAction(nameof(Index));
         }
     }
