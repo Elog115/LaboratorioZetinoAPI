@@ -13,6 +13,8 @@ namespace ProyectoZetino.WebMVC.Services
     public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
+        // 👇 --- 1. Guardamos el Accesor como un campo --- 👇
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private class LoginResponse
         {
@@ -20,47 +22,50 @@ namespace ProyectoZetino.WebMVC.Services
             public string? Token { get; set; }
         }
 
-        // Constructor con JWT (Esto está bien)
         public ApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
-            var token = httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+            _httpContextAccessor = httpContextAccessor;
+        }
 
+        private void SetAuthorizationHeader()
+        {
+            // Leemos la cookie "justo ahora"
+            var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
             if (!string.IsNullOrEmpty(token))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
             }
+            else
+            {
+                // Limpiamos el header si la cookie no existe (ej. después de Logout)
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
         }
 
         // --- Roles ---
-
-        // ----- 👇 CÓDIGO MODIFICADO PARA EL BUSCADOR 👇 -----
         public async Task<IEnumerable<RolDto>> GetRolesAsync(string searchTerm = null)
         {
-            // 1. Construimos la URL base
-            var url = "api/rol";
+            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
 
-            // 2. Si hay un término de búsqueda, lo añadimos como query string
+            var url = "api/rol";
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                // Asegúrate de que tu API pueda recibir un parámetro "search"
-                // El Url.Encode es una buena práctica por si buscan "Rol con espacio"
                 url += $"?search={System.Net.WebUtility.UrlEncode(searchTerm)}";
             }
-
-            // 3. Hacemos la llamada a la URL (con o sin el ?search=)
             return await _httpClient.GetFromJsonAsync<IEnumerable<RolDto>>(url) ?? new List<RolDto>();
         }
-        // ----- 👆 FIN DE LA MODIFICACIÓN 👆 -----
 
         public async Task<RolDto> GetRolAsync(int id)
         {
+            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
             return await _httpClient.GetFromJsonAsync<RolDto>($"api/rol/{id}");
         }
 
         public async Task<bool> CreateRolAsync(RolDto rol)
         {
+            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
             var payload = new
             {
                 rol.Nombre,
@@ -73,6 +78,7 @@ namespace ProyectoZetino.WebMVC.Services
 
         public async Task<bool> UpdateRolAsync(int id, RolDto rol)
         {
+            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
             var payload = new
             {
                 rol.IdRol,
@@ -86,11 +92,13 @@ namespace ProyectoZetino.WebMVC.Services
 
         public async Task<bool> DeleteRolAsync(int id)
         {
+            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
             var response = await _httpClient.DeleteAsync($"api/rol/{id}");
             return response.IsSuccessStatusCode;
         }
 
-        // --- Login y Register (Sin cambios) ---
+
+        // --- Login y Register (No necesitan el token) ---
 
         public async Task<string?> LoginAsync(string username, string password)
         {
@@ -99,6 +107,7 @@ namespace ProyectoZetino.WebMVC.Services
                 Email = username,
                 PasswordHash = password,
                 Nombre = "Login",
+                // ... (resto de tu objeto de login)
                 Apellido = "Login",
                 Telefono = "00000000",
                 FechaNacimiento = DateTime.Now,
@@ -107,21 +116,12 @@ namespace ProyectoZetino.WebMVC.Services
             };
 
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", payload);
-            if (!response.IsSuccessStatusCode) return null;
+            //if (!response.IsSuccessStatusCode) return null;
 
-            try
-            {
+            
                 var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                if (loginResponse != null && !string.IsNullOrEmpty(loginResponse.Token))
-                {
-                    return loginResponse.Token;
-                }
-                return null;
-            }
-            catch
-            {
-                return null;
-            }
+            return loginResponse?.Token;
+
         }
 
         public async Task<bool> RegisterAsync(RegisterModel model)

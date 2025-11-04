@@ -100,8 +100,15 @@ builder.Services
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-            ValidateIssuer = false,     // Puedes poner true si lo usas en prod
-            ValidateAudience = false,   // Puedes poner true si lo usas en prod
+
+            // 👇 --- ¡AQUÍ ESTÁ LA CORRECCIÓN! --- 👇
+            // Le decimos que SÍ valide el emisor y la audiencia
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            // Le decimos QUÉ valores debe esperar (los que leyó del appsettings.json)
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
@@ -120,7 +127,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

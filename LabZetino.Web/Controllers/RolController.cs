@@ -1,12 +1,13 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SisLabZetino.Application.Services;
 using SisLabZetino.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LabZetino.Web.Controllers
 {
     [Route("api/rol")]
     [ApiController]
+    [Authorize]
     public class RolController : ControllerBase
     {
         private readonly RolService _rolService;
@@ -21,7 +22,6 @@ namespace LabZetino.Web.Controllers
         public async Task<ActionResult<IEnumerable<Rol>>> Get()
         {
 
-            // Cambiamos 'ObtenerRolesActivosAsync' por el nuevo método
             var roles = await _rolService.ObtenerTodosLosRolesAsync();
             return Ok(roles);
         }
@@ -32,7 +32,7 @@ namespace LabZetino.Web.Controllers
         {
             try
             {
-                // Gracias al cambio en RolService, esto ahora devuelve roles activos e inactivos
+                //Esto ahora devuelve roles activos e inactivos
                 var rol = await _rolService.ObtenerRolPorIdAsync(id);
 
                 if (rol == null)

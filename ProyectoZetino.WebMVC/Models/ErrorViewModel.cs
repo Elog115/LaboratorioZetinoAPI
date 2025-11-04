@@ -1,4 +1,4 @@
-﻿namespace ProyectoZetino.WebMVC.Models // (Usa tu namespace)
+﻿namespace ProyectoZetino.WebMVC.Models
 {
     public class ErrorViewModel
     {

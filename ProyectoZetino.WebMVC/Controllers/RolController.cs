@@ -15,14 +15,12 @@ namespace ProyectoZetino.WebMVC.Controllers
         }
 
         // GET: /Rol/
-        // ----- 👇 CAMBIO AQUÍ 👇 -----
         public async Task<IActionResult> Index(string searchTerm)
         {
-            // 1. Guardamos el filtro para que el <input> lo muestre
+            // Guardamos el filtro para que el <input> lo muestre
             ViewData["CurrentFilter"] = searchTerm;
 
-            // 2. Llamamos a la API CON el término de búsqueda
-            // (Ver Paso 3 para modificar IApiClient)
+            // Llamamos a la API CON el término de búsqueda
             var roles = await _api.GetRolesAsync(searchTerm);
 
             return View(roles);

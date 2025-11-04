@@ -23,7 +23,6 @@ namespace ProyectoZetino.WebMVC.Controllers // (Tu namespace de Controladores)
 
             if (!string.IsNullOrEmpty(token))
             {
-                // ----- CAMBIO 1 -----
                 // Lo redirigimos al NUEVO Dashboard, no a Roles.
                 return RedirectToAction("Dashboard", "Home");
             }
@@ -32,7 +31,6 @@ namespace ProyectoZetino.WebMVC.Controllers // (Tu namespace de Controladores)
             return View();
         }
 
-        // ----- CAMBIO 2 -----
         // Esta es la nueva acción que controla tu vista Dashboard.cshtml
         public IActionResult Dashboard()
         {
