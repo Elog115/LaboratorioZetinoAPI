@@ -13,7 +13,6 @@ namespace ProyectoZetino.WebMVC.Services
     public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
-        // 👇 --- 1. Guardamos el Accesor como un campo --- 👇
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         private class LoginResponse
@@ -30,7 +29,6 @@ namespace ProyectoZetino.WebMVC.Services
 
         private void SetAuthorizationHeader()
         {
-            // Leemos la cookie "justo ahora"
             var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
             if (!string.IsNullOrEmpty(token))
             {
@@ -39,7 +37,6 @@ namespace ProyectoZetino.WebMVC.Services
             }
             else
             {
-                // Limpiamos el header si la cookie no existe (ej. después de Logout)
                 _httpClient.DefaultRequestHeaders.Authorization = null;
             }
         }
@@ -47,25 +44,23 @@ namespace ProyectoZetino.WebMVC.Services
         // --- Roles ---
         public async Task<IEnumerable<RolDto>> GetRolesAsync(string searchTerm = null)
         {
-            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
-
+            SetAuthorizationHeader();
             var url = "api/rol";
             if (!string.IsNullOrEmpty(searchTerm))
-            {
                 url += $"?search={System.Net.WebUtility.UrlEncode(searchTerm)}";
-            }
+
             return await _httpClient.GetFromJsonAsync<IEnumerable<RolDto>>(url) ?? new List<RolDto>();
         }
 
         public async Task<RolDto> GetRolAsync(int id)
         {
-            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
+            SetAuthorizationHeader();
             return await _httpClient.GetFromJsonAsync<RolDto>($"api/rol/{id}");
         }
 
         public async Task<bool> CreateRolAsync(RolDto rol)
         {
-            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
+            SetAuthorizationHeader();
             var payload = new
             {
                 rol.Nombre,
@@ -78,7 +73,7 @@ namespace ProyectoZetino.WebMVC.Services
 
         public async Task<bool> UpdateRolAsync(int id, RolDto rol)
         {
-            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
+            SetAuthorizationHeader();
             var payload = new
             {
                 rol.IdRol,
@@ -92,14 +87,12 @@ namespace ProyectoZetino.WebMVC.Services
 
         public async Task<bool> DeleteRolAsync(int id)
         {
-            SetAuthorizationHeader(); // <-- 5. Ponemos el token antes de la llamada
+            SetAuthorizationHeader();
             var response = await _httpClient.DeleteAsync($"api/rol/{id}");
             return response.IsSuccessStatusCode;
         }
 
-
-        // --- Login y Register (No necesitan el token) ---
-
+        // --- Login y Register ---
         public async Task<string?> LoginAsync(string username, string password)
         {
             var payload = new
@@ -107,7 +100,6 @@ namespace ProyectoZetino.WebMVC.Services
                 Email = username,
                 PasswordHash = password,
                 Nombre = "Login",
-                // ... (resto de tu objeto de login)
                 Apellido = "Login",
                 Telefono = "00000000",
                 FechaNacimiento = DateTime.Now,
@@ -116,12 +108,11 @@ namespace ProyectoZetino.WebMVC.Services
             };
 
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", payload);
-            //if (!response.IsSuccessStatusCode) return null;
+            if (!response.IsSuccessStatusCode)
+                return null;
 
-            
-                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
             return loginResponse?.Token;
-
         }
 
         public async Task<bool> RegisterAsync(RegisterModel model)
@@ -139,6 +130,44 @@ namespace ProyectoZetino.WebMVC.Services
             };
 
             var response = await _httpClient.PostAsJsonAsync("api/auth/register", payload);
+            return response.IsSuccessStatusCode;
+        }
+
+        // --- Usuarios ---
+        public async Task<IEnumerable<UsuarioDto>> GetUsuariosAsync(string searchTerm = null)
+        {
+            SetAuthorizationHeader();
+            var url = "api/auth/usuarios";
+            if (!string.IsNullOrEmpty(searchTerm))
+                url += $"?searchTerm={System.Net.WebUtility.UrlEncode(searchTerm)}";
+
+            return await _httpClient.GetFromJsonAsync<IEnumerable<UsuarioDto>>(url) ?? new List<UsuarioDto>();
+        }
+
+        public async Task<UsuarioDto> GetUsuarioAsync(int id)
+        {
+            SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<UsuarioDto>($"api/auth/usuarios/{id}");
+        }
+
+        public async Task<bool> CreateUsuarioAsync(UsuarioDto usuario)
+        {
+            SetAuthorizationHeader();
+            var response = await _httpClient.PostAsJsonAsync("api/auth/usuarios", usuario);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateUsuarioAsync(int id, UsuarioDto usuario)
+        {
+            SetAuthorizationHeader();
+            var response = await _httpClient.PutAsJsonAsync($"api/auth/usuarios/{id}", usuario);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteUsuarioAsync(int id)
+        {
+            SetAuthorizationHeader();
+            var response = await _httpClient.DeleteAsync($"api/auth/usuarios/{id}");
             return response.IsSuccessStatusCode;
         }
     }

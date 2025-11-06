@@ -89,20 +89,48 @@ namespace SisLabZetino.Application.Services
         // ===========================================================
 
         // Agregar usuario
+        // Dentro de SisLabZetino.Application.Services/AuthService.cs
+
         public async Task<string> AgregarUsuarioAsync(Usuario nuevoUsuario)
         {
             try
             {
-                var usuarios = await _repo.GetUsuariosAsync();
+                // 1. **VALIDACIÓN ROBUSTA DE CAMPOS**
+                // Revisa si la fecha es el valor predeterminado (default) de C#, que la BD rechaza.
+                if (nuevoUsuario.FechaNacimiento == default(DateTime))
+                {
+                    // Opcional: Asigna una fecha por defecto si la quieres mantener requerida
+                    // nuevoUsuario.FechaNacimiento = DateTime.UtcNow.Date;
 
+                    // Opcional: Si es estrictamente requerida, regresa un error descriptivo.
+                    return "Error: La fecha de nacimiento no es válida o está en blanco.";
+                }
+
+                // **VALIDACIÓN DE LONGITUD DE TELÉFONO**
+                // Si tienes [StringLength(8)], verifica que no exceda.
+                if (nuevoUsuario.Telefono.Length > 8)
+                {
+                    return "Error: El número de teléfono excede los 8 caracteres permitidos.";
+                }
+
+                // 2. Validación de nombre existente
+                var usuarios = await _repo.GetUsuariosAsync();
                 if (usuarios.Any(p => p.Nombre.ToLower() == nuevoUsuario.Nombre.ToLower()))
                     return "Error: Ya existe un usuario con el mismo nombre";
+
+                // 3. Hash de la contraseña y estado
+                if (string.IsNullOrEmpty(nuevoUsuario.PasswordHash))
+                {
+                    return "Error: La contraseña es requerida.";
+                }
 
                 nuevoUsuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(nuevoUsuario.PasswordHash);
                 nuevoUsuario.Estado = true;
 
+                // 4. Inserción en el repositorio
                 var usuarioInsertado = await _repo.AddUsuarioAsync(nuevoUsuario);
 
+                // 5. Verificación de éxito
                 if (usuarioInsertado == null || usuarioInsertado.IdUsuario <= 0)
                     return "Error: No se pudo agregar el Usuario";
 
@@ -110,7 +138,14 @@ namespace SisLabZetino.Application.Services
             }
             catch (Exception ex)
             {
-                return "Error de servidor: " + ex.Message;
+                // 🟢 CORRECCIÓN CLAVE: Devolver el error real de la base de datos (InnerException)
+                // Esto te dirá el mensaje exacto de la DB (por ejemplo, "Cannot insert NULL into column...")
+                string errorDetalle = ex.InnerException != null
+                                      ? ex.InnerException.Message
+                                      : ex.Message;
+
+                // Este es el mensaje que verás en tu frontend
+                return $"Error de servidor: La API no pudo guardar el registro. Detalles técnicos: {errorDetalle}";
             }
         }
 

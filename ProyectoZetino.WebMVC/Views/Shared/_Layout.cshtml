@@ -7,10 +7,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Laboratorio Zetino</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
+
 <body style="background-color: #f7fbfd;">
     <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg,#e8f7f5,#eaf3ff);">
         <div class="container-fluid">
@@ -21,22 +26,31 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="nav">
                 <ul class="navbar-nav me-auto">
                     @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
                     {
-                        // Estos son tus enlaces del panel de admin
-                        <li class="nav-item"><a class="nav-link" href="/Rol">Roles</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Rol">Roles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Usuario">Usuarios</a>
+                        </li>
                     }
                 </ul>
+
                 <ul class="navbar-nav">
                     @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
                     {
-                        <li class="nav-item"><form method="post" action="/Account/Logout" class="d-inline"><button class="btn btn-link nav-link">Cerrar sesión</button></form></li>
+                        <li class="nav-item">
+                            <form method="post" action="/Account/Logout" class="d-inline">
+                                <button class="btn btn-link nav-link">Cerrar sesión</button>
+                            </form>
+                        </li>
                     }
                     else
                     {
-                        // Estos son tus enlaces públicos
                         <li class="nav-item"><a class="nav-link" href="/Account/Login">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="/Account/Register">Registro</a></li>
                     }
@@ -48,15 +62,30 @@
     <div class="container-fluid">
         @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
         {
-            // --- VISTA DE ADMIN (Autenticado) ---
-            // Muestra el layout de 2 columnas con sidebar
+            <!-- Vista de administrador (autenticado) -->
             <div class="row">
                 <div class="col-md-2 p-3" style="background:#fff; border-right:1px solid #e6eef8; min-height:80vh;">
                     <ul class="nav flex-column">
-                        <li class="nav-item mb-2"><a class="nav-link" href="/">Inicio</a></li>
-                        <li class="nav-item mb-2"><a class="nav-link" href="/Rol">Roles</a></li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/">
+                                <i class="bi bi-house-door me-2"></i> Inicio
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Rol">
+                                <i class="bi bi-shield-lock me-2"></i> Roles
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Usuario">
+                                <i class="bi bi-people me-2"></i> Usuarios
+                            </a>
+                        </li>
                     </ul>
                 </div>
+
                 <div class="col-md-10 p-4">
                     @RenderBody()
                 </div>
@@ -64,11 +93,9 @@
         }
         else
         {
-            // --- VISTA PÚBLICA (No Autenticado) ---
-            // Muestra el contenido a página completa (Landing, Login, Registro)
+            <!-- Vista pública (no autenticado) -->
             <div class="row">
                 <div class="col-12 p-0">
-                    @* p-0 para que el hero ocupe todo *@
                     @RenderBody()
                 </div>
             </div>
@@ -79,11 +106,10 @@
         &copy; @DateTime.Now.Year - Laboratorio Zetino
     </footer>
 
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    @* Tus scripts deshabilitados *@
-    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script> *@
-    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script> *@
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
