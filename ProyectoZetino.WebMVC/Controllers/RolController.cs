@@ -100,5 +100,13 @@ namespace ProyectoZetino.WebMVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        // GET: /Rol/Lista  -> devuelve solo la tabla para AJAX
+        [HttpGet]
+        public async Task<IActionResult> Lista(string q = null)
+        {
+            var roles = await _api.GetRolesAsync(q);
+            return PartialView("_TablaRoles", roles);   // <- partial con la tabla
+        }
+
     }
 }

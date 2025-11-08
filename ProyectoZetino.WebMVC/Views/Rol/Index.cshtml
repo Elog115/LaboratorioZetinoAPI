@@ -1,7 +1,6 @@
 @model IEnumerable<ProyectoZetino.WebMVC.Models.RolDto>
 @{
     ViewData["Title"] = "Gestión de Roles";
-    // Usamos ViewData para que el buscador "recuerde" lo que se buscó
     string filtroActual = ViewData["CurrentFilter"] as string;
 }
 
@@ -20,21 +19,18 @@
 
     <div class="card-body">
 
-        <form asp-action="Index" method="get" class="mb-4">
+        <!-- Filtro en TIEMPO REAL (solo cliente, sin recargar) -->
+        <div class="mb-4">
             <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control"
-                       placeholder="Buscar por nombre, descripción..."
+                <input id="txtSearch" type="text" class="form-control"
+                       placeholder="Filtrar por nombre o descripción..."
                        value="@filtroActual" />
-
-                <button class="btn btn-primary" type="submit">
-                    <i class="bi bi-search"></i> Buscar
-                </button>
-
-                <a asp-action="Index" class="btn btn-outline-secondary">
+                <button type="button" class="btn btn-outline-secondary" id="btnClear">
                     <i class="bi bi-x-circle"></i> Limpiar
-                </a>
+                </button>
             </div>
-        </form>
+            <small class="text-muted">Empieza a escribir, por ejemplo: <em>doctor</em></small>
+        </div>
 
         @if (TempData["Error"] != null)
         {
@@ -51,12 +47,12 @@
                         <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="rolesBody">
                     @foreach (var r in Model)
                     {
                         <tr class="@(r.Estado ? "" : "table-secondary text-muted")">
-                            <td>@r.Nombre</td>
-                            <td>@r.Descripcion</td>
+                            <td class="col-nombre">@r.Nombre</td>
+                            <td class="col-descripcion">@r.Descripcion</td>
                             <td>
                                 @if (r.Estado)
                                 {
@@ -87,20 +83,109 @@
                             </td>
                         </tr>
                     }
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">
-                                No se encontraron roles.
-                                @if (!string.IsNullOrEmpty(filtroActual))
-                                {
-                                    <span>(Intente limpiar el filtro de búsqueda)</span>
-                                }
-                            </td>
-                        </tr>
-                    }
                 </tbody>
+                <tfoot>
+                    <tr id="noRows" style="display:none;">
+                        <td colspan="4" class="text-center text-muted">Sin resultados.</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
+
+        <!-- ?? Controles de paginación -->
+        <nav class="mt-3">
+            <ul id="pager" class="pagination pagination-sm justify-content-center mb-0"></ul>
+        </nav>
+
     </div>
 </div>
+
+<!-- Script ÚNICO: filtro + paginación numerada + limpiar -->
+<script>
+    (() => {
+      const input   = document.getElementById('txtSearch');
+      const clear   = document.getElementById('btnClear');
+      const tbody   = document.getElementById('rolesBody');
+      const noRows  = document.getElementById('noRows');
+      const pager   = document.getElementById('pager');
+
+      let page = 1;
+      const perPage = 10; // ? cambia si quieres más/menos por página
+
+      const N = t => (t || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+      function getVisibleRows(){
+        const q = N(input.value.trim());
+        const rows = Array.from(tbody.rows);
+        rows.forEach(tr => {
+          const nombre = N(tr.querySelector('.col-nombre')?.textContent);
+          const desc   = N(tr.querySelector('.col-descripcion')?.textContent);
+          const show   = !q || (nombre && nombre.includes(q)) || (desc && desc.includes(q));
+          tr.dataset.visible = show ? '1' : '0';
+        });
+        return rows.filter(r => r.dataset.visible !== '0');
+      }
+
+      function renderPage(){
+        const visibles = getVisibleRows();
+        const total = visibles.length;
+        const totalPages = Math.max(1, Math.ceil(total / perPage));
+        if (page > totalPages) page = totalPages;
+
+        // Ocultar todas
+        Array.from(tbody.rows).forEach(r => r.style.display = 'none');
+
+        // Mostrar slice de la página actual
+        const start = (page - 1) * perPage;
+        visibles.slice(start, start + perPage).forEach(r => r.style.display = '');
+
+        // Sin resultados
+        noRows.style.display = total === 0 ? '' : 'none';
+
+        // Construir paginador
+        buildPager(totalPages);
+      }
+
+      function buildPager(totalPages){
+        pager.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const addItem = (label, disabled, active, goTo) => {
+          const li = document.createElement('li');
+          li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+          const a = document.createElement('a');
+          a.className = 'page-link';
+          a.href = '#';
+          a.textContent = label;
+          if (!disabled && !active) {
+            a.addEventListener('click', e => { e.preventDefault(); page = goTo; renderPage(); });
+          }
+          li.appendChild(a);
+          pager.appendChild(li);
+        };
+
+        // Prev
+        addItem('«', page === 1, false, page - 1);
+
+        // Ventana centrada de páginas
+        const windowSize = 7;
+        let start = Math.max(1, page - Math.floor(windowSize / 2));
+        let end   = Math.min(totalPages, start + windowSize - 1);
+        start     = Math.max(1, end - windowSize + 1);
+
+        for (let i = start; i <= end; i++) addItem(i.toString(), false, i === page, i);
+
+        // Next
+        addItem('»', page === totalPages, false, page + 1);
+      }
+
+      // Eventos
+      input.addEventListener('input', () => { page = 1; renderPage(); });
+      clear.addEventListener('click', () => { input.value = ''; page = 1; renderPage(); input.focus(); });
+
+      // Primera renderización
+      renderPage();
+    })();
+</script>
+
+
