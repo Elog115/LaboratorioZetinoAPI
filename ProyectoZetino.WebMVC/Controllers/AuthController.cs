@@ -2,7 +2,7 @@
 using ProyectoZetino.WebMVC.Models;
 using ProyectoZetino.WebMVC.Services;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering; // Asegúrate de que este using esté aquí
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ProyectoZetino.WebMVC.Controllers
 {
@@ -28,12 +28,11 @@ namespace ProyectoZetino.WebMVC.Controllers
         public async Task<IActionResult> Create()
         {
             var roles = await _api.GetRolesAsync();
-            // 💡 Nota: Asegúrate de que IdRol y Nombre existan en el modelo de roles
             ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre");
-
             return View();
         }
 
+        // POST: /Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UsuarioDto usuario)
@@ -45,7 +44,6 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return View(usuario);
             }
 
-            // ✅ Normalizamos la fecha ANTES de enviarla a la API
             if (usuario.FechaNacimiento.HasValue)
                 usuario.FechaNacimiento = usuario.FechaNacimiento.Value.Date;
             else
@@ -68,6 +66,51 @@ namespace ProyectoZetino.WebMVC.Controllers
 
             TempData["Error"] = "❌ Error al crear el usuario. La API no pudo guardar el registro.";
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: /Usuario/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var usuario = await _api.GetUsuarioByIdAsync(id);
+            if (usuario == null)
+            {
+                TempData["Error"] = "❌ Usuario no encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var roles = await _api.GetRolesAsync();
+            ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", usuario.IdRol);
+
+            return View(usuario);
+        }
+
+        // POST: /Usuario/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, UsuarioDto usuario)
+        {
+            if (id != usuario.IdUsuario)
+            {
+                TempData["Error"] = "❌ Error en el identificador del usuario.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var roles = await _api.GetRolesAsync();
+                ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", usuario.IdRol);
+                return View(usuario);
+            }
+
+            var success = await _api.UpdateUsuarioAsync(id, usuario);
+            if (success)
+            {
+                TempData["Success"] = $"✅ Usuario '{usuario.Nombre}' actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Error"] = "❌ No se pudo actualizar el usuario.";
+            return View(usuario);
         }
     }
 }

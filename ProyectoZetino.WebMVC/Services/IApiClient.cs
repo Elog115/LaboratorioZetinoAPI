@@ -21,6 +21,8 @@ namespace ProyectoZetino.WebMVC.Services
         // --- 🔽 Métodos para Usuarios 🔽 ---
         Task<IEnumerable<UsuarioDto>> GetUsuariosAsync(string searchTerm = null);
         Task<UsuarioDto> GetUsuarioAsync(int id);
+        Task<UsuarioDto?> GetUsuarioByIdAsync(int id);
+
         Task<bool> CreateUsuarioAsync(UsuarioDto usuario);
         Task<bool> UpdateUsuarioAsync(int id, UsuarioDto usuario);
         Task<bool> DeleteUsuarioAsync(int id);

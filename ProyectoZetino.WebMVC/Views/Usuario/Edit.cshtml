@@ -1,1 +1,71 @@
-﻿
+﻿@model ProyectoZetino.WebMVC.Models.UsuarioDto
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4 rounded-4">
+        <h3 class="mb-3 text-primary">
+            <i class="bi bi-pencil-square"></i> Editar Usuario
+        </h3>
+        <hr />
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="IdUsuario" />
+            <input type="hidden" asp-for="Estado" />
+
+            <div class="mb-3">
+                <label asp-for="IdRol" class="form-label">Rol</label>
+                <select asp-for="IdRol" class="form-select" asp-items="ViewBag.Roles"></select>
+                <span asp-validation-for="IdRol" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Apellido" class="form-label"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Telefono" class="form-label"></label>
+                <input asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FechaNacimiento" class="form-label"></label>
+                <input asp-for="FechaNacimiento" type="date" class="form-control" />
+                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Guardar Cambios
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+

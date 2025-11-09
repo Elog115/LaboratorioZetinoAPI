@@ -153,9 +153,26 @@ namespace ProyectoZetino.WebMVC.Services
         public async Task<bool> CreateUsuarioAsync(UsuarioDto usuario)
         {
             SetAuthorizationHeader();
-            var response = await _httpClient.PostAsJsonAsync("api/auth/usuarios", usuario);
+
+            // Mapeo manual al formato que espera la API
+            var nuevoUsuario = new
+            {
+                idUsuario = usuario.IdUsuario,
+                idRol = usuario.IdRol,
+                nombre = usuario.Nombre,
+                apellido = usuario.Apellido,
+                telefono = usuario.Telefono,
+                email = usuario.Email,
+                fechaNacimiento = usuario.FechaNacimiento,
+                passwordHash = usuario.Password,  // 🔑 La API espera "PasswordHash"
+                estado = usuario.Estado
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("api/auth/usuarios", nuevoUsuario);
             return response.IsSuccessStatusCode;
         }
+
+
 
         public async Task<bool> UpdateUsuarioAsync(int id, UsuarioDto usuario)
         {
@@ -170,5 +187,16 @@ namespace ProyectoZetino.WebMVC.Services
             var response = await _httpClient.DeleteAsync($"api/auth/usuarios/{id}");
             return response.IsSuccessStatusCode;
         }
+        public async Task<UsuarioDto?> GetUsuarioByIdAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"api/auth/usuarios/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<UsuarioDto>();
+            }
+            return null;
+        }
+
+
     }
 }
