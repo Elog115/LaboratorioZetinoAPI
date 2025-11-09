@@ -1,0 +1,60 @@
+﻿@model ProyectoZetino.WebMVC.Models.CitaDto
+@{
+    ViewData["Title"] = "Nueva Cita";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4 rounded-4">
+        <h3 class="mb-3 text-primary">
+            <i class="bi bi-calendar2-plus"></i> Nueva Cita
+        </h3>
+        <hr />
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+            Por favor, corrige los siguientes errores:
+        </div>
+
+        <form asp-action="Create" method="post">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="IdUsuario" class="form-label fw-semibold">Paciente</label>
+                    <select asp-for="IdUsuario" class="form-select" asp-items="ViewBag.Usuarios">
+                        <option value="">Seleccione un paciente...</option>
+                    </select>
+                    <span asp-validation-for="IdUsuario" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FechaHora" class="form-label fw-semibold">Fecha y hora</label>
+                    <input asp-for="FechaHora" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="FechaHora" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Descripcion" class="form-label fw-semibold">Motivo / Descripción</label>
+                <input asp-for="Descripcion" class="form-control" placeholder="Ej.: Control de laboratorio" maxlength="250" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" asp-for="Estado" />
+                <label class="form-check-label" asp-for="Estado">Activa</label>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn btn-success px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -1,0 +1,24 @@
+﻿@model ProyectoZetino.WebMVC.Models.CitaDto
+@{
+    ViewData["Title"] = "Eliminar Cita";
+}
+
+<h3>¿Deseas eliminar esta cita?</h3>
+
+<dl class="row">
+    <dt class="col-sm-3">Paciente</dt>
+    <dd class="col-sm-9">@Model.NombreUsuario</dd>
+
+    <dt class="col-sm-3">Fecha y hora</dt>
+    <dd class="col-sm-9">@Model.FechaHora</dd>
+
+    <dt class="col-sm-3">Descripción</dt>
+    <dd class="col-sm-9">@Model.Descripcion</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.IdCita" method="post" id="deleteForm">
+    @* Importante: enviar el id por ruta o como hidden *@
+    <input type="hidden" name="id" value="@Model.IdCita" />
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+</form>

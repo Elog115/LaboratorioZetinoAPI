@@ -1,0 +1,59 @@
+﻿@model ProyectoZetino.WebMVC.Models.CitaDto
+
+@{
+    ViewData["Title"] = "Editar Cita";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4 rounded-4">
+        <h3 class="mb-3 text-primary">
+            <i class="bi bi-pencil-square"></i> Editar Cita
+        </h3>
+        <hr />
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="IdCita" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="IdUsuario" class="form-label">Paciente</label>
+                    <select asp-for="IdUsuario" class="form-select" asp-items="ViewBag.Usuarios">
+                        <option value="">Seleccione un paciente...</option>
+                    </select>
+                    <span asp-validation-for="IdUsuario" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FechaHora" class="form-label">Fecha y Hora</label>
+                    <input asp-for="FechaHora" type="datetime-local" class="form-control"
+                           value="@Model.FechaHora?.ToString("yyyy-MM-ddTHH:mm")" />
+                    <span asp-validation-for="FechaHora" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Descripcion" class="form-label">Motivo / Descripción</label>
+                <input asp-for="Descripcion" class="form-control" maxlength="250" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" asp-for="Estado" />
+                <label class="form-check-label" asp-for="Estado">Activa</label>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Guardar Cambios
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

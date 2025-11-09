@@ -198,5 +198,66 @@ namespace ProyectoZetino.WebMVC.Services
         }
 
 
+        // --- Citas ---
+        public async Task<IEnumerable<CitaDto>> GetCitasAsync(string searchTerm = null)
+        {
+            SetAuthorizationHeader();
+            var url = "api/cita";
+            if (!string.IsNullOrEmpty(searchTerm))
+                url += $"?search={System.Net.WebUtility.UrlEncode(searchTerm)}";
+
+            return await _httpClient.GetFromJsonAsync<IEnumerable<CitaDto>>(url) ?? new List<CitaDto>();
+        }
+
+        public async Task<CitaDto> GetCitaAsync(int id)
+        {
+            SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<CitaDto>($"api/cita/{id}");
+        }
+
+        public async Task<bool> CreateCitaAsync(CitaDto cita)
+        {
+            SetAuthorizationHeader();
+
+            // Mapeo al formato que espera la API
+            var payload = new
+            {
+                idCita = cita.IdCita,
+                idUsuario = cita.IdUsuario,
+                fechaHora = cita.FechaHora,     // DateTime? se serializa en ISO
+                descripcion = cita.Descripcion,
+                estado = cita.Estado
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("api/cita", payload);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateCitaAsync(int id, CitaDto cita)
+        {
+            SetAuthorizationHeader();
+
+            var payload = new
+            {
+                idCita = cita.IdCita,
+                idUsuario = cita.IdUsuario,
+                fechaHora = cita.FechaHora,
+                descripcion = cita.Descripcion,
+                estado = cita.Estado
+            };
+
+            var response = await _httpClient.PutAsJsonAsync($"api/cita/{id}", payload);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteCitaAsync(int id)
+        {
+            SetAuthorizationHeader();
+            var response = await _httpClient.DeleteAsync($"api/cita/{id}");
+            return response.IsSuccessStatusCode;
+        }
+
+
+
     }
 }
