@@ -1,19 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoZetino.WebMVC.Models;
 using ProyectoZetino.WebMVC.Services;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ProyectoZetino.WebMVC.Controllers
 {
     public class UsuarioController : Controller
     {
         private readonly IApiClient _api;
-
-        public UsuarioController(IApiClient apiClient)
-        {
-            _api = apiClient;
-        }
+        public UsuarioController(IApiClient apiClient) => _api = apiClient;
 
         // GET: /Usuario/Index
         public async Task<IActionResult> Index(string searchTerm)
@@ -27,9 +24,8 @@ namespace ProyectoZetino.WebMVC.Controllers
         // GET: /Usuario/Create
         public async Task<IActionResult> Create()
         {
-            var roles = await _api.GetRolesAsync();
-            ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre");
-            return View();
+            await CargarRoles();
+            return View(new UsuarioDto { Estado = true });
         }
 
         // POST: /Usuario/Create
@@ -39,32 +35,28 @@ namespace ProyectoZetino.WebMVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var roles = await _api.GetRolesAsync();
-                ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", usuario.IdRol);
+                await CargarRoles(usuario.IdRol);
                 return View(usuario);
             }
 
-            if (usuario.FechaNacimiento.HasValue)
-                usuario.FechaNacimiento = usuario.FechaNacimiento.Value.Date;
-            else
+            if (!usuario.FechaNacimiento.HasValue)
             {
                 ModelState.AddModelError("FechaNacimiento", "La fecha de nacimiento es obligatoria.");
-                var roles = await _api.GetRolesAsync();
-                ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", usuario.IdRol);
+                await CargarRoles(usuario.IdRol);
                 return View(usuario);
             }
 
+            usuario.FechaNacimiento = usuario.FechaNacimiento.Value.Date;
             usuario.Estado = true;
 
-            var success = await _api.CreateUsuarioAsync(usuario);
-
-            if (success)
+            var ok = await _api.CreateUsuarioAsync(usuario);
+            if (ok)
             {
-                TempData["Success"] = $"✅ Usuario '{usuario.Nombre}' creado exitosamente.";
+                TempData["Success"] = $"✅ Usuario '{usuario.Nombre}' creado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["Error"] = "❌ Error al crear el usuario. La API no pudo guardar el registro.";
+            TempData["Error"] = "❌ No se pudo crear el usuario.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -78,9 +70,7 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var roles = await _api.GetRolesAsync();
-            ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", usuario.IdRol);
-
+            await CargarRoles(usuario.IdRol);
             return View(usuario);
         }
 
@@ -91,26 +81,78 @@ namespace ProyectoZetino.WebMVC.Controllers
         {
             if (id != usuario.IdUsuario)
             {
-                TempData["Error"] = "❌ Error en el identificador del usuario.";
+                TempData["Error"] = "❌ Identificador inválido.";
                 return RedirectToAction(nameof(Index));
             }
 
             if (!ModelState.IsValid)
             {
-                var roles = await _api.GetRolesAsync();
-                ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", usuario.IdRol);
+                await CargarRoles(usuario.IdRol);
                 return View(usuario);
             }
 
-            var success = await _api.UpdateUsuarioAsync(id, usuario);
-            if (success)
+            var ok = await _api.UpdateUsuarioAsync(id, usuario);
+            if (ok)
             {
                 TempData["Success"] = $"✅ Usuario '{usuario.Nombre}' actualizado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
 
             TempData["Error"] = "❌ No se pudo actualizar el usuario.";
+            await CargarRoles(usuario.IdRol);
             return View(usuario);
+        }
+
+        // GET: /Usuario/Delete/5  → Confirmación
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var usuario = await _api.GetUsuarioByIdAsync(id);
+            if (usuario == null) return NotFound();
+            return View(usuario);
+        }
+
+        // POST: /Usuario/Delete/5  → Ejecuta eliminación
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var ok = await _api.DeleteUsuarioAsync(id);
+            if (ok)
+            {
+                TempData["Success"] = "🗑️ Usuario eliminado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Error"] = "❌ No se pudo eliminar el usuario.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: /Usuario/ToggleEstado/5 → Activa/Inactiva usuario
+        [HttpGet]
+        public async Task<IActionResult> ToggleEstado(int id)
+        {
+            var usuario = await _api.GetUsuarioByIdAsync(id);
+            if (usuario == null)
+            {
+                TempData["Error"] = "Usuario no encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            usuario.Estado = !usuario.Estado;
+
+            var ok = await _api.UpdateUsuarioAsync(id, usuario);
+            if (!ok)
+                TempData["Error"] = "❌ No se pudo cambiar el estado del usuario.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // 🔹 Helper para cargar roles
+        private async Task CargarRoles(int? seleccionado = null)
+        {
+            var roles = await _api.GetRolesAsync();
+            ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", seleccionado);
         }
     }
 }

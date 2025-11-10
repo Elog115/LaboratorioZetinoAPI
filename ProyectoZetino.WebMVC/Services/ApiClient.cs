@@ -1,12 +1,13 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using ProyectoZetino.WebMVC.Models;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace ProyectoZetino.WebMVC.Services
 {
@@ -172,30 +173,47 @@ namespace ProyectoZetino.WebMVC.Services
             return response.IsSuccessStatusCode;
         }
 
+        // 🔹 Obtener usuario por ID
+        public async Task<UsuarioDto?> GetUsuarioByIdAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"api/auth/usuarios/{id}");
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<UsuarioDto>(content);
+        }
+
+        // 🔹 Eliminar usuario
+        public async Task<bool> DeleteUsuarioAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/auth/usuarios/{id}");
+            return response.IsSuccessStatusCode;
+        }
 
 
         public async Task<bool> UpdateUsuarioAsync(int id, UsuarioDto usuario)
         {
             SetAuthorizationHeader();
-            var response = await _httpClient.PutAsJsonAsync($"api/auth/usuarios/{id}", usuario);
+
+            // Crear el objeto que coincida con lo que la API espera (entidad Usuario)
+            var usuarioActualizado = new
+            {
+                IdUsuario = usuario.IdUsuario,
+                IdRol = usuario.IdRol,
+                Nombre = usuario.Nombre,
+                Apellido = usuario.Apellido,
+                Telefono = usuario.Telefono,
+                Email = usuario.Email,
+                FechaNacimiento = usuario.FechaNacimiento,
+                PasswordHash = usuario.Password, // ⚠️ IMPORTANTE: la API espera PasswordHash
+                Estado = true
+            };
+
+            var response = await _httpClient.PutAsJsonAsync($"api/auth/usuarios/{id}", usuarioActualizado);
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> DeleteUsuarioAsync(int id)
-        {
-            SetAuthorizationHeader();
-            var response = await _httpClient.DeleteAsync($"api/auth/usuarios/{id}");
-            return response.IsSuccessStatusCode;
-        }
-        public async Task<UsuarioDto?> GetUsuarioByIdAsync(int id)
-        {
-            var response = await _httpClient.GetAsync($"api/auth/usuarios/{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadFromJsonAsync<UsuarioDto>();
-            }
-            return null;
-        }
 
 
         // --- Citas ---
@@ -256,6 +274,123 @@ namespace ProyectoZetino.WebMVC.Services
             var response = await _httpClient.DeleteAsync($"api/cita/{id}");
             return response.IsSuccessStatusCode;
         }
+
+        // ✅ Exámenes
+        public async Task<IEnumerable<ExamenDto>> GetExamenesAsync(string searchTerm = null)
+        {
+            var url = "api/examen";
+
+            if (!string.IsNullOrEmpty(searchTerm))
+                url += $"?searchTerm={searchTerm}";
+
+            return await _httpClient.GetFromJsonAsync<IEnumerable<ExamenDto>>(url)
+                   ?? new List<ExamenDto>();
+        }
+
+        public async Task<ExamenDto?> GetExamenByIdAsync(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<ExamenDto>($"api/examen/{id}");
+        }
+
+        public async Task<bool> CreateExamenAsync(ExamenDto examen)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/examen", examen);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateExamenAsync(int id, ExamenDto examen)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/examen/{id}", examen);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteExamenAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/examen/{id}");
+            return response.IsSuccessStatusCode;
+        }
+        public async Task<ExamenDto> GetExamenAsync(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<ExamenDto>($"api/examen/{id}");
+        }
+
+
+
+        // ✅ Orden de Examen
+
+        public async Task<IEnumerable<OrdenExamenDto>> GetOrdenesExamenAsync(string searchTerm = null)
+        {
+            var url = "api/orden-examen";
+
+            // Tu API NO TIENE búsqueda, así que ignoramos searchTerm
+            return await _httpClient.GetFromJsonAsync<IEnumerable<OrdenExamenDto>>(url);
+        }
+
+        public async Task<OrdenExamenDto> GetOrdenExamenAsync(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<OrdenExamenDto>($"api/orden-examen/{id}");
+        }
+
+        public async Task<OrdenExamenDto?> GetOrdenExamenByIdAsync(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<OrdenExamenDto>($"api/orden-examen/{id}");
+        }
+
+        public async Task<bool> CreateOrdenExamenAsync(OrdenExamenDto orden)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/orden-examen", orden);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateOrdenExamenAsync(int id, OrdenExamenDto orden)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/orden-examen/{id}", orden);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteOrdenExamenAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/orden-examen/{id}");
+            return response.IsSuccessStatusCode;
+        }
+
+
+        // ✅ Tipo de Examen
+       
+        public async Task<IEnumerable<TipoExamenDto>> GetTiposExamenAsync(string searchTerm = null)
+        {
+            // Tu API NO usa searchTerm, así que lo ignoramos
+            return await _httpClient.GetFromJsonAsync<IEnumerable<TipoExamenDto>>("api/tipo-examen");
+        }
+
+        public async Task<TipoExamenDto> GetTipoExamenAsync(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<TipoExamenDto>($"api/tipo-examen/{id}");
+        }
+
+        public async Task<TipoExamenDto?> GetTipoExamenByIdAsync(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<TipoExamenDto>($"api/tipo-examen/{id}");
+        }
+
+        public async Task<bool> CreateTipoExamenAsync(TipoExamenDto tipo)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/tipo-examen", tipo);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateTipoExamenAsync(int id, TipoExamenDto tipo)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/tipo-examen/{id}", tipo);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteTipoExamenAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/tipo-examen/{id}");
+            return response.IsSuccessStatusCode;
+        }
+
 
 
 

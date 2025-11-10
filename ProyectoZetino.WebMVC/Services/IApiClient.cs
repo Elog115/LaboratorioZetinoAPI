@@ -21,11 +21,13 @@ namespace ProyectoZetino.WebMVC.Services
         // --- 🔽 Métodos para Usuarios 🔽 ---
         Task<IEnumerable<UsuarioDto>> GetUsuariosAsync(string searchTerm = null);
         Task<UsuarioDto> GetUsuarioAsync(int id);
-        Task<UsuarioDto?> GetUsuarioByIdAsync(int id);
-
         Task<bool> CreateUsuarioAsync(UsuarioDto usuario);
         Task<bool> UpdateUsuarioAsync(int id, UsuarioDto usuario);
         Task<bool> DeleteUsuarioAsync(int id);
+        Task<UsuarioDto?> GetUsuarioByIdAsync(int id);
+        
+
+
 
         // Citas
         Task<IEnumerable<CitaDto>> GetCitasAsync(string searchTerm = null);
@@ -33,6 +35,32 @@ namespace ProyectoZetino.WebMVC.Services
         Task<bool> CreateCitaAsync(CitaDto cita);
         Task<bool> UpdateCitaAsync(int id, CitaDto cita);
         Task<bool> DeleteCitaAsync(int id);
+
+        // --- Exámenes ---
+        Task<IEnumerable<ExamenDto>> GetExamenesAsync(string searchTerm = null);
+        Task<ExamenDto> GetExamenAsync(int id);
+        Task<bool> CreateExamenAsync(ExamenDto examen);
+        Task<bool> UpdateExamenAsync(int id, ExamenDto examen);
+        Task<bool> DeleteExamenAsync(int id);
+        Task<ExamenDto?> GetExamenByIdAsync(int id);
+
+
+        // --- Orden de Examen ---
+        Task<IEnumerable<OrdenExamenDto>> GetOrdenesExamenAsync(string searchTerm = null);
+        Task<OrdenExamenDto> GetOrdenExamenAsync(int id);
+        Task<bool> CreateOrdenExamenAsync(OrdenExamenDto orden);
+        Task<bool> UpdateOrdenExamenAsync(int id, OrdenExamenDto orden);
+        Task<bool> DeleteOrdenExamenAsync(int id);
+        Task<OrdenExamenDto?> GetOrdenExamenByIdAsync(int id);
+
+        // --- Tipo de Examen ---
+        Task<IEnumerable<TipoExamenDto>> GetTiposExamenAsync(string searchTerm = null);
+        Task<TipoExamenDto> GetTipoExamenAsync(int id);
+        Task<bool> CreateTipoExamenAsync(TipoExamenDto tipo);
+        Task<bool> UpdateTipoExamenAsync(int id, TipoExamenDto tipo);
+        Task<bool> DeleteTipoExamenAsync(int id);
+        Task<TipoExamenDto?> GetTipoExamenByIdAsync(int id);
+
 
     }
 }

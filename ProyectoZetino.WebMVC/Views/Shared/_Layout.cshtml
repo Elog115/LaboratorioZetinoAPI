@@ -40,6 +40,17 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/Cita">Citas</a>
                         </li>
+
+                        <!-- ✅ NUEVOS MÓDULOS SUPERIORES -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Examen">Exámenes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/TipoExamen">Tipos de Examen</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/OrdenExamen">Orden de Examen</a>
+                        </li>
                     }
                 </ul>
 
@@ -65,7 +76,7 @@
     <div class="container-fluid">
         @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
         {
-            <!-- Vista de administrador (autenticado) -->
+            <!-- Vista de administrador -->
             <div class="row">
                 <div class="col-md-2 p-3" style="background:#fff; border-right:1px solid #e6eef8; min-height:80vh;">
                     <ul class="nav flex-column">
@@ -87,10 +98,28 @@
                             </a>
                         </li>
 
-                        <!-- 🔹 Nueva sección de Citas -->
                         <li class="nav-item mb-2">
                             <a class="nav-link d-flex align-items-center" href="/Cita">
                                 <i class="bi bi-calendar2-check me-2"></i> Citas
+                            </a>
+                        </li>
+
+                        <!-- ✅ NUEVOS MÓDULOS EN SIDEBAR -->
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Examen">
+                                <i class="bi bi-clipboard-pulse me-2"></i> Exámenes
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/TipoExamen">
+                                <i class="bi bi-list-columns me-2"></i> Tipos de Examen
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/OrdenExamen">
+                                <i class="bi bi-receipt-cutoff me-2"></i> Orden de Examen
                             </a>
                         </li>
                     </ul>
@@ -103,7 +132,6 @@
         }
         else
         {
-            <!-- Vista pública (no autenticado) -->
             <div class="row">
                 <div class="col-12 p-0">
                     @RenderBody()

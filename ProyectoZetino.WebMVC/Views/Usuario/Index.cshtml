@@ -26,21 +26,18 @@
     <div class="card-body">
 
         <!-- Buscador -->
-        <form asp-action="Index" method="get" class="mb-4">
+        <div class="mb-4">
             <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control"
+                <input id="txtSearch" type="text" name="searchTerm" class="form-control"
                        placeholder="Buscar por nombre, apellido o correo..."
                        value="@filtroActual" />
 
-                <button class="btn btn-primary" type="submit">
-                    <i class="bi bi-search"></i> Buscar
-                </button>
-
-                <a asp-action="Index" class="btn btn-outline-secondary">
+                <button type="button" class="btn btn-outline-secondary" id="btnClear">
                     <i class="bi bi-x-circle"></i> Limpiar
-                </a>
+                </button>
             </div>
-        </form>
+            <small class="text-muted">Puedes buscar, por ejemplo: <em>Margarita</em> o <em>Gmail</em></small>
+        </div>
 
         <!-- Mensaje de error -->
         @if (TempData["Error"] != null)
@@ -63,18 +60,16 @@
                         <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="usuariosBody">
                     @foreach (var u in Model)
                     {
                         <tr class="@(u.Estado ? "" : "table-secondary text-muted")">
-                            <td>@u.Nombre</td>
-                            <td>@u.Apellido</td>
-                            <td>@u.Email</td>
+                            <td class="col-nombre">@u.Nombre</td>
+                            <td class="col-apellido">@u.Apellido</td>
+                            <td class="col-correo">@u.Email</td>
                             <td>@u.Telefono</td>
                             <td>@u.NombreRol</td>
                             <td>@u.FechaNacimiento?.ToString("dd/MM/yyyy")</td>
-
-
                             <td>
                                 @if (u.Estado)
                                 {
@@ -86,12 +81,10 @@
                                 }
                             </td>
                             <td class="text-end text-nowrap">
-                                <!-- Botón Editar -->
                                 <a class="btn btn-sm btn-outline-primary me-1" href="/Usuario/Edit/@u.IdUsuario" title="Editar">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
 
-                                <!-- Botón Activar/Desactivar -->
                                 @if (u.Estado)
                                 {
                                     <a href="/Usuario/ToggleEstado/@u.IdUsuario" class="btn btn-sm btn-outline-danger" title="Desactivar">
@@ -107,21 +100,103 @@
                             </td>
                         </tr>
                     }
-
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="8" class="text-center text-muted">
-                                No se encontraron usuarios.
-                                @if (!string.IsNullOrEmpty(filtroActual))
-                                {
-                                    <span>(Intente limpiar el filtro de búsqueda)</span>
-                                }
-                            </td>
-                        </tr>
-                    }
                 </tbody>
+                <tfoot>
+                    <tr id="noRows" style="display:none;">
+                        <td colspan="8" class="text-center text-muted">Sin resultados.</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
+
+        <!-- Paginación -->
+        <nav class="mt-3">
+            <ul id="pager" class="pagination pagination-sm justify-content-center mb-0"></ul>
+        </nav>
     </div>
 </div>
+
+<!-- 🔹 Script de búsqueda dinámica con paginación -->
+<script>
+    (() => {
+      const input  = document.getElementById('txtSearch');
+      const clear  = document.getElementById('btnClear');
+      const tbody  = document.getElementById('usuariosBody');
+      const noRows = document.getElementById('noRows');
+      const pager  = document.getElementById('pager');
+
+      let page = 1;
+      const perPage = 10;
+
+      const N = t => (t || '').toString().toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+      function getVisibleRows(){
+        const q = N(input.value.trim());
+        const rows = Array.from(tbody.rows);
+        rows.forEach(tr => {
+          const nombre = N(tr.querySelector('.col-nombre')?.textContent);
+          const apellido = N(tr.querySelector('.col-apellido')?.textContent);
+          const correo = N(tr.querySelector('.col-correo')?.textContent);
+          const show = !q ||
+            (nombre && nombre.includes(q)) ||
+            (apellido && apellido.includes(q)) ||
+            (correo && correo.includes(q));
+          tr.dataset.visible = show ? '1' : '0';
+        });
+        return rows.filter(r => r.dataset.visible !== '0');
+      }
+
+      function renderPage(){
+        const visibles = getVisibleRows();
+        const total = visibles.length;
+        const totalPages = Math.max(1, Math.ceil(total / perPage));
+        if (page > totalPages) page = totalPages;
+
+        Array.from(tbody.rows).forEach(r => r.style.display = 'none');
+
+        const start = (page - 1) * perPage;
+        visibles.slice(start, start + perPage).forEach(r => r.style.display = '');
+
+        noRows.style.display = total === 0 ? '' : 'none';
+
+        buildPager(totalPages);
+      }
+
+      function buildPager(totalPages){
+        pager.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const addItem = (label, disabled, active, goTo) => {
+          const li = document.createElement('li');
+          li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+          const a = document.createElement('a');
+          a.className = 'page-link';
+          a.href = '#';
+          a.textContent = label;
+          if (!disabled && !active) {
+            a.addEventListener('click', e => { e.preventDefault(); page = goTo; renderPage(); });
+          }
+          li.appendChild(a);
+          pager.appendChild(li);
+        };
+
+        addItem('«', page === 1, false, page - 1);
+
+        const windowSize = 7;
+        let start = Math.max(1, page - Math.floor(windowSize / 2));
+        let end   = Math.min(totalPages, start + windowSize - 1);
+        start     = Math.max(1, end - windowSize + 1);
+
+        for (let i = start; i <= end; i++) addItem(i.toString(), false, i === page, i);
+
+        addItem('»', page === totalPages, false, page + 1);
+      }
+
+      input.addEventListener('input', () => { page = 1; renderPage(); });
+      clear.addEventListener('click', () => { input.value = ''; page = 1; renderPage(); input.focus(); });
+
+      renderPage();
+    })();
+</script>
+
