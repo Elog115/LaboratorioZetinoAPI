@@ -35,12 +35,15 @@ namespace ProyectoZetino.WebMVC.Controllers
             return View(citas);
         }
 
-
         // GET: /Cita/Create
         public async Task<IActionResult> Create()
         {
             await CargarUsuarios();
-            return View(new CitaDto { Estado = true, FechaHora = System.DateTime.Now.AddHours(1) });
+            return View(new CitaDto
+            {
+                Estado = true,
+                FechaHora = System.DateTime.Now.AddHours(1)
+            });
         }
 
         // POST: /Cita/Create
@@ -49,7 +52,10 @@ namespace ProyectoZetino.WebMVC.Controllers
         public async Task<IActionResult> Create(CitaDto cita)
         {
             if (!ModelState.IsValid)
-            { await CargarUsuarios(cita.IdUsuario); return View(cita); }
+            {
+                await CargarUsuarios(cita.IdUsuario);
+                return View(cita);
+            }
 
             if (!cita.FechaHora.HasValue)
             {
@@ -62,7 +68,11 @@ namespace ProyectoZetino.WebMVC.Controllers
             cita.Estado = true;
 
             var ok = await _api.CreateCitaAsync(cita);
-            if (ok) { TempData["Success"] = "✅ Cita creada correctamente."; return RedirectToAction(nameof(Index)); }
+            if (ok)
+            {
+                TempData["Success"] = "✅ Cita creada correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
 
             TempData["Error"] = "❌ Error al crear la cita.";
             return RedirectToAction(nameof(Index));
@@ -72,7 +82,12 @@ namespace ProyectoZetino.WebMVC.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var cita = await _api.GetCitaAsync(id);
-            if (cita == null) { TempData["Error"] = "❌ Cita no encontrada."; return RedirectToAction(nameof(Index)); }
+            if (cita == null)
+            {
+                TempData["Error"] = "❌ Cita no encontrada.";
+                return RedirectToAction(nameof(Index));
+            }
+
             await CargarUsuarios(cita.IdUsuario);
             return View(cita);
         }
@@ -82,45 +97,28 @@ namespace ProyectoZetino.WebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CitaDto cita)
         {
-            if (id != cita.IdCita) { TempData["Error"] = "❌ Id inválido."; return RedirectToAction(nameof(Index)); }
-            if (!ModelState.IsValid) { await CargarUsuarios(cita.IdUsuario); return View(cita); }
+            if (id != cita.IdCita)
+            {
+                TempData["Error"] = "❌ Id inválido.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await CargarUsuarios(cita.IdUsuario);
+                return View(cita);
+            }
 
             var ok = await _api.UpdateCitaAsync(id, cita);
-            if (ok) { TempData["Success"] = "✅ Cita actualizada."; return RedirectToAction(nameof(Index)); }
+            if (ok)
+            {
+                TempData["Success"] = "✅ Cita actualizada.";
+                return RedirectToAction(nameof(Index));
+            }
 
             TempData["Error"] = "❌ No se pudo actualizar la cita.";
             await CargarUsuarios(cita.IdUsuario);
             return View(cita);
-        }
-
-        // ====== FALTABA: DELETE ======
-
-        // GET: /Cita/Delete/5  -> muestra confirmación
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var cita = await _api.GetCitaAsync(id);
-            if (cita == null) return NotFound();
-            return View(cita); // Views/Cita/Delete.cshtml
-        }
-
-        // POST: /Cita/Delete/5  -> ejecuta borrado
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var ok = await _api.DeleteCitaAsync(id);
-            if (ok) { TempData["Success"] = "🗑️ Cita eliminada."; return RedirectToAction(nameof(Index)); }
-            TempData["Error"] = "❌ No se pudo eliminar la cita.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        // Helper para combo de usuarios
-        private async Task CargarUsuarios(int? seleccionado = null)
-        {
-            var usuarios = await _api.GetUsuariosAsync();
-            var items = usuarios.Select(u => new { Id = u.IdUsuario, Nombre = $"{u.Nombre} {u.Apellido}" });
-            ViewBag.Usuarios = new SelectList(items, "Id", "Nombre", seleccionado);
         }
 
         // GET: /Cita/ToggleEstado/5
@@ -130,7 +128,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             var cita = await _api.GetCitaAsync(id);
             if (cita == null)
             {
-                TempData["Error"] = "No se encontró la cita.";
+                TempData["Error"] = "❌ No se encontró la cita.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -138,10 +136,21 @@ namespace ProyectoZetino.WebMVC.Controllers
 
             var ok = await _api.UpdateCitaAsync(id, cita);
             if (!ok)
-                TempData["Error"] = "No se pudo cambiar el estado de la cita.";
+                TempData["Error"] = "❌ No se pudo cambiar el estado de la cita.";
 
             return RedirectToAction(nameof(Index));
         }
 
+        // Helper para combo de usuarios
+        private async Task CargarUsuarios(int? seleccionado = null)
+        {
+            var usuarios = await _api.GetUsuariosAsync();
+            var items = usuarios.Select(u => new
+            {
+                Id = u.IdUsuario,
+                Nombre = $"{u.Nombre} {u.Apellido}"
+            });
+            ViewBag.Usuarios = new SelectList(items, "Id", "Nombre", seleccionado);
+        }
     }
 }
