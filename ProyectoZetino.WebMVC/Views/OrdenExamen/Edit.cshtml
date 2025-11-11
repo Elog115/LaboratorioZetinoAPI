@@ -1,5 +1,62 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ProyectoZetino.WebMVC.Models.OrdenExamenDto
 @{
+    ViewData["Title"] = "Editar Orden de Examen";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4 rounded-4">
+        <h3 class="mb-3 text-primary">
+            <i class="bi bi-pencil-square"></i> Editar Orden de Examen
+        </h3>
+        <hr />
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <form asp-action="Edit" method="post">
+            @* CAMBIO CLAVE: Campo oculto para el ID de la orden que se edita *@
+            <input type="hidden" asp-for="IdOrdenExamen" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="IdUsuario" class="form-label fw-semibold"></label>
+                    <select asp-for="IdUsuario" class="form-select" asp-items="ViewBag.Usuarios">
+                        <option value="">Seleccione un usuario...</option>
+                    </select>
+                    <span asp-validation-for="IdUsuario" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="IdCita" class="form-label fw-semibold"></label>
+                    <select asp-for="IdCita" class="form-select" asp-items="ViewBag.Citas">
+                        <option value="">Seleccione una cita...</option>
+                    </select>
+                    <span asp-validation-for="IdCita" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FechaSolicitud" class="form-label fw-semibold"></label>
+                <input asp-for="FechaSolicitud" type="date" class="form-control" />
+                <span asp-validation-for="FechaSolicitud" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Estado" class="form-check-input" type="checkbox" />
+                <label asp-for="Estado" class="form-check-label fw-semibold"></label>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn btn-success px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-save"></i> Guardar Cambios @* CAMBIO CLAVE: Texto actualizado *@
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
