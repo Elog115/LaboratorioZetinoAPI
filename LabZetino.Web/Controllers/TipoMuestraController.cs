@@ -1,103 +1,89 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SisLabZetino.Domain.Entities;
-using SisLabZetino.Domain.Repositories; // Asegúrate de tener la interfaz aquí
-using System;
+using SisLabZetino.Domain.Repositories; // <-- Tu interfaz
 using System.Threading.Tasks;
 
 namespace SisLabZetino.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/tipo-muestra")]
-    public class NotificacionEmailController : ControllerBase
+    [Route("api/tipomuestra")] // <-- Ruta en minúsculas
+    public class TipoMuestraController : ControllerBase
     {
-        private readonly INotificacionEmailRepository _repository;
+        private readonly ITipoMuestraRepository _repository;
 
-        public NotificacionEmailController(INotificacionEmailRepository repository)
+        public TipoMuestraController(ITipoMuestraRepository repository)
         {
             _repository = repository;
         }
 
-        // ✅ GET: api/NotificacionEmail
+        // --- MÉTODOS CRUD ADAPTADOS A TU INTERFAZ ---
+
+        // GET: api/tipomuestra
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var notificaciones = await _repository.GetNotificacionesAsync();
-            return Ok(notificaciones);
+            // Tu interfaz no tiene filtro, así que llamamos al método sin parámetro
+            var tiposMuestra = await _repository.GetTiposMuestraAsync();
+            return Ok(tiposMuestra);
         }
 
-        // ✅ GET: api/NotificacionEmail/5
+        // GET: api/tipomuestra/5
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var notificacion = await _repository.GetNotificacionByIdAsync(id);
-            if (notificacion == null)
-                return NotFound(new { message = $"No se encontró la notificación con Id {id}" });
+            var tipoMuestra = await _repository.GetTipoMuestraByIdAsync(id);
+            if (tipoMuestra == null)
+                return NotFound(new { message = $"No se encontró el tipo de muestra con Id {id}" });
 
-            return Ok(notificacion);
+            return Ok(tipoMuestra);
         }
 
-        // ✅ GET: api/NotificacionEmail/resultado/10
-        [HttpGet("resultado/{idResultado:int}")]
-        public async Task<IActionResult> GetByResultado(int idResultado)
-        {
-            var notificaciones = await _repository.GetNotificacionesByResultadoAsync(idResultado);
-            return Ok(notificaciones);
-        }
-
-        // ✅ GET: api/NotificacionEmail/estadoenvio/Enviado
-        [HttpGet("estadoenvio/{estadoEnvio}")]
-        public async Task<IActionResult> GetByEstadoEnvio(string estadoEnvio)
-        {
-            var notificaciones = await _repository.GetNotificacionesByEstadoEnvioAsync(estadoEnvio);
-            return Ok(notificaciones);
-        }
-
-        // ✅ GET: api/NotificacionEmail/estado/1
-        [HttpGet("estado/{estado:int}")]
-        public async Task<IActionResult> GetByEstado(bool estado)
-        {
-            var notificaciones = await _repository.GetNotificacionesByEstadoAsync(estado);
-            return Ok(notificaciones);
-        }
-
-        // ✅ POST: api/NotificacionEmail
+        // POST: api/tipomuestra
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] NotificacionEmail notificacion)
+        public async Task<IActionResult> Create([FromBody] TipoMuestra tipoMuestra)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var nuevaNotificacion = await _repository.AddNotificacionAsync(notificacion);
-            return CreatedAtAction(nameof(GetById), new { id = nuevaNotificacion.IdNotificacion }, nuevaNotificacion);
+            var nuevoTipoMuestra = await _repository.AddTipoMuestraAsync(tipoMuestra);
+
+            return CreatedAtAction(nameof(GetById), new { id = nuevoTipoMuestra.IdTipoMuestra }, nuevoTipoMuestra);
         }
 
-        // ✅ PUT: api/NotificacionEmail/5
+        // PUT: api/tipomuestra/5
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] NotificacionEmail notificacion)
+        public async Task<IActionResult> Update(int id, [FromBody] TipoMuestra tipoMuestra)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (id != notificacion.IdNotificacion)
+            if (id != tipoMuestra.IdTipoMuestra)
                 return BadRequest(new { message = "El Id del cuerpo no coincide con el de la URL." });
 
-            var existente = await _repository.GetNotificacionByIdAsync(id);
+            var existente = await _repository.GetTipoMuestraByIdAsync(id);
             if (existente == null)
-                return NotFound(new { message = $"No se encontró la notificación con Id {id}" });
+                return NotFound(new { message = $"No se encontró el tipo de muestra con Id {id}" });
 
-            await _repository.UpdateNotificacionAsync(notificacion);
-            return NoContent();
+            // Tu repositorio devuelve el objeto actualizado, así que lo capturamos
+            var tipoMuestraActualizado = await _repository.UpdateTipoMuestraAsync(tipoMuestra);
+
+            // Devolvemos 200 OK con el objeto
+            return Ok(tipoMuestraActualizado);
         }
 
-        // ✅ DELETE: api/NotificacionEmail/5
+        // DELETE: api/tipomuestra/5
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var eliminado = await _repository.DeleteNotificacionAsync(id);
-            if (!eliminado)
-                return NotFound(new { message = $"No se encontró la notificación con Id {id}" });
+            var existente = await _repository.GetTipoMuestraByIdAsync(id);
+            if (existente == null)
+                return NotFound(new { message = $"No se encontró el tipo de muestra con Id {id}" });
 
-            return NoContent();
+            var eliminado = await _repository.DeleteTipoMuestraAsync(id);
+            if (!eliminado)
+                return BadRequest(new { message = "No se pudo eliminar el tipo de muestra." });
+
+            return NoContent(); // 204 Éxito, sin contenido
         }
     }
 }

@@ -61,6 +61,13 @@ namespace ProyectoZetino.WebMVC.Services
         Task<bool> DeleteTipoExamenAsync(int id);
         Task<TipoExamenDto?> GetTipoExamenByIdAsync(int id);
 
+        // --- Tipos de Muestra ---
+        Task<IEnumerable<TipoMuestraDto>> GetTiposMuestraAsync(string searchTerm = null);
+        Task<TipoMuestraDto> GetTipoMuestraAsync(int id);
+        Task<bool> CreateTipoMuestraAsync(TipoMuestraDto tipoMuestra);
+        Task<bool> UpdateTipoMuestraAsync(int id, TipoMuestraDto tipoMuestra);
+        // No agregamos Delete, ya que usaremos ToggleEstado
+
 
     }
 }

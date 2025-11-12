@@ -391,7 +391,54 @@ namespace ProyectoZetino.WebMVC.Services
             return response.IsSuccessStatusCode;
         }
 
+        // --- Tipos de Muestra ---
 
+        public async Task<IEnumerable<TipoMuestraDto>> GetTiposMuestraAsync(string searchTerm = null)
+        {
+            SetAuthorizationHeader();
+            var url = "api/tipomuestra"; // <- Asumiendo que esta es la ruta de tu API
+            if (!string.IsNullOrEmpty(searchTerm))
+                url += $"?search={System.Net.WebUtility.UrlEncode(searchTerm)}";
+
+            return await _httpClient.GetFromJsonAsync<IEnumerable<TipoMuestraDto>>(url) ?? new List<TipoMuestraDto>();
+        }
+
+        public async Task<TipoMuestraDto> GetTipoMuestraAsync(int id)
+        {
+            SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<TipoMuestraDto>($"api/tipomuestra/{id}");
+        }
+
+        public async Task<bool> CreateTipoMuestraAsync(TipoMuestraDto tipoMuestra)
+        {
+            SetAuthorizationHeader();
+
+            // Replicamos el patrón de 'Rol': objeto anónimo con propiedades PascalCase
+            var payload = new
+            {
+                tipoMuestra.Nombre,
+                tipoMuestra.Descripcion,
+                tipoMuestra.Estado
+            };
+            var response = await _httpClient.PostAsJsonAsync("api/tipomuestra", payload);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateTipoMuestraAsync(int id, TipoMuestraDto tipoMuestra)
+        {
+            SetAuthorizationHeader();
+
+            // Replicamos el patrón de 'Rol': objeto anónimo con propiedades PascalCase
+            var payload = new
+            {
+                tipoMuestra.IdTipoMuestra,
+                tipoMuestra.Nombre,
+                tipoMuestra.Descripcion,
+                tipoMuestra.Estado
+            };
+            var response = await _httpClient.PutAsJsonAsync($"api/tipomuestra/{id}", payload);
+            return response.IsSuccessStatusCode;
+        }
 
 
     }
