@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoZetino.WebMVC.Models;
 using ProyectoZetino.WebMVC.Services;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -152,5 +155,81 @@ namespace ProyectoZetino.WebMVC.Controllers
             });
             ViewBag.Usuarios = new SelectList(items, "Id", "Nombre", seleccionado);
         }
+        // GET: /Cita/Comprobante/5  -> Genera comprobante PDF de la cita
+        [HttpGet]
+        public async Task<IActionResult> Comprobante(int id)
+        {
+            // 1. Obtener la cita
+            var cita = await _api.GetCitaAsync(id);
+            if (cita == null)
+            {
+                TempData["Error"] = "No se encontró la cita para generar el comprobante.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // 2. Obtener el paciente (por si NombreUsuario viene vacío)
+            var usuario = await _api.GetUsuarioAsync(cita.IdUsuario);
+            var nombrePaciente = usuario != null
+                ? $"{usuario.Nombre} {usuario.Apellido}"
+                : (cita.NombreUsuario ?? "Paciente no especificado");
+
+            // 3. Configuración básica de QuestPDF
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var fechaTexto = cita.FechaHora?.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha";
+            var estadoTexto = cita.Estado ? "Activa" : "Cancelada";
+
+            // 4. Crear el documento PDF
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(30);
+                    page.Size(PageSizes.A5);
+
+                    page.Header()
+                        .Text("Comprobante de Cita - Laboratorio Zetino")
+                        .SemiBold().FontSize(16).FontColor(Colors.Blue.Darken2)
+                        .AlignCenter();
+
+                    page.Content().PaddingVertical(10).Column(col =>
+                    {
+                        col.Spacing(8);
+
+                        col.Item().Text($"Número de cita: {cita.IdCita}")
+                            .SemiBold();
+
+                        col.Item().Text($"Paciente: {nombrePaciente}");
+
+                        col.Item().Text($"Fecha y hora: {fechaTexto}");
+
+                        col.Item().Text($"Motivo / Descripción:")
+                            .SemiBold();
+
+                        col.Item().Text(cita.Descripcion)
+                            .FontSize(11);
+
+                        col.Item().Text($"Estado: {estadoTexto}")
+                            .SemiBold()
+                            .FontColor(cita.Estado ? Colors.Green.Darken2 : Colors.Red.Darken2);
+
+                        col.Item().PaddingTop(10).Text($"Fecha de emisión: {DateTime.Now:dd/MM/yyyy HH:mm}");
+                    });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text("Laboratorio Zetino - Sistema de Citas")
+                        .FontSize(10)
+                        .FontColor(Colors.Grey.Darken1);
+                });
+            });
+
+            // 5. Generar el PDF en memoria
+            var pdfBytes = document.GeneratePdf();
+
+            var fileName = $"Cita_{cita.IdCita}.pdf";
+            return File(pdfBytes, "application/pdf", fileName);
+        }
+
     }
 }
