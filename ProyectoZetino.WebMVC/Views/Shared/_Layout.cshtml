@@ -26,39 +26,8 @@
             </button>
 
             <div class="collapse navbar-collapse" id="nav">
-                <ul class="navbar-nav me-auto">
-                    @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Rol">Roles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Usuario">Usuarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Cita">Citas</a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Examen">Exámenes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/TipoExamen">Tipos de Examen</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/TipoMuestra">Tipos de Muestra</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/OrdenExamen">Orden de Examen</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Resultado">Resultados</a>
-                        </li>
-                    }
-                </ul>
-
-                <ul class="navbar-nav">
+                <ul class="navbar-nav ms-auto">
                     @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
                     {
                         <li class="nav-item">
@@ -122,6 +91,18 @@
                         <li class="nav-item mb-2">
                             <a class="nav-link d-flex align-items-center" href="/TipoMuestra">
                                 <i class="bi bi-beaker me-2"></i> Tipos de Muestra
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/Muestra">
+                                <i class="bi bi-vial me-2"></i> Muestras
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2">
+                            <a class="nav-link d-flex align-items-center" href="/NotificacionEmail">
+                                <i class="bi bi-envelope-at me-2"></i> Monitor de Emails
                             </a>
                         </li>
                         <li class="nav-item mb-2">

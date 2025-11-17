@@ -1,0 +1,61 @@
+﻿@model ProyectoZetino.WebMVC.Models.MuestraDto
+@{
+    ViewData["Title"] = "Crear Muestra";
+}
+
+<div class="card shadow-sm rounded-3">
+    <div class="card-header py-3">
+        <h5 class="m-0 fw-bold" style="color: #0b5e6f;">
+            <i class="bi bi-vial me-2"></i>
+            Crear Nueva Muestra
+        </h5>
+    </div>
+    <div class="card-body">
+
+        <form asp-action="Create" class="mt-3">
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="IdOrdenExamen" class="form-label"></label>
+                    <select asp-for="IdOrdenExamen" class="form-select" asp-items="ViewBag.OrdenesExamen">
+                        <option value="">-- Seleccionar Orden --</option>
+                    </select>
+                    <span asp-validation-for="IdOrdenExamen" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="IdTipoMuestra" class="form-label"></label>
+                    <select asp-for="IdTipoMuestra" class="form-select" asp-items="ViewBag.TiposMuestra">
+                        <option value="">-- Seleccionar Tipo de Muestra --</option>
+                    </select>
+                    <span asp-validation-for="IdTipoMuestra" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FechaRecepcion" class="form-label"></label>
+                <input asp-for="FechaRecepcion" class="form-control" />
+                <span asp-validation-for="FechaRecepcion" class="text-danger"></span>
+            </div>
+
+            <div class="pt-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-1"></i> Crear
+                </button>
+                <a class="btn btn-secondary" href="/Muestra">
+                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

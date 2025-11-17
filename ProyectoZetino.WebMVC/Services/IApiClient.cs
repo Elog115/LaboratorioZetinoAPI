@@ -62,6 +62,16 @@ namespace ProyectoZetino.WebMVC.Services
         Task<bool> CreateTipoMuestraAsync(TipoMuestraDto tipoMuestra);
         Task<bool> UpdateTipoMuestraAsync(int id, TipoMuestraDto tipoMuestra);
 
+        // --- Muestras ---
+        Task<IEnumerable<MuestraDto>> GetMuestrasAsync();
+        Task<MuestraDto> GetMuestraAsync(int id);
+        Task<string> CreateMuestraAsync(MuestraDto muestra); // Devuelve string
+        Task<string> UpdateMuestraAsync(int id, MuestraDto muestra); // Devuelve string
+
+        // --- Notificaciones Email ---
+        Task<IEnumerable<NotificacionEmailDto>> GetNotificacionesEmailAsync(string searchTerm = null);
+        Task<NotificacionEmailDto> GetNotificacionEmailAsync(int id);
+        Task<string> UpdateNotificacionEmailAsync(int id, NotificacionEmailDto notificacion); // Devuelve string
         // --- Resultados ---
         Task<IEnumerable<ResultadoDto>> GetResultadosAsync(string searchTerm = null);
         Task<ResultadoDto> GetResultadoAsync(int id);

@@ -439,7 +439,91 @@ namespace ProyectoZetino.WebMVC.Services
             var response = await _httpClient.PutAsJsonAsync($"api/tipomuestra/{id}", payload);
             return response.IsSuccessStatusCode;
         }
+        // --- Muestras ---
 
+        public async Task<IEnumerable<MuestraDto>> GetMuestrasAsync()
+        {
+            SetAuthorizationHeader();
+            // La API no acepta 'searchTerm', por eso no lo enviamos.
+            var url = "api/muestra";
+            return await _httpClient.GetFromJsonAsync<IEnumerable<MuestraDto>>(url) ?? new List<MuestraDto>();
+        }
+
+        public async Task<MuestraDto> GetMuestraAsync(int id)
+        {
+            SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<MuestraDto>($"api/muestra/{id}");
+        }
+
+        public async Task<string> CreateMuestraAsync(MuestraDto muestra)
+        {
+            SetAuthorizationHeader();
+            var response = await _httpClient.PostAsJsonAsync("api/muestra", muestra);
+
+            // Leemos la respuesta como string, ya que tu API devuelve "Ok(resultado)"
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            // Si la API falló (ej. 500) o no fue exitoso, devolvemos el error
+            if (!response.IsSuccessStatusCode)
+            {
+                // Limpiamos comillas si es un JSON de error
+                return responseString.Trim('"');
+            }
+
+            // Si fue exitoso, devolvemos el string (ej. "Muestra agregada")
+            return responseString.Trim('"');
+        }
+
+        public async Task<string> UpdateMuestraAsync(int id, MuestraDto muestra)
+        {
+            SetAuthorizationHeader();
+            var response = await _httpClient.PutAsJsonAsync($"api/muestra/{id}", muestra);
+
+            // Leemos la respuesta como string
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return responseString.Trim('"');
+            }
+
+            return responseString.Trim('"');
+        }
+        // --- Notificaciones Email ---
+
+        public async Task<IEnumerable<NotificacionEmailDto>> GetNotificacionesEmailAsync(string searchTerm = null)
+        {
+            SetAuthorizationHeader();
+
+            // Ruta con guion, como en tu API
+            var url = "api/notificacion-email";
+
+            // Tu API GET no acepta 'searchTerm', así que ignoramos ese parámetro.
+            // El filtro lo haremos por JS en el cliente.
+
+            return await _httpClient.GetFromJsonAsync<IEnumerable<NotificacionEmailDto>>(url) ?? new List<NotificacionEmailDto>();
+        }
+
+        public async Task<NotificacionEmailDto> GetNotificacionEmailAsync(int id)
+        {
+            SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<NotificacionEmailDto>($"api/notificacion-email/{id}");
+        }
+
+        public async Task<string> UpdateNotificacionEmailAsync(int id, NotificacionEmailDto notificacion)
+        {
+            SetAuthorizationHeader();
+
+            // Tu API devuelve un string, así que replicamos el patrón de Muestra
+            var response = await _httpClient.PutAsJsonAsync($"api/notificacion-email/{id}", notificacion);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return responseString.Trim('"');
+            }
+            return responseString.Trim('"');
+        }
         // --- NUEVOS MÉTODOS PARA RESULTADOS ---
 
         public async Task<IEnumerable<ResultadoDto>> GetResultadosAsync(string searchTerm = null)
