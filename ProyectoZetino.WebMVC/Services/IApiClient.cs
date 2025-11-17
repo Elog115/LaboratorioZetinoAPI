@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProyectoZetino.WebMVC.Models;
 
@@ -25,9 +24,6 @@ namespace ProyectoZetino.WebMVC.Services
         Task<bool> UpdateUsuarioAsync(int id, UsuarioDto usuario);
         Task<bool> DeleteUsuarioAsync(int id);
         Task<UsuarioDto?> GetUsuarioByIdAsync(int id);
-        
-
-
 
         // Citas
         Task<IEnumerable<CitaDto>> GetCitasAsync(string searchTerm = null);
@@ -43,7 +39,6 @@ namespace ProyectoZetino.WebMVC.Services
         Task<bool> UpdateExamenAsync(int id, ExamenDto examen);
         Task<bool> DeleteExamenAsync(int id);
         Task<ExamenDto?> GetExamenByIdAsync(int id);
-
 
         // --- Orden de Examen ---
         Task<IEnumerable<OrdenExamenDto>> GetOrdenesExamenAsync(string searchTerm = null);
@@ -66,8 +61,12 @@ namespace ProyectoZetino.WebMVC.Services
         Task<TipoMuestraDto> GetTipoMuestraAsync(int id);
         Task<bool> CreateTipoMuestraAsync(TipoMuestraDto tipoMuestra);
         Task<bool> UpdateTipoMuestraAsync(int id, TipoMuestraDto tipoMuestra);
-        // No agregamos Delete, ya que usaremos ToggleEstado
 
-
+        // --- Resultados ---
+        Task<IEnumerable<ResultadoDto>> GetResultadosAsync(string searchTerm = null);
+        Task<ResultadoDto> GetResultadoAsync(int id);
+        Task<bool> CreateResultadoAsync(ResultadoDto resultado);
+        Task<bool> UpdateResultadoAsync(int id, ResultadoDto resultado);
+        // Nota: No hay DeleteResultadoAsync porque usaremos ToggleEstado (que es un Update)
     }
 }
