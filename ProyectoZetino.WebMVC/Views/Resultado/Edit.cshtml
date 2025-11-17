@@ -1,0 +1,62 @@
+﻿@model ProyectoZetino.WebMVC.Models.ResultadoDto
+@{
+    ViewData["Title"] = "Editar Resultado";
+}
+
+<div class="card shadow-sm rounded-3">
+    <div class="card-header py-3">
+        <h5 class="m-0 fw-bold" style="color: #0b5e6f;">
+            <i class="bi bi-pencil-square me-2"></i>
+            Editar Resultado
+        </h5>
+    </div>
+    <div class="card-body">
+
+        <form asp-action="Edit" class="mt-3">
+
+            <input type="hidden" asp-for="IdResultado" />
+            <input type="hidden" asp-for="Estado" />
+
+            <div class="mb-3">
+                <label asp-for="IdExamen" class="form-label"></label>
+                <select asp-for="IdExamen" class="form-select" asp-items="ViewBag.Examenes">
+                    <option value="">-- Seleccione un Examen --</option>
+                </select>
+                <span asp-validation-for="IdExamen" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FechaEntrega" class="form-label"></label>
+                <input asp-for="FechaEntrega" class="form-control" type="date" />
+                <span asp-validation-for="FechaEntrega" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ArchivoResultado" class="form-label"></label>
+                <input asp-for="ArchivoResultado" class="form-control" placeholder="Ej: /archivos/resultados/doc-001.pdf" />
+                <span asp-validation-for="ArchivoResultado" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Observaciones" class="form-label"></label>
+                <textarea asp-for="Observaciones" class="form-control" rows="3" placeholder="Observaciones generales sobre el resultado..."></textarea>
+                <span asp-validation-for="Observaciones" class="text-danger"></span>
+            </div>
+
+            <hr />
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill me-1"></i> Guardar Cambios
+            </button>
+            <a class="btn btn-secondary" href="/Resultado">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -19,7 +19,9 @@ namespace SisLabZetino.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var resultados = await _resultadoService.ObtenerTodosLosResultadosAsync();
+            // --- CORRECCIÓN APLICADA AQUÍ ---
+            // Ahora solo obtiene los resultados con estado = true
+            var resultados = await _resultadoService.ObtenerResultadosActivosAsync();
             return Ok(resultados);
         }
 
@@ -51,6 +53,7 @@ namespace SisLabZetino.WebAPI.Controllers
         }
 
         // ✅ GET api/resultado/activos
+        // (Este endpoint ya estaba, pero el [HttpGet] principal ahora hace lo mismo)
         [HttpGet("activos")]
         public async Task<IActionResult> GetActivos()
         {

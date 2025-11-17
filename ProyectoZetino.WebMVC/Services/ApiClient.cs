@@ -242,7 +242,7 @@ namespace ProyectoZetino.WebMVC.Services
             {
                 idCita = cita.IdCita,
                 idUsuario = cita.IdUsuario,
-                fechaHora = cita.FechaHora,     // DateTime? se serializa en ISO
+                fechaHora = cita.FechaHora,      // DateTime? se serializa en ISO
                 descripcion = cita.Descripcion,
                 estado = cita.Estado
             };
@@ -356,7 +356,7 @@ namespace ProyectoZetino.WebMVC.Services
 
 
         // ✅ Tipo de Examen
-       
+
         public async Task<IEnumerable<TipoExamenDto>> GetTiposExamenAsync(string searchTerm = null)
         {
             // Tu API NO usa searchTerm, así que lo ignoramos
@@ -440,6 +440,57 @@ namespace ProyectoZetino.WebMVC.Services
             return response.IsSuccessStatusCode;
         }
 
+        // --- NUEVOS MÉTODOS PARA RESULTADOS ---
 
+        public async Task<IEnumerable<ResultadoDto>> GetResultadosAsync(string searchTerm = null)
+        {
+            SetAuthorizationHeader();
+            var url = "api/resultado"; // Asumiendo ruta de API
+            if (!string.IsNullOrEmpty(searchTerm))
+                url += $"?search={System.Net.WebUtility.UrlEncode(searchTerm)}";
+
+            return await _httpClient.GetFromJsonAsync<IEnumerable<ResultadoDto>>(url) ?? new List<ResultadoDto>();
+        }
+
+        public async Task<ResultadoDto> GetResultadoAsync(int id)
+        {
+            SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<ResultadoDto>($"api/resultado/{id}");
+        }
+
+        public async Task<bool> CreateResultadoAsync(ResultadoDto resultado)
+        {
+            SetAuthorizationHeader();
+
+            // Usamos un payload anónimo para que coincida con lo que la API espera
+            var payload = new
+            {
+                resultado.IdExamen,
+                resultado.FechaEntrega,
+                resultado.Observaciones,
+                resultado.ArchivoResultado,
+                resultado.Estado
+            };
+            var response = await _httpClient.PostAsJsonAsync("api/resultado", payload);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateResultadoAsync(int id, ResultadoDto resultado)
+        {
+            SetAuthorizationHeader();
+
+            // Usamos un payload anónimo para que coincida con lo que la API espera
+            var payload = new
+            {
+                resultado.IdResultado,
+                resultado.IdExamen,
+                resultado.FechaEntrega,
+                resultado.Observaciones,
+                resultado.ArchivoResultado,
+                resultado.Estado
+            };
+            var response = await _httpClient.PutAsJsonAsync($"api/resultado/{id}", payload);
+            return response.IsSuccessStatusCode;
+        }
     }
 }
