@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SisLabZetino.Application.Services;
 using SisLabZetino.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace SisLabZetino.WebAPI.Controllers
 {
@@ -15,11 +16,14 @@ namespace SisLabZetino.WebAPI.Controllers
             _tipoExamenService = tipoExamenService;
         }
 
-        // GET api/tipoexamen
+        // ✅ GET api/tipoexamen
+        // Este método ahora devuelve SOLO los tipos de examen ACTIVOS
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var tipos = await _tipoExamenService.ObtenerTodosLosTiposExamenAsync();
+            // CAMBIO REALIZADO AQUÍ:
+            // Usamos ObtenerTiposExamenActivosAsync en lugar de ObtenerTodosLosTiposExamenAsync
+            var tipos = await _tipoExamenService.ObtenerTiposExamenActivosAsync();
             return Ok(tipos);
         }
 
@@ -46,6 +50,7 @@ namespace SisLabZetino.WebAPI.Controllers
         }
 
         // GET api/tipoexamen/activos
+        // (Este endpoint sigue siendo válido, aunque GetAll ahora hace lo mismo)
         [HttpGet("activos")]
         public async Task<IActionResult> GetActivos()
         {

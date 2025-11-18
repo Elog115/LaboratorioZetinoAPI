@@ -19,10 +19,13 @@ namespace LabZetino.Web.Controllers
         }
 
         // ✅ GET: api/orden-examen
+        // Este método ahora devuelve SOLO las órdenes activas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrdenExamen>>> GetTodas()
         {
-            var ordenes = await _ordenExamenService.ObtenerTodasLasOrdenesAsync();
+            // CAMBIO REALIZADO AQUÍ:
+            // Usamos ObtenerOrdenesActivasAsync en lugar de ObtenerTodasLasOrdenesAsync
+            var ordenes = await _ordenExamenService.ObtenerOrdenesActivasAsync();
             return Ok(ordenes);
         }
 
@@ -61,6 +64,7 @@ namespace LabZetino.Web.Controllers
         }
 
         // ✅ GET: api/orden-examen/activas
+        // (Este endpoint sigue existiendo, aunque GetTodas ahora hace lo mismo)
         [HttpGet("activas")]
         public async Task<ActionResult<IEnumerable<OrdenExamen>>> GetActivas()
         {

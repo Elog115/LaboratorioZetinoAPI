@@ -2,6 +2,9 @@
 using SisLabZetino.Application.Services;
 using SisLabZetino.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace LabZetino.Web.Controllers
 {
@@ -17,12 +20,14 @@ namespace LabZetino.Web.Controllers
             _rolService = rolService;
         }
 
-        // GET: api/rol
+        // ✅ GET: api/rol
+        // Este método ahora devuelve SOLO los roles activos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Rol>>> Get()
         {
-
-            var roles = await _rolService.ObtenerTodosLosRolesAsync();
+            // CAMBIO REALIZADO AQUÍ: 
+            // Usamos ObtenerRolesActivosAsync en lugar de ObtenerTodosLosRolesAsync
+            var roles = await _rolService.ObtenerRolesActivosAsync();
             return Ok(roles);
         }
 
@@ -32,7 +37,7 @@ namespace LabZetino.Web.Controllers
         {
             try
             {
-                //Esto ahora devuelve roles activos e inactivos
+                // Esto sigue devolviendo el rol aunque esté inactivo (necesario para editar)
                 var rol = await _rolService.ObtenerRolPorIdAsync(id);
 
                 if (rol == null)
