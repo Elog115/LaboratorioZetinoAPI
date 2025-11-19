@@ -24,6 +24,7 @@ namespace ProyectoZetino.WebMVC.Services
         Task<bool> UpdateUsuarioAsync(int id, UsuarioDto usuario);
         Task<bool> DeleteUsuarioAsync(int id);
         Task<UsuarioDto?> GetUsuarioByIdAsync(int id);
+        Task<bool> ToggleEstadoUsuarioAsync(int id);
 
         // Citas
         Task<IEnumerable<CitaDto>> GetCitasAsync(string searchTerm = null);

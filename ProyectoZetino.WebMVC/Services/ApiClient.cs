@@ -196,7 +196,6 @@ namespace ProyectoZetino.WebMVC.Services
         {
             SetAuthorizationHeader();
 
-            // Crear el objeto que coincida con lo que la API espera (entidad Usuario)
             var usuarioActualizado = new
             {
                 IdUsuario = usuario.IdUsuario,
@@ -206,11 +205,22 @@ namespace ProyectoZetino.WebMVC.Services
                 Telefono = usuario.Telefono,
                 Email = usuario.Email,
                 FechaNacimiento = usuario.FechaNacimiento,
-                PasswordHash = usuario.Password, // ⚠️ IMPORTANTE: la API espera PasswordHash
-                Estado = true
+                PasswordHash = usuario.Password,
+                Estado = usuario.Estado   // ⭐ CORREGIDO
             };
 
             var response = await _httpClient.PutAsJsonAsync($"api/auth/usuarios/{id}", usuarioActualizado);
+            return response.IsSuccessStatusCode;
+        }
+        public async Task<bool> ToggleEstadoUsuarioAsync(int id)
+        {
+            SetAuthorizationHeader();
+
+            var response = await _httpClient.PatchAsync(
+                $"api/auth/usuarios/{id}/estado",
+                null
+            );
+
             return response.IsSuccessStatusCode;
         }
 

@@ -216,5 +216,25 @@ namespace SisLabZetino.Application.Services
 
             return null;
         }
+        // ===========================================================
+        // 🔄 Cambiar estado (activar / desactivar usuario)
+        // ===========================================================
+        public async Task<(bool ok, bool nuevoEstado, string mensaje)> CambiarEstadoUsuarioAsync(int id)
+        {
+            if (id <= 0)
+                return (false, false, "ID inválido");
+
+            var usuario = await _repo.GetUsuarioByIdAsync(id);
+
+            if (usuario == null)
+                return (false, false, "Usuario no encontrado");
+
+            usuario.Estado = !usuario.Estado;
+
+            await _repo.UpdateUsuarioAsync(usuario);
+
+            return (true, usuario.Estado, "Estado actualizado correctamente");
+        }
+
     }
 }

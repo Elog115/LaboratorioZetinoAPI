@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SisLabZetino.Application.Services;
 using SisLabZetino.Domain.Entities;
 using System.Threading.Tasks;
@@ -112,5 +113,17 @@ namespace SisLabZetino.WebAPI.Controllers
 
             return Ok(new { message = mensaje });
         }
+        [HttpPatch("usuarios/{id}/estado")]
+        public async Task<IActionResult> CambiarEstado(int id)
+        {
+            var (ok, nuevoEstado, mensaje) = await _authService.CambiarEstadoUsuarioAsync(id);
+
+            if (!ok)
+                return NotFound(new { message = mensaje });
+
+            return Ok(new { message = mensaje, estado = nuevoEstado });
+        }
+
+
     }
 }

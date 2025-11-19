@@ -128,25 +128,17 @@ namespace ProyectoZetino.WebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Usuario/ToggleEstado/5 → Activa/Inactiva usuario
         [HttpGet]
         public async Task<IActionResult> ToggleEstado(int id)
         {
-            var usuario = await _api.GetUsuarioByIdAsync(id);
-            if (usuario == null)
-            {
-                TempData["Error"] = "Usuario no encontrado.";
-                return RedirectToAction(nameof(Index));
-            }
+            var ok = await _api.ToggleEstadoUsuarioAsync(id);
 
-            usuario.Estado = !usuario.Estado;
-
-            var ok = await _api.UpdateUsuarioAsync(id, usuario);
             if (!ok)
                 TempData["Error"] = "❌ No se pudo cambiar el estado del usuario.";
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // 🔹 Helper para cargar roles
         private async Task CargarRoles(int? seleccionado = null)
@@ -154,5 +146,6 @@ namespace ProyectoZetino.WebMVC.Controllers
             var roles = await _api.GetRolesAsync();
             ViewBag.Roles = new SelectList(roles, "IdRol", "Nombre", seleccionado);
         }
+
     }
 }
