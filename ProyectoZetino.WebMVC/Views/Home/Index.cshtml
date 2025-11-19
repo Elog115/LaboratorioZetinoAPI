@@ -3,69 +3,120 @@
 }
 
 <!-- ======================================= -->
-<!-- 1. SECCIÓN HERO (PORTADA) -->
+<!-- 1. SECCIÓN HERO (PORTADA) REDISEÑADA -->
 <!-- ======================================= -->
-<section class="container-fluid text-center px-4 py-5" style="background: linear-gradient(120deg, #eaf3ff 0%, #f9fcff 100%);">
-    <div class="row py-lg-5">
-        <div class="col-lg-6 col-md-8 mx-auto">
+<section class="hero-lab">
+    <div class="container py-5">
+        <div class="row align-items-center justify-content-between g-5">
 
-            <h1 class="display-4 fw-bold mt-4" style="color: #0b5e6f;">Bienvenido a Laboratorio Zetino</h1>
-            <p class="lead text-muted mb-4">
-                Su salud es nuestra prioridad. Ofrecemos análisis clínicos precisos y confiables
-                con la tecnología más avanzada y un equipo de profesionales dedicados.
-            </p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <a href="@Url.Action("Login", "Account")" class="btn btn-primary btn-lg px-4 gap-3 shadow-sm">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Acceso a Personal
-                </a>
-                <a href="#servicios" class="btn btn-outline-secondary btn-lg px-4">
-                    <i class="bi bi-clipboard2-plus"></i>
-                    Conocer Servicios
-                </a>
+            <!-- Columna de texto -->
+            <div class="col-lg-6">
+                <span class="badge bg-light text-teal fw-semibold mb-3">
+                    Laboratorio clínico especializado
+                </span>
+
+                <h1 class="hero-title mb-3">
+                    Bienvenido a<br />
+                    <span class="hero-highlight">Laboratorio Zetino</span>
+                </h1>
+
+                <p class="hero-subtitle mb-4">
+                    Su salud es nuestra prioridad. Ofrecemos análisis clínicos precisos y confiables
+                    con la tecnología más avanzada y un equipo de profesionales dedicados.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="@Url.Action("Login", "Account")"
+                       class="btn btn-lab-primary btn-lg d-flex align-items-center gap-2 shadow-sm">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Acceso a personal</span>
+                    </a>
+
+                    <a href="#servicios"
+                       class="btn btn-outline-light btn-lg d-flex align-items-center gap-2 hero-secondary-btn">
+                        <i class="bi bi-clipboard2-plus"></i>
+                        <span>Conocer servicios</span>
+                    </a>
+                </div>
+
+                <div class="d-flex flex-wrap gap-4 small hero-badges">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Resultados confiables</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Entrega rápida de resultados</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cloud-arrow-down"></i>
+                        <span>Consulta en línea</span>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </section>
 
 <!-- ======================================= -->
-<!-- 2. SECCIÓN DE SERVICIOS -->
+<!-- 2. SECCIÓN DE SERVICIOS (REDISEÑADA) -->
 <!-- ======================================= -->
-<section class="py-5" style="background-color: #f8f9fa;" id="servicios">
+<section class="py-5 section-light" id="servicios">
     <div class="container px-4 py-5">
-        <h2 class="pb-2 border-bottom text-center mb-5" style="color: #0b5e6f;">Nuestros Servicios Principales</h2>
+        <div class="text-center mb-5">
+            <h2 class="section-title">Nuestros Servicios Principales</h2>
+            <p class="section-subtitle">
+                Estudios clínicos realizados con precisión y acompañamiento profesional.
+            </p>
+        </div>
 
         <div class="row g-4 justify-content-center">
 
             <!-- Tarjeta de Servicio 1 -->
             <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100 rounded-4 border-0 shadow-sm">
+                <div class="card service-card h-100 rounded-4 border-0">
                     <div class="card-body text-center p-4 p-lg-5">
-                        <i class="bi bi-droplet-half fs-1 text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold mb-3">Análisis de Sangre</h5>
-                        <p class="card-text text-muted">Resultados rápidos y precisos para hematología completa, química sanguínea, perfiles lipídicos y más.</p>
+                        <div class="service-icon-circle mb-3">
+                            <i class="bi bi-droplet-half"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2">Análisis de Sangre</h5>
+                        <p class="card-text text-muted">
+                            Hematología completa, química sanguínea, perfiles lipídicos y más,
+                            con resultados rápidos y confiables.
+                        </p>
                     </div>
                 </div>
             </div>
 
             <!-- Tarjeta de Servicio 2 -->
             <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100 rounded-4 border-0 shadow-sm">
+                <div class="card service-card h-100 rounded-4 border-0">
                     <div class="card-body text-center p-4 p-lg-5">
-                        <i class="bi bi-heart-pulse fs-1 text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold mb-3">Pruebas Especiales</h5>
-                        <p class="card-text text-muted">Marcadores tumorales, pruebas hormonales y análisis de microbiología para un diagnóstico detallado.</p>
+                        <div class="service-icon-circle mb-3">
+                            <i class="bi bi-heart-pulse"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2">Pruebas Especiales</h5>
+                        <p class="card-text text-muted">
+                            Marcadores tumorales, pruebas hormonales y microbiología para
+                            diagnósticos detallados.
+                        </p>
                     </div>
                 </div>
             </div>
 
             <!-- Tarjeta de Servicio 3 -->
             <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100 rounded-4 border-0 shadow-sm">
+                <div class="card service-card h-100 rounded-4 border-0">
                     <div class="card-body text-center p-4 p-lg-5">
-                        <i class="bi bi-file-earmark-medical fs-1 text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold mb-3">Exámenes de Rutina</h5>
-                        <p class="card-text text-muted">Controles generales de orina y heces, fundamentales para la medicina preventiva y el chequeo anual.</p>
+                        <div class="service-icon-circle mb-3">
+                            <i class="bi bi-file-earmark-medical"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2">Exámenes de Rutina</h5>
+                        <p class="card-text text-muted">
+                            Controles generales de orina y heces, esenciales para la medicina
+                            preventiva y chequeos anuales.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -79,46 +130,64 @@
 <!-- ======================================= -->
 <section class="py-5 bg-white" id="contacto">
     <div class="container px-4 py-5">
-        <h2 class="pb-2 border-bottom text-center mb-5" style="color: #0b5e6f;">Contacto y Ubicación</h2>
+        <div class="text-center mb-5">
+            <h2 class="section-title">Contacto y Ubicación</h2>
+            <p class="section-subtitle">
+                Estamos listos para atenderle y resolver sus dudas.
+            </p>
+        </div>
 
         <div class="row g-4 g-lg-5">
 
             <!-- Columna de Información -->
             <div class="col-lg-6">
-                <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card shadow-sm border-0 rounded-4 h-100 contact-card">
                     <div class="card-body p-4 p-lg-5">
-                        <h4 class="mb-4 fw-bold" style="color: #0b5e6f;">Información de Contacto</h4>
+                        <h4 class="mb-4 fw-bold text-teal">Información de Contacto</h4>
                         <ul class="list-unstyled">
                             <li class="mb-3 d-flex align-items-start">
-                                <i class="bi bi-telephone-fill fs-4 me-3 text-primary mt-1"></i>
+                                <div class="contact-icon me-3">
+                                    <i class="bi bi-telephone-fill"></i>
+                                </div>
                                 <div>
-                                    <strong class="d-block">Teléfono Fijo:</strong>
+                                    <strong class="d-block">Teléfono Fijo</strong>
                                     <a href="tel:+50324320236">+503 2432-0236</a>
                                 </div>
                             </li>
                             <li class="mb-3 d-flex align-items-start">
-                                <i class="bi bi-facebook fs-4 me-3 text-primary mt-1"></i>
+                                <div class="contact-icon me-3">
+                                    <i class="bi bi-facebook"></i>
+                                </div>
                                 <div>
-                                    <strong class="d-block">Facebook:</strong>
-                                    <a href="https://www.facebook.com/profile.php?id=100063701374519" target="_blank" rel="noopener noreferrer">/LaboratorioZetino</a>
+                                    <strong class="d-block">Facebook</strong>
+                                    <a href="https://www.facebook.com/profile.php?id=100063701374519"
+                                       target="_blank" rel="noopener noreferrer">
+                                        /LaboratorioZetino
+                                    </a>
                                 </div>
                             </li>
                         </ul>
 
                         <hr class="my-4">
 
-                        <h4 class="mb-4 fw-bold" style="color: #0b5e6f;">Horario de Atención</h4>
+                        <h4 class="mb-4 fw-bold text-teal">Horario de Atención</h4>
                         <ul class="list-unstyled">
                             <li class="mb-2 d-flex align-items-start">
-                                <i class="bi bi-clock-fill fs-5 me-3 text-primary mt-1"></i>
+                                <div class="contact-icon me-3">
+                                    <i class="bi bi-clock-fill"></i>
+                                </div>
                                 <div><strong>Lunes a Viernes:</strong> 8:30 a.m. – 3:30 p.m.</div>
                             </li>
                             <li class="mb-2 d-flex align-items-start">
-                                <i class="bi bi-clock-fill fs-5 me-3 text-primary mt-1"></i>
+                                <div class="contact-icon me-3">
+                                    <i class="bi bi-clock-fill"></i>
+                                </div>
                                 <div><strong>Sábado:</strong> 8:30 a.m. – 12:00 p.m.</div>
                             </li>
                             <li class="mb-2 d-flex align-items-start">
-                                <i class="bi bi-calendar-x-fill fs-5 me-3 text-muted mt-1"></i>
+                                <div class="contact-icon me-3 contact-icon-muted">
+                                    <i class="bi bi-calendar-x-fill"></i>
+                                </div>
                                 <div><strong>Domingo:</strong> Cerrado</div>
                             </li>
                         </ul>
@@ -128,10 +197,12 @@
 
             <!-- Columna de Mapa -->
             <div class="col-lg-6">
-                <div class="card shadow-sm border-0 rounded-4 h-100 overflow-hidden">
+                <div class="card shadow-sm border-0 rounded-4 h-100 overflow-hidden map-card">
                     <div class="card-body p-0">
                         <div class="ratio ratio-4x3 h-100">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d848.3414733088097!2d-89.67358486213068!3d13.749421863305551!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f62c7b7e725fd6d%3A0x8b2bed011441157b!2sZetino%20Centro%20Medico!5e1!3m2!1ses!2ssv!4v1762153882179!5m2!1ses!2ssv" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d848.3414733088097!2d-89.67358486213068!3d13.749421863305551!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f62c7b7e725fd6d%3A0x8b2bed011441157b!2sZetino%20Centro%20Medico!5e1!3m2!1ses!2ssv!4v1762153882179!5m2!1ses!2ssv"
+                                    style="border:0;" allowfullscreen="" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
                 </div>
@@ -141,39 +212,237 @@
 </section>
 
 <!-- ======================================= -->
-<!-- 4. SECCIÓN "ACERCA DE" -->
+<!-- 4. SECCIÓN "ACERCA DE" (REDISEÑADA) -->
 <!-- ======================================= -->
-<section class="py-5" style="background-color: #f8f9fa;" id="acerca">
+<section class="py-5 section-light" id="acerca">
     <div class="container px-4 py-5">
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
-                <h2 class="fw-bold" style="color: #0b5e6f;">Confianza y Precisión a su Servicio</h2>
+                <h2 class="fw-bold text-teal mb-3">Confianza y Precisión a su Servicio</h2>
                 <p class="lead text-muted">
                     En Laboratorio Zetino, combinamos más de 20 años de experiencia con tecnología de punta.
-                    Entendemos la importancia de un diagnóstico certero, por lo que cada muestra es
-                    procesada con el más alto estándar de calidad y confidencialidad.
+                    Cada muestra es procesada con el más alto estándar de calidad y confidencialidad.
                 </p>
                 <p class="text-muted">
-                    Nuestro equipo está comprometido no solo con la precisión de los resultados, sino también con
-                    brindar una atención humana y cercana a cada uno de nuestros pacientes.
+                    Nuestro equipo está comprometido no solo con la precisión de los resultados,
+                    sino también con brindar una atención humana y cercana a cada uno de nuestros pacientes.
                 </p>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="about-pill">
+                            <i class="bi bi-award"></i>
+                            <span>Profesionales certificados</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="about-pill">
+                            <i class="bi bi-heart"></i>
+                            <span>Atención cálida y humana</span>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Espacio para futura imagen / ilustración -->
             <div class="col-lg-5">
+                <div class="about-figure">
+                    <div class="about-circle"></div>
+                    <div class="about-card shadow">
+                        <i class="bi bi-activity fs-1 mb-3 text-teal"></i>
+                        <p class="mb-1 fw-semibold">Más de 20 años cuidando la salud de la comunidad.</p>
+                        <span class="small text-muted">Laboratorio Zetino — Compromiso y confianza.</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- ======================================= -->
-<!-- ESTILOS PARA EL DINAMISMO (HOVER) -->
+<!-- ESTILOS PERSONALIZADOS -->
 <!-- ======================================= -->
 <style>
+    /* COLORES BASE */
+    .text-teal {
+        color: #0b5e6f;
+    }
+
+    .btn-lab-primary {
+        background-color: #0b5e6f;
+        border-color: #0b5e6f;
+        color: #ffffff;
+    }
+
+        .btn-lab-primary:hover,
+        .btn-lab-primary:focus {
+            background-color: #094c59;
+            border-color: #094c59;
+            color: #ffffff;
+        }
+
+    /* HERO con imagen de fondo tipo Analiza */
+    .hero-lab {
+        position: relative;
+        min-height: 75vh;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        background-image: linear-gradient(90deg, rgba(3, 43, 53, 0.85) 0%, rgba(3, 43, 53, 0.65) 40%, rgba(3, 43, 53, 0.20) 100%), url('/images/fondo.jpg'); /* tu imagen de fondo */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Ajuste de textos sobre imagen */
+    .hero-title {
+        font-size: clamp(2.4rem, 3.2vw + 1rem, 3.4rem);
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 0.02em;
+    }
+
+    .hero-highlight {
+        background: none;
+        color: #a7f2ff; /* o blanco si prefieres */
+    }
+
+    .hero-subtitle {
+        font-size: 1.05rem;
+        max-width: 36rem;
+        color: #e4f3f8;
+    }
+
+    .hero-secondary-btn {
+        border-color: rgba(255, 255, 255, 0.7);
+        color: #0b5e6f;
+        background-color: #ffffff;
+    }
+
+        .hero-secondary-btn:hover {
+            background-color: #f5fbff;
+            border-color: #ffffff;
+        }
+
+    .hero-badges {
+        color: #e4f3f8;
+    }
+
+    /* SECCIONES GENERALES */
+    .section-light {
+        background-color: #f5fbff;
+    }
+
+    .section-title {
+        font-weight: 700;
+        color: #0b5e6f;
+    }
+
+    .section-subtitle {
+        max-width: 32rem;
+        margin: 0 auto;
+        color: #607b86;
+    }
+
+    /* SERVICIOS */
     .service-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        background: #ffffff;
+        border-radius: 1.5rem;
+        box-shadow: 0 16px 40px rgba(6, 54, 71, 0.05);
+        border: 1px solid #e3f3f6;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
 
         .service-card:hover {
-            transform: translateY(-8px); /* Efecto "lift" */
-            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.1) !important; /* Sombra más pronunciada */
+            transform: translateY(-6px);
+            box-shadow: 0 22px 50px rgba(6, 54, 71, 0.12);
+            border-color: #bcdfe6;
         }
+
+    .service-icon-circle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0b5e6f, #0f8da1);
+        color: #ffffff;
+        font-size: 1.8rem;
+    }
+
+    /* CONTACTO */
+    .contact-card {
+        border-radius: 1.5rem;
+    }
+
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        background: #e0f4fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0b5e6f;
+        flex-shrink: 0;
+    }
+
+    .contact-icon-muted {
+        background: #f0f0f0;
+        color: #7a7a7a;
+    }
+
+    .map-card {
+        border-radius: 1.5rem;
+    }
+
+    /* ACERCA DE */
+    .about-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+        background: #e7f6fa;
+        color: #0b5e6f;
+        font-size: 0.9rem;
+    }
+
+    .about-figure {
+        position: relative;
+        min-height: 220px;
+    }
+
+    .about-circle {
+        position: absolute;
+        inset: 10% 15% auto auto;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #0f8da1 0, #0b5e6f 45%, #032b35 100%);
+        opacity: 0.18;
+    }
+
+    .about-card {
+        position: absolute;
+        inset: auto 0 0 auto;
+        background: #ffffff;
+        border-radius: 1.3rem;
+        padding: 1.4rem 1.6rem;
+        max-width: 260px;
+        border: 1px solid #e3f3f6;
+    }
+
+    /* RESPONSIVE PEQUEÑO */
+    /* En Razor se escribe @@media para que salga media en el HTML */
+    @@media (max-width: 767.98px) {
+        .hero-lab .container
+
+    {
+        padding-top: 3rem;
+    }
+
+    }
 </style>

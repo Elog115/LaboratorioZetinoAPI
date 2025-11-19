@@ -1,57 +1,185 @@
-@model ProyectoZetino.WebMVC.Models.RegisterModel
+﻿@model ProyectoZetino.WebMVC.Models.RegisterModel
 @{
     ViewData["Title"] = "Registro";
 }
-<div class="d-flex justify-content-center align-items-center" style="min-height:60vh;">
-    <div class="card p-4" style="width:480px; border-radius:12px; box-shadow:0 4px 18px rgba(11,94,111,0.06)">
-        <div class="text-center mb-3">
-            <h4 style="color:#0b5e6f">Crear una cuenta</h4>
+
+<div class="register-page d-flex align-items-center justify-content-center">
+    <div class="register-shell shadow-lg">
+
+        <!-- LADO IZQUIERDO: IMAGEN -->
+        <div class="register-left">
+            <div class="register-left-header">
+                <img src="~/images/logo.svg" class="register-left-logo" alt="Laboratorio Zetino" />
+            </div>
+
+            <div class="register-left-body">
+                <h2 class="register-left-title">Únase a nuestra plataforma</h2>
+                <p class="register-left-text">
+                    Cree su cuenta para acceder a resultados clínicos, consultas y servicios especializados.
+                </p>
+            </div>
+
+            <div class="register-left-footer">
+                <small>Laboratorio Zetino — Salud con confianza.</small>
+            </div>
         </div>
-        <form method="post" class="mt-2">
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Nombre</label>
-                    <input asp-for="Nombre" class="form-control" />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
+        <!-- LADO DERECHO: FORMULARIO -->
+        <div class="register-right">
+            <div class="text-center mb-4">
+                <h4 class="register-title">Crear una cuenta</h4>
+                <p class="text-muted small">Complete los datos para registrarse</p>
+            </div>
+
+            <form method="post">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input asp-for="Nombre" class="form-control register-input" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Apellido</label>
+                        <input asp-for="Apellido" class="form-control register-input" />
+                        <span asp-validation-for="Apellido" class="text-danger small"></span>
+                    </div>
                 </div>
 
-                @* ?? CAMPO NUEVO ?? *@
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Apellido</label>
-                    <input asp-for="Apellido" class="form-control" />
-                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control register-input" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Teléfono</label>
+                    <input asp-for="Telefono" class="form-control register-input" placeholder="Ej: 77889900" />
+                    <span asp-validation-for="Telefono" class="text-danger small"></span>
+                </div>
 
-            @* ?? CAMPO NUEVO ?? *@
-            <div class="mb-3">
-                <label class="form-label">Tel�fono</label>
-                <input asp-for="Telefono" class="form-control" placeholder="Ej: 77889900" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Fecha de nacimiento</label>
+                    <input asp-for="FechaNacimiento" type="date" class="form-control register-input" />
+                    <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
+                </div>
 
-            @* ?? CAMPO NUEVO ?? *@
-            <div class="mb-3">
-                <label class="form-label">Fecha de Nacimiento</label>
-                <input asp-for="FechaNacimiento" type="date" class="form-control" />
-                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input asp-for="Password" type="password" class="form-control register-input" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+                <button class="btn btn-register w-100 mb-3">
+                    Registrar
+                </button>
 
-            <div class="d-grid"><button class="btn btn-success">Registrar</button></div>
-            <div class="text-center mt-3"><a href="/Account/Login">Ya tengo cuenta</a></div>
-        </form>
+                <div class="text-center small">
+                    ¿Ya tienes cuenta?
+                    <a href="/Account/Login" class="register-link">Iniciar sesión</a>
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
+
+<style>
+    /* GENERAL */
+    .register-page {
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        background: #f3f7fb;
+    }
+
+    .register-shell {
+        max-width: 980px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 18px;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        border: 1px solid #e3edf3;
+    }
+
+    /* LEFT SIDE (IMAGE) */
+    .register-left {
+        flex: 1 1 45%;
+        padding: 2.5rem 2rem;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        /* Fondo un poco más oscuro para que resalte el texto */
+        background-image: linear-gradient(to bottom, rgba(0, 35, 55, 0.9), rgba(0, 35, 55, 0.95)), url('/images/laboratorio.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+
+    /* RIGHT SIDE */
+    .register-right {
+        flex: 1 1 55%;
+        padding: 2.5rem 2.25rem;
+        background: #ffffff;
+    }
+
+    .register-title {
+        color: #0b5e6f;
+        font-weight: 700;
+    }
+
+    .register-input {
+        border-radius: 10px;
+        border: 1px solid #d5e6ef;
+        background: #f7fbff;
+        padding: .65rem .85rem;
+    }
+
+        .register-input:focus {
+            border-color: #0b5e6f;
+            box-shadow: 0 0 0 .15rem rgba(11,94,111,0.15);
+            background: #ffffff;
+        }
+
+    .btn-register {
+        background-color: #0b5e6f;
+        border-color: #0b5e6f;
+        color: #ffffff;
+        border-radius: 999px;
+        padding: .7rem;
+        font-weight: 600;
+    }
+
+        .btn-register:hover {
+            background-color: #094c59;
+        }
+
+    .register-link {
+        color: #0b5e6f;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .register-shell {
+            max-width: 480px;
+        }
+
+        .register-left {
+            display: none;
+        }
+
+        .register-right {
+            flex: 1 1 100%;
+        }
+    }
+</style>

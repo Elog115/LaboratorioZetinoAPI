@@ -2,27 +2,192 @@
 @{
     ViewData["Title"] = "Login";
 }
-<div class="d-flex justify-content-center align-items-center" style="min-height:60vh;">
-    <div class="card p-4" style="width:380px; border-radius:12px; box-shadow:0 4px 18px rgba(11,94,111,0.08)">
-        <div class="text-center mb-3">
-            <img src="~/images/logo.svg" style="height:56px" />
-            <h4 class="mt-2" style="color:#0b5e6f">Iniciar sesión</h4>
+
+<div class="login-page d-flex align-items-center justify-content-center">
+    <div class="login-shell shadow-lg">
+
+        <!-- LADO IZQUIERDO: IMAGEN + TEXTO -->
+        <div class="login-left">
+            <div class="login-left-header">
+                <img src="~/images/logo.svg" class="login-left-logo" alt="Laboratorio Zetino" />
+            </div>
+
+            <div class="login-left-body">
+                <h2 class="login-left-title">Laboratorio Zetino</h2>
+                <p class="login-left-text">
+                    Resultados confiables, tecnología de punta y un equipo comprometido con su salud.
+                </p>
+            </div>
+
+            <div class="login-left-footer">
+                <small>Empoderando la salud, un análisis a la vez.</small>
+            </div>
         </div>
-        <form method="post" class="mt-2">
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+        <!-- LADO DERECHO: FORMULARIO -->
+        <div class="login-right">
+            <div class="text-center mb-4">
+                <img src="~/images/logo.svg" class="login-logo" alt="Laboratorio Zetino" />
+                <h4 class="mt-2 login-title">Iniciar sesión</h4>
+                <p class="text-muted small mb-0">Ingrese sus credenciales para continuar</p>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="d-grid gap-2">
-                <button class="btn btn-primary">Entrar</button>
-            </div>
-            <div class="text-center mt-3"><a href="/Account/Register">Crear cuenta</a></div>
-        </form>
+
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control login-input" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input asp-for="Password" type="password" class="form-control login-input" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <button class="btn btn-login w-100 mb-3">
+                    Entrar
+                </button>
+
+                <div class="text-center small">
+                    ¿No tienes cuenta?
+                    <a href="/Account/Register" class="login-link">Crear cuenta</a>
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
+
+<style>
+    /* CONTENEDOR GENERAL */
+    .login-page {
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        background: #f3f7fb;
+    }
+
+    .login-shell {
+        max-width: 960px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 18px;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        border: 1px solid #e3edf3;
+    }
+
+    /* LADO IZQUIERDO (IMAGEN) */
+    .login-left {
+        flex: 1 1 45%;
+        padding: 2.5rem 2rem;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        /* Imagen + capa oscura */
+        background-image: linear-gradient(to bottom, rgba(0, 32, 50, 0.90), rgba(0, 32, 50, 0.95)), url('/images/login-lab.jpg'); /* Cambia aquí si usas otra imagen */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* LOGO */
+    .login-left-logo {
+        height: 42px;
+        filter: brightness(1.1);
+    }
+
+    /* TEXTO IZQUIERDO */
+    .login-left-title {
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin-bottom: .5rem;
+        color: #ffffff;
+        text-shadow: 0 3px 6px rgba(0,0,0,0.35);
+    }
+
+    .login-left-text {
+        font-size: .95rem;
+        max-width: 20rem;
+        color: #eaf9ff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+        opacity: 1;
+    }
+
+    .login-left-footer {
+        font-size: .78rem;
+        color: #d8f3ff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+        opacity: 1;
+    }
+
+    /* LADO DERECHO (FORMULARIO) */
+    .login-right {
+        flex: 1 1 55%;
+        padding: 2.5rem 2.25rem;
+        background: #ffffff;
+    }
+
+    .login-logo {
+        height: 50px;
+    }
+
+    .login-title {
+        color: #0b5e6f;
+        font-weight: 700;
+    }
+
+    .login-input {
+        border-radius: 10px;
+        border: 1px solid #d5e6ef;
+        background: #f7fbff;
+        padding: .65rem .85rem;
+    }
+
+        .login-input:focus {
+            border-color: #0b5e6f;
+            box-shadow: 0 0 0 .15rem rgba(11,94,111,0.15);
+            background: #ffffff;
+        }
+
+    .btn-login {
+        background-color: #0b5e6f;
+        border-color: #0b5e6f;
+        color: #ffffff;
+        border-radius: 999px;
+        padding: .7rem;
+        font-weight: 600;
+    }
+
+        .btn-login:hover {
+            background-color: #094c59;
+            border-color: #094c59;
+        }
+
+    .login-link {
+        color: #0b5e6f;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .login-shell {
+            max-width: 480px;
+        }
+
+        .login-left {
+            display: none;
+        }
+
+        .login-right {
+            flex: 1 1 100%;
+        }
+    }
+</style>
