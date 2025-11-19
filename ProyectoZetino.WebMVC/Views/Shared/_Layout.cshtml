@@ -26,7 +26,6 @@
             </button>
 
             <div class="collapse navbar-collapse" id="nav">
-
                 <ul class="navbar-nav ms-auto">
                     @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
                     {
@@ -50,73 +49,129 @@
         @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
         {
             <div class="row">
-                <div class="col-md-2 p-3" style="background:#fff; border-right:1px solid #e6eef8; min-height:80vh;">
+
+                <!-- ============================= -->
+                <!--   MENÚ LATERAL PROFESIONAL    -->
+                <!-- ============================= -->
+                <div class="col-md-2 p-3 shadow-sm"
+                     style="background:#ffffff; border-right:1px solid #e6eef8; min-height:100vh;">
+
+                    <style>
+                        .sidebar-link {
+                            padding: 10px 12px;
+                            border-radius: 8px;
+                            color: #0b4f59 !important;
+                            font-weight: 500;
+                            display: flex;
+                            align-items: center;
+                            transition: all .2s;
+                            text-decoration: none;
+                        }
+
+                            .sidebar-link i {
+                                font-size: 1.1rem;
+                                min-width: 20px;
+                                text-align: center;
+                            }
+
+                            .sidebar-link:hover {
+                                background: #e8f7fa;
+                                color: #087d8a !important;
+                                transform: translateX(3px);
+                            }
+
+                        .submenu .sidebar-link {
+                            padding-left: 32px;
+                            font-size: .95rem;
+                        }
+
+                            .submenu .sidebar-link:hover {
+                                background: #eefaff;
+                            }
+
+                        .sidebar-title {
+                            font-size: .75rem;
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            margin: 14px 4px 6px;
+                            color: #6c8793;
+                        }
+                    </style>
+
                     <ul class="nav flex-column">
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/">
-                                <i class="bi bi-house-door me-2"></i> Inicio
-                            </a>
-                        </li>
 
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Rol">
-                                <i class="bi bi-shield-lock me-2"></i> Roles
-                            </a>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Usuario">
+                        <!-- 🔹 Usuarios -->
+                        <li class="nav-item mb-1">
+                            <a class="sidebar-link" href="/Usuario">
                                 <i class="bi bi-people me-2"></i> Usuarios
                             </a>
                         </li>
 
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Cita">
+                        <!-- 🔹 Roles -->
+                        <li class="nav-item mb-1">
+                            <a class="sidebar-link" href="/Rol">
+                                <i class="bi bi-shield-lock me-2"></i> Roles
+                            </a>
+                        </li>
+
+                        <!-- 🔹 Citas -->
+                        <li class="nav-item mb-1">
+                            <a class="sidebar-link" href="/Cita">
                                 <i class="bi bi-calendar2-check me-2"></i> Citas
                             </a>
                         </li>
 
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Examen">
-                                <i class="bi bi-clipboard-pulse me-2"></i> Exámenes
-                            </a>
+                        <!-- 🔹 Título sección -->
+                        <li class="nav-item">
+                            <div class="sidebar-title">Laboratorio</div>
                         </li>
 
+                        <!-- 🔹 Submenú Laboratorio -->
                         <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/TipoExamen">
-                                <i class="bi bi-list-columns me-2"></i> Tipos de Examen
+                            <a class="sidebar-link"
+                               data-bs-toggle="collapse" href="#submenuLab" role="button">
+                                <i class="bi bi-flask me-2"></i> Módulos
+                                <i class="bi bi-chevron-down ms-auto"></i>
                             </a>
+
+                            <div class="collapse submenu" id="submenuLab">
+
+                                <a class="sidebar-link" href="/Examen">
+                                    <i class="bi bi-clipboard2-pulse me-2"></i> Exámenes
+                                </a>
+
+                                <a class="sidebar-link" href="/OrdenExamen">
+                                    <i class="bi bi-receipt me-2"></i> Orden de Examen
+                                </a>
+
+                                <a class="sidebar-link" href="/Muestra">
+                                    <i class="bi bi-droplet-half me-2"></i> Muestras
+                                </a>
+
+                                <a class="sidebar-link" href="/Resultado">
+                                    <i class="bi bi-file-medical me-2"></i> Resultados
+                                </a>
+
+                                <a class="sidebar-link" href="/TipoExamen">
+                                    <i class="bi bi-list-check me-2"></i> Tipos de Examen
+                                </a>
+
+                                <a class="sidebar-link" href="/TipoMuestra">
+                                    <i class="bi bi-beaker me-2"></i> Tipos de Muestra
+                                </a>
+
+                                <a class="sidebar-link" href="/NotificacionEmail">
+                                    <i class="bi bi-envelope-paper me-2"></i> Monitor de Emails
+                                </a>
+
+                            </div>
                         </li>
 
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/TipoMuestra">
-                                <i class="bi bi-beaker me-2"></i> Tipos de Muestra
-                            </a>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Muestra">
-                                <i class="bi bi-vial me-2"></i> Muestras
-                            </a>
-                        </li>
-
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/NotificacionEmail">
-                                <i class="bi bi-envelope-at me-2"></i> Monitor de Emails
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/OrdenExamen">
-                                <i class="bi bi-receipt-cutoff me-2"></i> Orden de Examen
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link d-flex align-items-center" href="/Resultado">
-                                <i class="bi bi-file-earmark-medical me-2"></i> Resultados
-                            </a>
-                        </li>
                     </ul>
                 </div>
+                <!-- ============================= -->
+                <!-- FIN MENÚ LATERAL              -->
+                <!-- ============================= -->
 
                 <div class="col-md-10 p-4">
                     @RenderBody()
@@ -143,3 +198,4 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
