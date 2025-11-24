@@ -49,7 +49,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             });
         }
 
-        // POST: /Cita/Create
+        // POST: /Cita/Create  (con límite de 35 citas por día)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CitaDto cita)
@@ -67,6 +67,24 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return View(cita);
             }
 
+            // 🔹 NUEVO: validar límite de 35 citas por día
+            var fechaSeleccionada = cita.FechaHora.Value.Date;
+
+            // Traemos todas las citas desde la API (no se toca la API)
+            var todasLasCitas = await _api.GetCitasAsync(null); // o "" si tu método lo usa así
+
+            var cantidadCitasMismoDia = todasLasCitas
+                .Count(c => c.FechaHora.HasValue && c.FechaHora.Value.Date == fechaSeleccionada);
+
+            if (cantidadCitasMismoDia >= 35)
+            {
+                ModelState.AddModelError(string.Empty,
+                    $"Ya se alcanzó el límite de 35 citas para el día {fechaSeleccionada:dd/MM/yyyy}. Por favor seleccione otra fecha.");
+                await CargarUsuarios(cita.IdUsuario);
+                return View(cita);
+            }
+            // 🔹 FIN NUEVO
+
             cita.FechaHora = cita.FechaHora.Value;
             cita.Estado = true;
 
@@ -80,6 +98,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             TempData["Error"] = "❌ Error al crear la cita.";
             return RedirectToAction(nameof(Index));
         }
+
 
         // GET: /Cita/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -155,6 +174,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             });
             ViewBag.Usuarios = new SelectList(items, "Id", "Nombre", seleccionado);
         }
+
         // GET: /Cita/Comprobante/5  -> Genera comprobante PDF de la cita
         [HttpGet]
         public async Task<IActionResult> Comprobante(int id)

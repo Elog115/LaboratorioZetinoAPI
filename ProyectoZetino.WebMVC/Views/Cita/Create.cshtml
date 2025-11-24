@@ -10,9 +10,11 @@
         </h3>
         <hr />
 
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
-            Por favor, corrige los siguientes errores:
-        </div>
+        @* Resumen de errores SIN el texto fijo *@
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+        }
 
         <form asp-action="Create" method="post">
             <div class="row">
