@@ -24,6 +24,11 @@ namespace SisLabZetino.Domain.Entities
         public int IdCita { get; set; }
 
         [Required]
+        [Column("nombre")]
+        [StringLength(150)]
+        public string Nombre { get; set; }
+
+        [Required]
         [Column("fechasolicitud", TypeName = "date")]
         public DateTime FechaSolicitud { get; set; }
 

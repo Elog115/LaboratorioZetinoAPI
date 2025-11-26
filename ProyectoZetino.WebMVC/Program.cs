@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProyectoZetino.WebMVC.Services; // Aseg�rate que el namespace sea correcto
+using ProyectoZetino.WebMVC.Configuration;
+using ProyectoZetino.WebMVC.Services; // Asegúrate que el namespace sea correcto
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,15 +12,15 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 
-// --- ESTA ES LA NUEVA L�GICA ---
+// --- ESTA ES LA NUEVA LÓGICA ---
 // Lee la URL base desde appsettings.json
 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"];
 
-// Verifica si la URL se encontr� en el archivo
+// Verifica si la URL se encontró en el archivo
 if (string.IsNullOrEmpty(baseUrl))
 {
     // Lanza un error si no encuentra el appsettings.json
-    throw new InvalidOperationException("No se encontr� 'ApiSettings:BaseUrl' en el archivo appsettings.json del proyecto MVC.");
+    throw new InvalidOperationException("No se encontró 'ApiSettings:BaseUrl' en el archivo appsettings.json del proyecto MVC.");
 }
 
 // Registrar ApiClient como cliente HTTP tipado
@@ -27,6 +28,18 @@ builder.Services.AddHttpClient<IApiClient, ApiClient>(client =>
 {
     client.BaseAddress = new Uri(baseUrl);
 });
+
+// ✅ MOVER AQUÍ: REGISTRO DE SERVICIOS DE EMAIL
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+// YA NO VA ABAJO ❌
+
+// ---------------------------
+// Construcción de la app
+// ---------------------------
 
 var app = builder.Build();
 
@@ -38,6 +51,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseSession();
@@ -46,6 +60,6 @@ app.UseAuthorization();
 // Ruta por defecto (apuntando a Login)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); 
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

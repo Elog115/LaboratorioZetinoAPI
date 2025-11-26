@@ -15,6 +15,10 @@ namespace ProyectoZetino.WebMVC.Models
         [Display(Name = "Cita")]
         public int IdCita { get; set; }
 
+        [Required(ErrorMessage = "El nombre es obligatorio")]
+        [StringLength(150)]
+        public string Nombre { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "La fecha de solicitud es obligatoria")]
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de Solicitud")]

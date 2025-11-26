@@ -41,6 +41,7 @@ namespace SisLabZetino.Application.Services
             // Actualizar campos
             existente.IdUsuario = orden.IdUsuario;
             existente.IdCita = orden.IdCita;
+            existente.Nombre = orden.Nombre;
             existente.FechaSolicitud = orden.FechaSolicitud;
             existente.Estado = orden.Estado;
 

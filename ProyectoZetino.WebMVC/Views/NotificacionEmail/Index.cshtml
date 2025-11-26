@@ -74,16 +74,34 @@
                             <td class="text-end text-nowrap">
                                 @if (n.Estado)
                                 {
-                                    <a href="/NotificacionEmail/ToggleEstado/@n.IdNotificacion" class="btn btn-sm btn-outline-danger" title="Cancelar (Desactivar)">
+                                    <a href="/NotificacionEmail/ToggleEstado/@n.IdNotificacion"
+                                       class="btn btn-sm btn-outline-danger"
+                                       title="Cancelar (Desactivar)">
                                         <i class="bi bi-toggle-off"></i>
                                     </a>
                                 }
                                 else
                                 {
-                                    <a href="/NotificacionEmail/ToggleEstado/@n.IdNotificacion" class="btn btn-sm btn-outline-success" title="Re-Activar">
+                                    <a href="/NotificacionEmail/ToggleEstado/@n.IdNotificacion"
+                                       class="btn btn-sm btn-outline-success"
+                                       title="Re-Activar">
                                         <i class="bi bi-toggle-on"></i>
                                     </a>
                                 }
+
+                                <!-- ✉ Enviar/reenviar correo con comprobante -->
+                                <a href="/NotificacionEmail/Enviar/@n.IdResultado"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Enviar correo con comprobante">
+                                    <i class="bi bi-envelope-paper"></i>
+                                </a>
+
+                                <!-- 🧾 Ver comprobante PDF -->
+                                <a href="/NotificacionEmail/Comprobante/@n.IdResultado"
+                                   class="btn btn-sm btn-outline-info"
+                                   title="Ver comprobante PDF">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                </a>
                             </td>
                         </tr>
                     }
@@ -107,7 +125,7 @@
     (() => {
         const input   = document.getElementById('txtSearch');
         const clear   = document.getElementById('btnClear');
-        const tbody   = document.getElementById('notificacionesBody'); // <-- CAMBIO
+        const tbody   = document.getElementById('notificacionesBody');
         const noRows  = document.getElementById('noRows');
         const pager   = document.getElementById('pager');
         let page = 1;
@@ -118,18 +136,20 @@
             const q = N(input.value.trim());
             const rows = Array.from(tbody.rows);
             rows.forEach(tr => {
-                // Adaptamos a las nuevas columnas
                 const asunto = N(tr.querySelector('.col-asunto')?.textContent);
                 const estadoEnvio  = N(tr.querySelector('.col-estado-envio')?.textContent);
                 const resId = N(tr.querySelector('.col-resultado-id')?.textContent);
 
-                const show = !q || (asunto && asunto.includes(q)) || Half(estadoEnvio && estadoEnvio.includes(q)) || (resId && resId.includes(q));
+                const show = !q
+                    || (asunto && asunto.includes(q))
+                    || (estadoEnvio && estadoEnvio.includes(q))
+                    || (resId && resId.includes(q));
+
                 tr.dataset.visible = show ? '1' : '0';
             });
             return rows.filter(r => r.dataset.visible !== '0');
         }
 
-        // --- El resto del script (renderPage, buildPager, eventos) es idéntico ---
         function renderPage(){
             const visibles = getVisibleRows();
             const total = visibles.length;

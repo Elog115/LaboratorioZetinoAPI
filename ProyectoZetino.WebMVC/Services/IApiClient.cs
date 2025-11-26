@@ -78,6 +78,8 @@ namespace ProyectoZetino.WebMVC.Services
         Task<ResultadoDto> GetResultadoAsync(int id);
         Task<bool> CreateResultadoAsync(ResultadoDto resultado);
         Task<bool> UpdateResultadoAsync(int id, ResultadoDto resultado);
+        
+        Task<string> CreateNotificacionEmailAsync(NotificacionEmailDto dto);
         // Nota: No hay DeleteResultadoAsync porque usaremos ToggleEstado (que es un Update)
     }
 }

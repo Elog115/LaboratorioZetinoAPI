@@ -20,6 +20,10 @@ namespace SisLabZetino.Domain.Entities
         public int IdExamen { get; set; }
 
         [Required]
+        [Column("idusuario")]
+        public int IdUsuario { get; set; }
+
+        [Required]
         [Column("fechaentrega", TypeName = "date")]
         public DateTime FechaEntrega { get; set; }
 

@@ -36,6 +36,7 @@ namespace SisLabZetino.Application.Services
                 return "Error: Resultado no encontrado";
 
             existente.IdExamen = resultado.IdExamen;
+            existente.IdUsuario = resultado.IdUsuario;
             existente.FechaEntrega = resultado.FechaEntrega;
             existente.Observaciones = resultado.Observaciones;
             existente.ArchivoResultado = resultado.ArchivoResultado;

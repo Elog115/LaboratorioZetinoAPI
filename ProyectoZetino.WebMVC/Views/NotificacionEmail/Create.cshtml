@@ -1,0 +1,81 @@
+﻿@model ProyectoZetino.WebMVC.Models.NotificacionEmailDto
+
+@{
+    ViewData["Title"] = "Nueva Notificación";
+}
+
+<div class="card shadow-sm rounded-3">
+    <div class="card-header py-3">
+        <h5 class="m-0 fw-bold" style="color: #0b5e6f;">
+            <i class="bi bi-envelope-plus-fill me-2"></i>
+            Registrar Nueva Notificación de Email
+        </h5>
+    </div>
+
+    <div class="card-body">
+
+        <form asp-action="Create" class="mt-3">
+
+            <!-- ID Resultado -->
+            <div class="mb-3">
+                <label asp-for="IdResultado" class="form-label"></label>
+                <input asp-for="IdResultado" class="form-control" type="number" min="1"
+                       placeholder="Ej: 101 (ID del resultado asociado)" />
+                <span asp-validation-for="IdResultado" class="text-danger"></span>
+            </div>
+
+            <!-- Asunto -->
+            <div class="mb-3">
+                <label asp-for="Asunto" class="form-label"></label>
+                <input asp-for="Asunto" class="form-control"
+                       placeholder="Ej: Resultado de su examen de laboratorio" />
+                <span asp-validation-for="Asunto" class="text-danger"></span>
+            </div>
+
+            <!-- Mensaje -->
+            <div class="mb-3">
+                <label asp-for="Mensaje" class="form-label"></label>
+                <textarea asp-for="Mensaje" class="form-control" rows="4"
+                          placeholder="Escribe aquí el cuerpo del mensaje que se enviará al paciente..."></textarea>
+                <span asp-validation-for="Mensaje" class="text-danger"></span>
+            </div>
+
+            <!-- Estado de Envío -->
+            <div class="mb-3">
+                <label asp-for="EstadoEnvio" class="form-label"></label>
+                <select asp-for="EstadoEnvio" class="form-select">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Enviado">Enviado</option>
+                    <option value="Error">Error</option>
+                </select>
+                <span asp-validation-for="EstadoEnvio" class="text-danger"></span>
+            </div>
+
+            <!-- Activo -->
+            <div class="form-check mb-3">
+                <input asp-for="Estado" class="form-check-input" type="checkbox" />
+                <label asp-for="Estado" class="form-check-label">
+                    Activa en el monitor de notificaciones
+                </label>
+            </div>
+
+            <hr />
+
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle me-1"></i> Crear Notificación
+            </button>
+            <a class="btn btn-secondary" href="/NotificacionEmail">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

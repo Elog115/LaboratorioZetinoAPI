@@ -11,6 +11,9 @@ namespace ProyectoZetino.WebMVC.Models
         [Display(Name = "Examen")]
         public int IdExamen { get; set; }
 
+        [Display(Name = "Usuario")]
+        public int IdUsuario { get; set; }
+
         [Required(ErrorMessage = "La fecha de entrega es obligatoria.")]
         [Display(Name = "Fecha de Entrega")]
         [DataType(DataType.Date)]
@@ -26,5 +29,7 @@ namespace ProyectoZetino.WebMVC.Models
         public string ArchivoResultado { get; set; }
 
         public bool Estado { get; set; }
+
+       
     }
 }

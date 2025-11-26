@@ -41,6 +41,7 @@ namespace SisLabZetino.Application.Services
 
             existente.IdOrdenExamen = muestra.IdOrdenExamen;
             existente.IdTipoMuestra = muestra.IdTipoMuestra;
+            existente.Nombre = muestra.Nombre;
             existente.Estado = muestra.Estado;
             existente.FechaRecepcion = muestra.FechaRecepcion;
 

@@ -15,6 +15,10 @@ namespace ProyectoZetino.WebMVC.Models // O tu namespace de DTOs
         [Display(Name = "Tipo de Muestra")]
         public int IdTipoMuestra { get; set; }
 
+        [Required(ErrorMessage = "El nombre es obligatorio")]
+        [StringLength(150)]
+        public string Nombre { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "La fecha de recepción es obligatoria.")]
         [Display(Name = "Fecha de Recepción")]
         [DataType(DataType.Date)] // Ayuda a Razor a mostrar un selector de fecha
