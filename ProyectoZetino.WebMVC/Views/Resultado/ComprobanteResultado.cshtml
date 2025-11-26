@@ -1,0 +1,46 @@
+﻿@model ProyectoZetino.WebMVC.Models.ResultadoDto
+
+@{
+    var nombreExamen = ViewBag.NombreExamen as string ?? "No disponible";
+}
+
+<div class="p-3">
+
+    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+        <div>
+            <h5 class="mb-0" style="color:#0b5e6f;">Laboratorio Zetino</h5>
+            <small class="text-muted">Sistema SisLabZetino</small>
+        </div>
+        <div class="text-end">
+            <div class="fw-bold">Comprobante de Resultado</div>
+            <small class="text-muted">Emisión: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+        </div>
+    </div>
+
+    <dl class="row mb-0">
+        <dt class="col-sm-4">ID Resultado:</dt>
+        <dd class="col-sm-8">@Model.IdResultado</dd>
+
+        <dt class="col-sm-4">Examen:</dt>
+        <dd class="col-sm-8">@nombreExamen</dd>
+
+        <dt class="col-sm-4">Fecha de entrega:</dt>
+        <dd class="col-sm-8">@Model.FechaEntrega.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-4">Observaciones:</dt>
+        <dd class="col-sm-8">@Model.Observaciones</dd>
+
+        <dt class="col-sm-4">Estado:</dt>
+        <dd class="col-sm-8">
+            @if (Model.Estado)
+            {
+                <span class="badge bg-success-subtle text-success-emphasis rounded-pill">Activo</span>
+            }
+            else
+            {
+                <span class="badge bg-danger-subtle text-danger-emphasis rounded-pill">Inactivo</span>
+            }
+        </dd>
+    </dl>
+
+</div>

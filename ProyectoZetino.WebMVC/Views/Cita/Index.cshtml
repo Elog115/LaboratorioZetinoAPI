@@ -8,7 +8,6 @@
 
     <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center">
         <h5 class="m-0 fw-bold" style="color: #0b5e6f;">
-            
             <i class="bi bi-calendar2-check me-2"></i>
             Gestión de Citas
         </h5>
@@ -77,10 +76,9 @@
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
 
-                                <!-- 🔄 Cambiar estado (mismo estilo que Rol) -->
+                                <!-- 🔄 Cambiar estado -->
                                 @if (c.Estado)
                                 {
-                                    <!-- Si la cita está ACTIVA → MOSTRAR botón ROJO -->
                                     <a href="/Cita/ToggleEstado/@c.IdCita"
                                        class="btn btn-sm btn-outline-danger"
                                        title="Desactivar">
@@ -89,7 +87,6 @@
                                 }
                                 else
                                 {
-                                    <!-- Si la cita está CANCELADA → MOSTRAR botón VERDE -->
                                     <a href="/Cita/ToggleEstado/@c.IdCita"
                                        class="btn btn-sm btn-outline-success"
                                        title="Activar">
@@ -97,11 +94,11 @@
                                     </a>
                                 }
 
-
-                                <!-- 🖨️ Comprobante -->
+                                <!-- 🧾 Comprobante en modal (HTML) -->
                                 <a class="btn btn-sm btn-outline-secondary"
-                                   href="/Cita/Comprobante/@c.IdCita"
-                                   title="Imprimir comprobante">
+                                   href="javascript:void(0);"
+                                   onclick="abrirComprobanteCita(@c.IdCita)"
+                                   title="Ver comprobante">
                                     <i class="bi bi-printer"></i>
                                 </a>
                             </td>
@@ -200,4 +197,84 @@
 
       renderPage();
     })();
+</script>
+
+<!-- 🪟 Modal para comprobante de cita -->
+<div class="modal fade" id="modalCita" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" id="modalCitaContent">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-file-earmark-text me-2"></i> Comprobante de Cita
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="modalCitaBody">
+                <div class="text-center text-muted py-3">
+                    Cargando comprobante...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="imprimirComprobanteCita()">
+                    <i class="bi bi-printer"></i> Imprimir / Guardar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Para que al imprimir solo salga el contenido del modal */
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #modalCitaContent,
+        #modalCitaContent * {
+            visibility: visible;
+        }
+
+        #modalCita {
+            position: absolute;
+            inset: 0;
+            display: block !important;
+        }
+    }
+</style>
+
+<script>
+    // Cargar el comprobante dentro del modal
+    function abrirComprobanteCita(idCita) {
+        const body = document.getElementById('modalCitaBody');
+        body.innerHTML = '<div class="text-center text-muted py-3">Cargando comprobante...</div>';
+
+        fetch(`/Cita/ComprobanteHtml/${idCita}`)
+            .then(r => {
+                if (!r.ok) throw new Error('Error al cargar el comprobante');
+                return r.text();
+            })
+            .then(html => {
+                body.innerHTML = html;
+                const modal = new bootstrap.Modal(document.getElementById('modalCita'));
+                modal.show();
+            })
+            .catch(err => {
+                console.error(err);
+                body.innerHTML = '<div class="alert alert-danger">No se pudo cargar el comprobante.</div>';
+                const modal = new bootstrap.Modal(document.getElementById('modalCita'));
+                modal.show();
+            });
+    }
+
+    function imprimirComprobanteCita() {
+        window.print();
+    }
 </script>

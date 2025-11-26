@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; // <-- Necesario para SelectList
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoZetino.WebMVC.Models;
 using ProyectoZetino.WebMVC.Services;
-using System.Linq; // <-- Necesario para .Where() y .OrderBy()
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProyectoZetino.WebMVC.Controllers
@@ -22,11 +27,9 @@ namespace ProyectoZetino.WebMVC.Controllers
             ViewData["CurrentFilter"] = searchTerm;
             var resultados = await _api.GetResultadosAsync(searchTerm);
 
-            // --- 👇 LÍNEAS AGREGADAS (ESTA ES LA CORRECCIÓN) 👇 ---
-            // Cargar exámenes para que la vista pueda mostrar la descripción
+            // Cargar exámenes para mostrar la descripción
             var examenes = await _api.GetExamenesAsync();
             ViewBag.ListaExamenes = examenes ?? new List<ExamenDto>();
-            // --- 👆 FIN DE LA CORRECCIÓN 👆 ---
 
             return View(resultados);
         }
@@ -34,7 +37,6 @@ namespace ProyectoZetino.WebMVC.Controllers
         // GET: /Resultado/Create
         public async Task<IActionResult> Create()
         {
-            // Cargamos los exámenes activos para el dropdown
             await CargarExamenesDropdown();
             return View();
         }
@@ -46,7 +48,6 @@ namespace ProyectoZetino.WebMVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Si el modelo falla, recargamos el dropdown y volvemos a la vista
                 await CargarExamenesDropdown(resultado.IdExamen);
                 return View(resultado);
             }
@@ -58,7 +59,6 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return RedirectToAction(nameof(Index));
 
             ModelState.AddModelError("", "Error al crear el resultado.");
-            // Recargamos el dropdown si la creación en API falla
             await CargarExamenesDropdown(resultado.IdExamen);
             return View(resultado);
         }
@@ -70,7 +70,6 @@ namespace ProyectoZetino.WebMVC.Controllers
             if (resultado == null)
                 return NotFound();
 
-            // Cargamos los exámenes y pre-seleccionamos el actual
             await CargarExamenesDropdown(resultado.IdExamen);
             return View(resultado);
         }
@@ -85,7 +84,6 @@ namespace ProyectoZetino.WebMVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Si el modelo falla, recargamos el dropdown
                 await CargarExamenesDropdown(resultado.IdExamen);
                 return View(resultado);
             }
@@ -114,25 +112,117 @@ namespace ProyectoZetino.WebMVC.Controllers
             var success = await _api.UpdateResultadoAsync(id, resultado);
 
             if (!success)
-            {
                 TempData["Error"] = "Error al cambiar el estado del resultado.";
-            }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Resultado/Lista  -> devuelve solo la tabla para AJAX
+        // GET: /Resultado/Lista  -> (si la usas con AJAX, se mantiene)
         [HttpGet]
         public async Task<IActionResult> Lista(string q = null)
         {
             var resultados = await _api.GetResultadosAsync(q);
-            // La vista parcial también necesita la lista de exámenes
             var examenes = await _api.GetExamenesAsync();
             ViewBag.ListaExamenes = examenes ?? new List<ExamenDto>();
 
             return PartialView("_TablaResultados", resultados);
         }
 
+        // 🔹 COMPROBANTE PDF DE RESULTADO (QuestPDF - descarga PDF)
+        // GET: /Resultado/Comprobante/5
+        [HttpGet]
+        public async Task<IActionResult> Comprobante(int id)
+        {
+            // 1. Obtener el resultado
+            var resultado = await _api.GetResultadoAsync(id);
+            if (resultado == null)
+            {
+                TempData["Error"] = "No se encontró el resultado para generar el comprobante.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // 2. Obtener el examen para mostrar nombre
+            var examenes = await _api.GetExamenesAsync();
+            var examen = examenes?.FirstOrDefault(e => e.IdExamen == resultado.IdExamen);
+            var nombreExamen = examen?.Descripcion ?? $"ID examen: {resultado.IdExamen}";
+
+            // 3. Configurar QuestPDF (igual que en Cita)
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var fechaEntregaTexto = resultado.FechaEntrega.ToString("dd/MM/yyyy");
+            var estadoTexto = resultado.Estado ? "Activo" : "Inactivo";
+
+            // 4. Crear el documento PDF
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(30);
+                    page.Size(PageSizes.A5);
+
+                    page.Header()
+                        .Text("Comprobante de Resultado - Laboratorio Zetino")
+                        .SemiBold().FontSize(16).FontColor(Colors.Blue.Darken2)
+                        .AlignCenter();
+
+                    page.Content().PaddingVertical(10).Column(col =>
+                    {
+                        col.Spacing(8);
+
+                        col.Item().Text($"Número de resultado: {resultado.IdResultado}")
+                            .SemiBold();
+
+                        col.Item().Text($"Examen: {nombreExamen}");
+
+                        col.Item().Text($"Fecha de entrega: {fechaEntregaTexto}");
+
+                        col.Item().Text("Observaciones:")
+                            .SemiBold();
+
+                        col.Item().Text(resultado.Observaciones ?? "Sin observaciones registradas.")
+                            .FontSize(11);
+
+                        col.Item().Text($"Estado: {estadoTexto}")
+                            .SemiBold()
+                            .FontColor(resultado.Estado ? Colors.Green.Darken2 : Colors.Red.Darken2);
+
+                        col.Item().PaddingTop(10)
+                            .Text($"Fecha de emisión: {DateTime.Now:dd/MM/yyyy HH:mm}");
+                    });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text("Laboratorio Zetino - Sistema de Resultados")
+                        .FontSize(10)
+                        .FontColor(Colors.Grey.Darken1);
+                });
+            });
+
+            // 5. Generar PDF en memoria
+            var pdfBytes = document.GeneratePdf();
+            var fileName = $"Resultado_{resultado.IdResultado}.pdf";
+
+            return File(pdfBytes, "application/pdf", fileName);
+        }
+
+        // 🔹 NUEVO: COMPROBANTE EN HTML PARA MODAL (DIV HTML + ventana modal)
+        // GET: /Resultado/ComprobanteHtml/5
+        [HttpGet]
+        public async Task<IActionResult> ComprobanteHtml(int id)
+        {
+            var resultado = await _api.GetResultadoAsync(id);
+            if (resultado == null)
+            {
+                return NotFound();
+            }
+
+            var examenes = await _api.GetExamenesAsync();
+            var examen = examenes?.FirstOrDefault(e => e.IdExamen == resultado.IdExamen);
+            ViewBag.NombreExamen = examen?.Descripcion ?? $"ID examen: {resultado.IdExamen}";
+
+            // Retorna SOLO el HTML del comprobante (para inyectarlo en el modal)
+            return PartialView("ComprobanteResultado", resultado);
+        }
 
         // --- MÉTODO HELPER PRIVADO ---
         private async Task CargarExamenesDropdown(object? selectedValue = null)
@@ -149,3 +239,4 @@ namespace ProyectoZetino.WebMVC.Controllers
         }
     }
 }
+

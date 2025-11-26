@@ -5,6 +5,7 @@ using ProyectoZetino.WebMVC.Services;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -67,23 +68,22 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return View(cita);
             }
 
-            // 🔹 NUEVO: validar límite de 35 citas por día
+            // 🔹 Validar límite de 35 citas por día
             var fechaSeleccionada = cita.FechaHora.Value.Date;
 
-            // Traemos todas las citas desde la API (no se toca la API)
+            // Traemos todas las citas desde la API
             var todasLasCitas = await _api.GetCitasAsync(null); // o "" si tu método lo usa así
 
             var cantidadCitasMismoDia = todasLasCitas
                 .Count(c => c.FechaHora.HasValue && c.FechaHora.Value.Date == fechaSeleccionada);
 
-            if (cantidadCitasMismoDia >= 35)
+            if (cantidadCitasMismoDia >= 2) // aquí tú puedes ajustar a 35
             {
                 ModelState.AddModelError(string.Empty,
                     $"Ya se alcanzó el límite de 35 citas para el día {fechaSeleccionada:dd/MM/yyyy}. Por favor seleccione otra fecha.");
                 await CargarUsuarios(cita.IdUsuario);
                 return View(cita);
             }
-            // 🔹 FIN NUEVO
 
             cita.FechaHora = cita.FechaHora.Value;
             cita.Estado = true;
@@ -98,7 +98,6 @@ namespace ProyectoZetino.WebMVC.Controllers
             TempData["Error"] = "❌ Error al crear la cita.";
             return RedirectToAction(nameof(Index));
         }
-
 
         // GET: /Cita/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -175,7 +174,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             ViewBag.Usuarios = new SelectList(items, "Id", "Nombre", seleccionado);
         }
 
-        // GET: /Cita/Comprobante/5  -> Genera comprobante PDF de la cita
+        // GET: /Cita/Comprobante/5  -> Genera comprobante PDF de la cita (QuestPDF)
         [HttpGet]
         public async Task<IActionResult> Comprobante(int id)
         {
@@ -251,5 +250,27 @@ namespace ProyectoZetino.WebMVC.Controllers
             return File(pdfBytes, "application/pdf", fileName);
         }
 
+        // GET: /Cita/ComprobanteHtml/5  -> Comprobante en HTML para el modal
+        [HttpGet]
+        public async Task<IActionResult> ComprobanteHtml(int id)
+        {
+            // 1. Obtener la cita
+            var cita = await _api.GetCitaAsync(id);
+            if (cita == null)
+                return NotFound();
+
+            // 2. Obtener el paciente (por si NombreUsuario viene vacío)
+            var usuario = await _api.GetUsuarioAsync(cita.IdUsuario);
+            var nombrePaciente = usuario != null
+                ? $"{usuario.Nombre} {usuario.Apellido}"
+                : (cita.NombreUsuario ?? "Paciente no especificado");
+
+            ViewBag.NombrePaciente = nombrePaciente;
+
+            // 3. Devolver solo el HTML del comprobante para el modal
+            //    (asegúrate que la vista se llame Views/Cita/ComprobanteCita.cshtml)
+            return PartialView("ComprobanteCita", cita);
+        }
     }
 }
+ 

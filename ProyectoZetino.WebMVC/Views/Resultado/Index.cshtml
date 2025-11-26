@@ -22,6 +22,7 @@
 
     <div class="card-body">
 
+        <!-- 🔍 Filtro -->
         <div class="mb-4">
             <div class="input-group">
                 <input id="txtSearch" type="text" class="form-control"
@@ -37,6 +38,10 @@
         @if (TempData["Error"] != null)
         {
             <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
         }
 
         <div class="table-responsive">
@@ -55,16 +60,25 @@
                     @foreach (var r in Model)
                     {
                         // Buscar el nombre del examen usando la lista del ViewBag
-                        var descripcionExamen = listaExamenes.FirstOrDefault(e => e.IdExamen == r.IdExamen)?.Descripcion ?? ("ID: " + r.IdExamen);
+                        var descripcionExamen = listaExamenes
+                        .FirstOrDefault(e => e.IdExamen == r.IdExamen)?.Descripcion
+                        ?? ("ID: " + r.IdExamen);
 
                         <tr class="@(r.Estado ? "" : "table-secondary text-muted")">
                             <td class="col-examen">@descripcionExamen</td>
                             <td class="col-fecha">@r.FechaEntrega.ToString("dd/MM/yyyy")</td>
                             <td class="col-observaciones">@r.Observaciones</td>
                             <td class="col-archivo">
-                                <a href="@r.ArchivoResultado" target="_blank" class="btn btn-sm btn-outline-info">
-                                    <i class="bi bi-box-arrow-up-right me-1"></i> Ver
-                                </a>
+                                @if (!string.IsNullOrWhiteSpace(r.ArchivoResultado))
+                                {
+                                    <a href="@r.ArchivoResultado" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i> Ver
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin archivo</span>
+                                }
                             </td>
                             <td>
                                 @if (r.Estado)
@@ -77,22 +91,38 @@
                                 }
                             </td>
                             <td class="text-end text-nowrap">
-                                <a class="btn btn-sm btn-outline-primary" href="/Resultado/Edit/@r.IdResultado" title="Editar">
+                                <!-- 📝 Editar -->
+                                <a class="btn btn-sm btn-outline-primary"
+                                   href="/Resultado/Edit/@r.IdResultado"
+                                   title="Editar">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
 
+                                <!-- 🔄 Cambiar estado -->
                                 @if (r.Estado)
                                 {
-                                    <a href="/Resultado/ToggleEstado/@r.IdResultado" class="btn btn-sm btn-outline-danger" title="Desactivar">
+                                    <a href="/Resultado/ToggleEstado/@r.IdResultado"
+                                       class="btn btn-sm btn-outline-danger"
+                                       title="Desactivar">
                                         <i class="bi bi-toggle-off"></i>
                                     </a>
                                 }
                                 else
                                 {
-                                    <a href="/Resultado/ToggleEstado/@r.IdResultado" class="btn btn-sm btn-outline-success" title="Activar">
+                                    <a href="/Resultado/ToggleEstado/@r.IdResultado"
+                                       class="btn btn-sm btn-outline-success"
+                                       title="Activar">
                                         <i class="bi bi-toggle-on"></i>
                                     </a>
                                 }
+
+                                <!-- 🧾 Comprobante en modal (HTML) -->
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   href="javascript:void(0);"
+                                   onclick="abrirComprobante(@r.IdResultado)"
+                                   title="Ver comprobante">
+                                    <i class="bi bi-printer"></i>
+                                </a>
                             </td>
                         </tr>
                     }
@@ -112,28 +142,27 @@
     </div>
 </div>
 
+<!-- 🧠 Script: filtro + paginación -->
 <script>
     (() => {
         const input = document.getElementById('txtSearch');
         const clear = document.getElementById('btnClear');
-        const tbody = document.getElementById('resultadosBody'); // <-- ID Actualizado
+        const tbody = document.getElementById('resultadosBody');
         const noRows = document.getElementById('noRows');
         const pager = document.getElementById('pager');
 
         let page = 1;
         const perPage = 10;
 
-        const N = t => (t || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const N = t => (t || '').toString().toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         function getVisibleRows() {
             const q = N(input.value.trim());
             const rows = Array.from(tbody.rows);
             rows.forEach(tr => {
-                // Columnas a buscar (Actualizadas)
                 const examen = N(tr.querySelector('.col-examen')?.textContent);
                 const obs = N(tr.querySelector('.col-observaciones')?.textContent);
-
-                // Lógica de búsqueda (Actualizada)
                 const show = !q || (examen && examen.includes(q)) || (obs && obs.includes(q));
                 tr.dataset.visible = show ? '1' : '0';
             });
@@ -167,7 +196,11 @@
                 a.href = '#';
                 a.textContent = label;
                 if (!disabled && !active) {
-                    a.addEventListener('click', e => { e.preventDefault(); page = goTo; renderPage(); });
+                    a.addEventListener('click', e => {
+                        e.preventDefault();
+                        page = goTo;
+                        renderPage();
+                    });
                 }
                 li.appendChild(a);
                 pager.appendChild(li);
@@ -180,14 +213,104 @@
             let end = Math.min(totalPages, start + windowSize - 1);
             start = Math.max(1, end - windowSize + 1);
 
-            for (let i = start; i <= end; i++) addItem(i.toString(), false, i === page, i);
+            for (let i = start; i <= end; i++)
+                addItem(i.toString(), false, i === page, i);
 
             addItem('»', page === totalPages, false, page + 1);
         }
 
         input.addEventListener('input', () => { page = 1; renderPage(); });
-        clear.addEventListener('click', () => { input.value = ''; page = 1; renderPage(); input.focus(); });
+        clear.addEventListener('click', () => {
+            input.value = '';
+            page = 1;
+            renderPage();
+            input.focus();
+        });
 
         renderPage();
     })();
 </script>
+
+<!-- 🪟 Modal para comprobante de resultado -->
+<div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" id="modalResultadoContent">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-file-earmark-text me-2"></i> Comprobante de Resultado
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="modalResultadoBody">
+                <div class="text-center text-muted py-3">
+                    Cargando comprobante...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="imprimirComprobante()">
+                    <i class="bi bi-printer"></i> Imprimir / Guardar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+     {
+        body *
+
+    {
+        visibility: hidden;
+    }
+
+    #modalResultadoContent,
+    #modalResultadoContent * {
+        visibility: visible;
+    }
+
+    #modalResultado {
+        position: absolute;
+        inset: 0;
+        display: block !important;
+    }
+
+    }
+</style>
+
+<script>
+    // Cargar el comprobante dentro del modal
+    function abrirComprobante(idResultado) {
+        const body = document.getElementById('modalResultadoBody');
+        body.innerHTML = '<div class="text-center text-muted py-3">Cargando comprobante...</div>';
+
+        fetch(`/Resultado/ComprobanteHtml/${idResultado}`)
+            .then(r => {
+                if (!r.ok) throw new Error('Error al cargar el comprobante');
+                return r.text();
+            })
+            .then(html => {
+                body.innerHTML = html;
+                const modal = new bootstrap.Modal(document.getElementById('modalResultado'));
+                modal.show();
+            })
+            .catch(err => {
+                console.error(err);
+                body.innerHTML = '<div class="alert alert-danger">No se pudo cargar el comprobante.</div>';
+                const modal = new bootstrap.Modal(document.getElementById('modalResultado'));
+                modal.show();
+            });
+    }
+
+    function imprimirComprobante() {
+        window.print();
+    }
+</script>
+
