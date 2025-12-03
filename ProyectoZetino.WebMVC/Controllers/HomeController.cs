@@ -3,6 +3,10 @@ using System.Diagnostics;
 using ProyectoZetino.WebMVC.Models; // (Tu namespace de Modelos)
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using System.Collections.Generic;
+
+// ⭐ Agregamos el namespace donde está IApiClient
+using ProyectoZetino.WebMVC.Services;
 
 namespace ProyectoZetino.WebMVC.Controllers // (Tu namespace de Controladores)
 {
@@ -11,10 +15,18 @@ namespace ProyectoZetino.WebMVC.Controllers // (Tu namespace de Controladores)
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public HomeController(ILogger<HomeController> logger, IHttpContextAccessor httpContextAccessor)
+        // ⭐ NUEVO: cliente para llamar a la API
+        private readonly IApiClient _api;
+
+        // ⭐ Solo agregamos el parámetro IApiClient, lo demás queda igual
+        public HomeController(
+            ILogger<HomeController> logger,
+            IHttpContextAccessor httpContextAccessor,
+            IApiClient api)
         {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
+            _api = api;
         }
 
         public IActionResult Index()
@@ -31,22 +43,33 @@ namespace ProyectoZetino.WebMVC.Controllers // (Tu namespace de Controladores)
             return View();
         }
 
-        // Esta es la nueva acción que controla tu vista Dashboard.cshtml
-        public IActionResult Dashboard()
+        // ⭐ Hacemos Dashboard async para poder llamar a la API
+        public async Task<IActionResult> Dashboard()
         {
             // Verificamos si la cookie de autenticación existe
             var token = _httpContextAccessor.HttpContext.Request.Cookies["AuthToken"];
 
             if (string.IsNullOrEmpty(token))
             {
-                // Si alguien intenta entrar a /Home/Dashboard sin cookie, lo echamos
                 return RedirectToAction("Login", "Account");
             }
 
-            // Si hay token, le mostramos su Dashboard.
+            // Traer citas desde la API
+            var citas = await _api.GetCitasAsync(null);
+
+            // 👇 Versión sencilla (FUNCIONA SIEMPRE, sin usar propiedad Activas todavía)
+            int totalCitas = citas?.Count() ?? 0;
+            int activas = totalCitas;   // por ahora asumimos todas activas
+            int inactivas = 0;          // por ahora ninguna inactiva
+
+            ViewBag.CitasActivas = activas;
+            ViewBag.CitasInactivas = inactivas;
+
             ViewData["Title"] = "Dashboard";
-            return View(); // Esto renderiza /Views/Home/Dashboard.cshtml
+            return View();
         }
+
+
 
         public IActionResult Privacy()
         {

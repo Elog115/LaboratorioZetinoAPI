@@ -2,64 +2,44 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div classclass="row">
+<div class="row">
     <div class="col">
         <h1 class="h3 mb-1" style="color: #0b5e6f;">Panel de Control</h1>
         <p class="mb-4 text-muted">Resumen general del sistema y accesos directos.</p>
     </div>
 </div>
 
-<div class="row">
+<!-- =============================== -->
+<!--          TARJETAS SUPERIORES    -->
+<!-- =============================== -->
 
+<div class="row">
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow-sm h-100 py-2 rounded-3">
-            <div class="card-body">
+            <div class="card-body position-relative">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs fw-bold text-primary text-uppercase mb-1">
-                            Seguridad
-                        </div>
-                        <div class="h5 mb-0 fw-bold text-gray-800">Gestión de Roles</div>
+                        <div class="text-xs fw-bold text-primary text-uppercase mb-1">Citas del día</div>
+                        <div class="h5 mb-0 fw-bold">@ViewBag.CitasDia</div>
                     </div>
                     <div class="col-auto">
-                        <i class="bi bi-shield-lock-fill fs-2 text-gray-300"></i>
+                        <i class="bi bi-calendar2-check fs-3 text-primary"></i>
                     </div>
                 </div>
-                <a href="@Url.Action("Index", "Rol")" class="stretched-link" title="Ir a Roles"></a>
             </div>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-success shadow-sm h-100 py-2 rounded-3">
-            <div class="card-body">
+            <div class="card-body position-relative">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs fw-bold text-success text-uppercase mb-1">
-                            Personal
-                        </div>
-                        <div class="h5 mb-0 fw-bold text-gray-800">Administrar Usuarios</div>
+                        <div class="text-xs fw-bold text-success text-uppercase mb-1">Pacientes atendidos</div>
+                        <div class="h5 mb-0 fw-bold">@ViewBag.PacientesAtendidos</div>
                     </div>
                     <div class="col-auto">
-                        <i class="bi bi-people-fill fs-2 text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow-sm h-100 py-2 rounded-3">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs fw-bold text-info text-uppercase mb-1">
-                            Pacientes (API)
-                        </div>
-                        <div class="h5 mb-0 fw-bold text-gray-800">0 Registrados Hoy</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="bi bi-person-vcard-fill fs-2 text-gray-300"></i>
+                        <i class="bi bi-person-check fs-3 text-success"></i>
                     </div>
                 </div>
             </div>
@@ -68,16 +48,30 @@
 
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow-sm h-100 py-2 rounded-3">
-            <div class="card-body">
+            <div class="card-body position-relative">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs fw-bold text-warning text-uppercase mb-1">
-                            Exámenes (API)
-                        </div>
-                        <div class="h5 mb-0 fw-bold text-gray-800">0 Pendientes</div>
+                        <div class="text-xs fw-bold text-warning text-uppercase mb-1">Resultados pendientes</div>
+                        <div class="h5 mb-0 fw-bold">@ViewBag.ResultadosPendientes</div>
                     </div>
                     <div class="col-auto">
-                        <i class="bi bi-hourglass-split fs-2 text-gray-300"></i>
+                        <i class="bi bi-file-earmark-text fs-3 text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow-sm h-100 py-2 rounded-3">
+            <div class="card-body position-relative">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-bold text-danger text-uppercase mb-1">Pagos pendientes</div>
+                        <div class="h5 mb-0 fw-bold">@ViewBag.PagosPendientes</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-cash-coin fs-3 text-danger"></i>
                     </div>
                 </div>
             </div>
@@ -85,91 +79,120 @@
     </div>
 </div>
 
+<!-- =============================== -->
+<!--       RESUMEN DE ACTIVIDADES     -->
+<!-- =============================== -->
+
+<h4 class="mb-3 fw-bold" style="color: #0b5e6f;">Resumen de actividades</h4>
+
 <div class="row">
-
-    <div class="col-lg-7 mb-4">
-        <div class="card shadow-sm h-100 rounded-3">
-            <div class="card-header py-3" style="background-color: #f8f9fa;">
-                <h6 class="m-0 fw-bold text-primary">Acceso Rápido al CRUD</h6>
-            </div>
-            <div class="card-body d-flex flex-column justify-content-center">
-                <p class="text-muted">Utilice estos enlaces para navegar a las secciones principales de su CRUD.</p>
-                <div class="d-grid gap-2 d-md-flex">
-                    <a href="@Url.Action("Index", "Rol")" class="btn btn-primary btn-icon-split">
-                        <span class="icon text-white-50"><i class="bi bi-shield-lock"></i></span>
-                        <span class="text">Administrar Roles</span>
-                    </a>
-
-                    <a href="#" class="btn btn-success btn-icon-split">
-                        <span class="icon text-white-50"><i class="bi bi-people"></i></span>
-                        <span class="text">Administrar Usuarios</span>
-                    </a>
-                </div>
-            </div>
+    <!-- GRÁFICO: CITAS POR SEMANA -->
+    <div class="col-xl-6 col-md-12 mb-4">
+        <div class="card shadow-sm rounded-3 p-3">
+            <h6 class="fw-bold mb-2">Citas por semana</h6>
+            <canvas id="citasSemanaChart" height="140"></canvas>
         </div>
     </div>
 
-    <div class="col-lg-5 mb-4">
-        <div class="card shadow-sm h-100 rounded-3" style="background-color: #f7fbfd; border: 0;">
-            <div class="card-body p-4 text-center d-flex flex-column justify-content-center">
-
-                <h5 class="fw-bold mt-3" style="color: #0b5e6f;">¡Bienvenido de nuevo!</h5>
-                <p class="text-muted small">
-                    Ha iniciado sesión en el panel de <strong>Laboratorio Zetino</strong>.
-                </p>
-                <p class="text-muted small mb-0">
-                    Recuerde cerrar su sesión al terminar de usar la aplicación.
-                </p>
-            </div>
+    <!-- OTRO GRÁFICO (PUEDES REEMPLAZARLO LUEGO) -->
+    <div class="col-xl-6 col-md-12 mb-4">
+        <div class="card shadow-sm rounded-3 p-3">
+            <h6 class="fw-bold mb-2">Ingresos mensuales</h6>
+            <canvas id="ingresosChart" height="140"></canvas>
         </div>
     </div>
 </div>
 
-<style>
-    /* Clases de borde (no vienen en Bootstrap 5 por defecto) */
-    .border-left-primary {
-        border-left: .25rem solid #4e73df !important;
-    }
+<!-- =============================== -->
+<!--   SCRIPTS DE GRÁFICOS CHART.JS   -->
+<!-- =============================== -->
 
-    .border-left-success {
-        border-left: .25rem solid #1cc88a !important;
-    }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    .border-left-info {
-        border-left: .25rem solid #36b9cc !important;
-    }
+<script>
+    // 🔹 Datos de ejemplo (luego te lo pongo dinámico con tu API)
+    const citasPorSemana = [12, 18, 15, 20, 17, 22];
 
-    .border-left-warning {
-        border-left: .25rem solid #f6c23e !important;
-    }
+    const ctxSemana = document.getElementById('citasSemanaChart').getContext('2d');
 
-    .text-gray-300 {
-        color: #dddfeb !important;
-    }
-
-    .text-gray-800 {
-        color: #5a5c69 !important;
-    }
-
-    .text-xs {
-        font-size: .7rem;
-    }
-
-    /* Estilo para los botones con ícono */
-    .btn-icon-split {
-        display: inline-flex;
-        align-items: center;
-        padding: 0; /* Quitamos padding al botón principal */
-    }
-
-        .btn-icon-split .icon {
-            padding: 0.5rem 0.6rem;
-            background: rgba(0,0,0,0.1); /* Sombra ligera para el ícono */
-            border-top-left-radius: 0.25rem;
-            border-bottom-left-radius: 0.25rem;
+    new Chart(ctxSemana, {
+        type: 'line',
+        data: {
+            labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6'],
+            datasets: [{
+                label: 'Citas',
+                data: citasPorSemana,
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 5,
+                fill: true,
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13,110,253,0.15)',
+                pointBackgroundColor: '#0d6efd',
+                pointBorderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
         }
+    });
+</script>
 
-        .btn-icon-split .text {
-            padding: 0.5rem 1rem; /* Padding solo al texto */
+<script>
+    // 🔹 Gráfico placeholder para ingresos (puedes cambiarlo)
+    const ctxIngresos = document.getElementById('ingresosChart').getContext('2d');
+    new Chart(ctxIngresos, {
+        type: 'bar',
+        data: {
+            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Ingresos',
+                data: [2500, 2700, 2600, 3000, 2800, 3100],
+                backgroundColor: 'rgba(13,110,253,0.4)',
+                borderColor: '#0d6efd',
+                borderWidth: 2
+            }]
         }
-</style>
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Llamar los datos del controlador
+    fetch('/Cita/GetCitasPorSemana')
+        .then(response => response.json())
+        .then(data => {
+            const ctxSemana = document.getElementById('citasSemanaChart').getContext('2d');
+
+            new Chart(ctxSemana, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Citas por semana',
+                        data: data.valores,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        fill: true,
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13,110,253,0.15)',
+                        pointBackgroundColor: '#0d6efd',
+                        pointBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error cargando citas por semana:', error));
+</script>
+
+

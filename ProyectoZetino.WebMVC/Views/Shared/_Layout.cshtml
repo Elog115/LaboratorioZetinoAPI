@@ -8,19 +8,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Laboratorio Zetino</title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- CSS del sitio -->
     <link href="~/css/site.css" rel="stylesheet" />
 
+    <!-- Iconos -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body style="background-color: #f7fbfd;">
+    <!-- NAV SUPERIOR -->
     <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg,#e8f7f5,#eaf3ff);">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="/">
+            <a class="navbar-brand d-flex align-items-center" href="/Home/Dashboard">
                 <img src="~/images/logo.svg" alt="logo" style="height:36px;margin-right:8px" />
                 <span style="font-weight:700; color:#0b5e6f">Laboratorio Zetino</span>
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -45,14 +51,12 @@
         </div>
     </nav>
 
+    <!-- CONTENEDOR PRINCIPAL -->
     <div class="container-fluid">
         @if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken"))
         {
             <div class="row">
-
-                <!-- ============================= -->
-                <!--   MENÚ LATERAL PROFESIONAL    -->
-                <!-- ============================= -->
+                <!-- SIDEBAR -->
                 <div class="col-md-2 p-3 shadow-sm"
                      style="background:#ffffff; border-right:1px solid #e6eef8; min-height:100vh;">
 
@@ -100,84 +104,82 @@
 
                     <ul class="nav flex-column">
 
-                        <!-- 🔹 Usuarios -->
+                        <!-- Dashboard -->
+                        <li class="nav-item mb-1">
+                            <a class="sidebar-link" href="/Home/Dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                            </a>
+                        </li>
+
+                        <!-- Usuarios -->
                         <li class="nav-item mb-1">
                             <a class="sidebar-link" href="/Usuario">
                                 <i class="bi bi-people me-2"></i> Usuarios
                             </a>
                         </li>
 
-                        <!-- 🔹 Roles -->
+                        <!-- Roles -->
                         <li class="nav-item mb-1">
                             <a class="sidebar-link" href="/Rol">
                                 <i class="bi bi-shield-lock me-2"></i> Roles
                             </a>
                         </li>
 
-                        <!-- 🔹 Citas -->
+                        <!-- Citas -->
                         <li class="nav-item mb-1">
                             <a class="sidebar-link" href="/Cita">
                                 <i class="bi bi-calendar2-check me-2"></i> Citas
                             </a>
                         </li>
 
-                        <!-- 🔹 Título sección -->
+                        <!-- Título sección -->
                         <li class="nav-item">
                             <div class="sidebar-title">Laboratorio</div>
                         </li>
 
-                        <!-- 🔹 Submenú Laboratorio -->
+                        <!-- Submenú Laboratorio -->
                         <li class="nav-item mb-2">
-                            <a class="sidebar-link"
-                               data-bs-toggle="collapse" href="#submenuLab" role="button">
+                            <a class="sidebar-link" data-bs-toggle="collapse" href="#submenuLab" role="button">
                                 <i class="bi bi-flask me-2"></i> Módulos
                                 <i class="bi bi-chevron-down ms-auto"></i>
                             </a>
 
                             <div class="collapse submenu" id="submenuLab">
 
-                                <div class="collapse submenu" id="submenuLab">
+                                <a class="sidebar-link" href="/OrdenExamen">
+                                    <i class="bi bi-receipt me-2"></i> Orden de Examen
+                                </a>
 
-                                    <a class="sidebar-link" href="/OrdenExamen">
-                                        <i class="bi bi-receipt me-2"></i> Orden de Examen
-                                    </a>
+                                <a class="sidebar-link" href="/TipoExamen">
+                                    <i class="bi bi-list-check me-2"></i> Tipos de Examen
+                                </a>
 
-                                    <a class="sidebar-link" href="/TipoExamen">
-                                        <i class="bi bi-list-check me-2"></i> Tipos de Examen
-                                    </a>
+                                <a class="sidebar-link" href="/Examen">
+                                    <i class="bi bi-clipboard2-pulse me-2"></i> Exámenes
+                                </a>
 
-                                    <a class="sidebar-link" href="/Examen">
-                                        <i class="bi bi-clipboard2-pulse me-2"></i> Exámenes
-                                    </a>
-                                    
-                                    <a class="sidebar-link" href="/TipoMuestra">
-                                        <i class="bi bi-beaker me-2"></i> Tipos de Muestra
-                                    </a>
+                                <a class="sidebar-link" href="/TipoMuestra">
+                                    <i class="bi bi-beaker me-2"></i> Tipos de Muestra
+                                </a>
 
-                                    <a class="sidebar-link" href="/Muestra">
-                                        <i class="bi bi-droplet-half me-2"></i> Muestras
-                                    </a>
+                                <a class="sidebar-link" href="/Muestra">
+                                    <i class="bi bi-droplet-half me-2"></i> Muestras
+                                </a>
 
-                                    <a class="sidebar-link" href="/Resultado">
-                                        <i class="bi bi-file-medical me-2"></i> Resultados
-                                    </a>
+                                <a class="sidebar-link" href="/Resultado">
+                                    <i class="bi bi-file-medical me-2"></i> Resultados
+                                </a>
 
-                                    <a class="sidebar-link" href="/NotificacionEmail">
-                                        <i class="bi bi-envelope-paper me-2"></i> Monitor de Emails
-                                    </a>
-
-                                </div>
-
-
+                                <a class="sidebar-link" href="/NotificacionEmail">
+                                    <i class="bi bi-envelope-paper me-2"></i> Monitor de Emails
+                                </a>
                             </div>
                         </li>
 
                     </ul>
                 </div>
-                <!-- ============================= -->
-                <!-- FIN MENÚ LATERAL              -->
-                <!-- ============================= -->
 
+                <!-- CONTENIDO -->
                 <div class="col-md-10 p-4">
                     @RenderBody()
                 </div>
@@ -193,14 +195,21 @@
         }
     </div>
 
+    <!-- FOOTER -->
     <footer class="text-center p-3 mt-4" style="background:#ffffff; border-top:1px solid #e6eef8;">
         &copy; @DateTime.Now.Year - Laboratorio Zetino
     </footer>
 
+    <!-- Scripts base -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js disponible para el dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+
 
