@@ -586,16 +586,20 @@ namespace ProyectoZetino.WebMVC.Services
             var response = await _httpClient.PutAsJsonAsync($"api/resultado/{id}", payload);
             return response.IsSuccessStatusCode;
         }
-        public async Task<string> CreateNotificacionEmailAsync(NotificacionEmailDto dto)
+        public async Task<string> CreateNotificacionEmailAsync(NotificacionEmailDto notificacion)
         {
-            // Ajusta la ruta "NotificacionEmail" si tu endpoint se llama distinto
-            var response = await _httpClient.PostAsJsonAsync("NotificacionEmail", dto);
+            var response = await _httpClient.PostAsJsonAsync(
+                "api/notificacion-email",   // ✅ MISMA QUE EN EL CONTROLADOR
+                notificacion
+            );
 
             if (response.IsSuccessStatusCode)
                 return "OK";
 
-            var content = await response.Content.ReadAsStringAsync();
-            return $"Error al crear notificación: {content}";
+            var body = await response.Content.ReadAsStringAsync();
+            return $"Error {(int)response.StatusCode} ({response.StatusCode}): {body}";
         }
+
+
     }
 }

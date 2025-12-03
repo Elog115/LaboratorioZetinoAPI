@@ -38,6 +38,7 @@ namespace ProyectoZetino.WebMVC.Controllers
         public async Task<IActionResult> Create()
         {
             await CargarExamenesDropdown();
+            await CargarUsuariosDropdown();              // 🆕 cargar pacientes
             return View();
         }
 
@@ -49,6 +50,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             if (!ModelState.IsValid)
             {
                 await CargarExamenesDropdown(resultado.IdExamen);
+                await CargarUsuariosDropdown(resultado.IdUsuario);   // 🆕 recargar pacientes
                 return View(resultado);
             }
 
@@ -60,6 +62,7 @@ namespace ProyectoZetino.WebMVC.Controllers
 
             ModelState.AddModelError("", "Error al crear el resultado.");
             await CargarExamenesDropdown(resultado.IdExamen);
+            await CargarUsuariosDropdown(resultado.IdUsuario);       // 🆕 también aquí
             return View(resultado);
         }
 
@@ -71,6 +74,7 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return NotFound();
 
             await CargarExamenesDropdown(resultado.IdExamen);
+            await CargarUsuariosDropdown(resultado.IdUsuario);       // 🆕 para el combo en Edit
             return View(resultado);
         }
 
@@ -85,6 +89,7 @@ namespace ProyectoZetino.WebMVC.Controllers
             if (!ModelState.IsValid)
             {
                 await CargarExamenesDropdown(resultado.IdExamen);
+                await CargarUsuariosDropdown(resultado.IdUsuario);   // 🆕 recargar combo
                 return View(resultado);
             }
 
@@ -94,6 +99,7 @@ namespace ProyectoZetino.WebMVC.Controllers
 
             ModelState.AddModelError("", "Error al actualizar el resultado.");
             await CargarExamenesDropdown(resultado.IdExamen);
+            await CargarUsuariosDropdown(resultado.IdUsuario);       // 🆕 también aquí
             return View(resultado);
         }
 
@@ -117,23 +123,22 @@ namespace ProyectoZetino.WebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Resultado/Lista  -> (si la usas con AJAX, se mantiene)
+        // GET: /Resultado/Lista
         [HttpGet]
         public async Task<IActionResult> Lista(string q = null)
         {
             var resultados = await _api.GetResultadosAsync(q);
             var examenes = await _api.GetExamenesAsync();
+            var usuarios = await _api.GetUsuariosAsync();
             ViewBag.ListaExamenes = examenes ?? new List<ExamenDto>();
-
+            ViewBag.ListaUsuarios = usuarios ?? new List<UsuarioDto>();
             return PartialView("_TablaResultados", resultados);
         }
 
         // 🔹 COMPROBANTE PDF DE RESULTADO (QuestPDF - descarga PDF)
-        // GET: /Resultado/Comprobante/5
         [HttpGet]
         public async Task<IActionResult> Comprobante(int id)
         {
-            // 1. Obtener el resultado
             var resultado = await _api.GetResultadoAsync(id);
             if (resultado == null)
             {
@@ -141,18 +146,15 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // 2. Obtener el examen para mostrar nombre
             var examenes = await _api.GetExamenesAsync();
             var examen = examenes?.FirstOrDefault(e => e.IdExamen == resultado.IdExamen);
             var nombreExamen = examen?.Descripcion ?? $"ID examen: {resultado.IdExamen}";
 
-            // 3. Configurar QuestPDF (igual que en Cita)
             QuestPDF.Settings.License = LicenseType.Community;
 
             var fechaEntregaTexto = resultado.FechaEntrega.ToString("dd/MM/yyyy");
             var estadoTexto = resultado.Estado ? "Activo" : "Inactivo";
 
-            // 4. Crear el documento PDF
             var document = Document.Create(container =>
             {
                 container.Page(page =>
@@ -198,15 +200,13 @@ namespace ProyectoZetino.WebMVC.Controllers
                 });
             });
 
-            // 5. Generar PDF en memoria
             var pdfBytes = document.GeneratePdf();
             var fileName = $"Resultado_{resultado.IdResultado}.pdf";
 
             return File(pdfBytes, "application/pdf", fileName);
         }
 
-        // 🔹 NUEVO: COMPROBANTE EN HTML PARA MODAL (DIV HTML + ventana modal)
-        // GET: /Resultado/ComprobanteHtml/5
+        // 🔹 COMPROBANTE EN HTML PARA MODAL
         [HttpGet]
         public async Task<IActionResult> ComprobanteHtml(int id)
         {
@@ -220,11 +220,11 @@ namespace ProyectoZetino.WebMVC.Controllers
             var examen = examenes?.FirstOrDefault(e => e.IdExamen == resultado.IdExamen);
             ViewBag.NombreExamen = examen?.Descripcion ?? $"ID examen: {resultado.IdExamen}";
 
-            // Retorna SOLO el HTML del comprobante (para inyectarlo en el modal)
             return PartialView("ComprobanteResultado", resultado);
         }
 
-        // --- MÉTODO HELPER PRIVADO ---
+        // --- MÉTODOS HELPER PRIVADOS ---
+
         private async Task CargarExamenesDropdown(object? selectedValue = null)
         {
             var examenes = await _api.GetExamenesAsync();
@@ -237,6 +237,20 @@ namespace ProyectoZetino.WebMVC.Controllers
                 selectedValue
             );
         }
+
+        // 🆕 Helper para llenar el combo de pacientes
+        private async Task CargarUsuariosDropdown(object? selectedValue = null)
+        {
+            var usuarios = await _api.GetUsuariosAsync();
+
+            ViewBag.Usuarios = new SelectList(
+                usuarios
+                    .Where(u => u.Estado)             // si tu DTO tiene Estado
+                    .OrderBy(u => u.Nombre),
+                "IdUsuario",
+                "Nombre",                            // o $"{u.Nombre} {u.Apellido}" si lo tienes
+                selectedValue
+            );
+        }
     }
 }
-

@@ -111,36 +111,22 @@
                             </a>
                         </li>
 
-                        <!-- Usuarios -->
-                        <li class="nav-item mb-1">
-                            <a class="sidebar-link" href="/Usuario">
-                                <i class="bi bi-people me-2"></i> Usuarios
-                            </a>
-                        </li>
-
-                        <!-- Roles -->
-                        <li class="nav-item mb-1">
-                            <a class="sidebar-link" href="/Rol">
-                                <i class="bi bi-shield-lock me-2"></i> Roles
-                            </a>
-                        </li>
-
-                        <!-- Citas -->
+                        <!-- Citas (acceso directo) -->
                         <li class="nav-item mb-1">
                             <a class="sidebar-link" href="/Cita">
                                 <i class="bi bi-calendar2-check me-2"></i> Citas
                             </a>
                         </li>
 
-                        <!-- Título sección -->
+                        <!-- Título sección Procesos -->
                         <li class="nav-item">
-                            <div class="sidebar-title">Laboratorio</div>
+                            <div class="sidebar-title">Procesos</div>
                         </li>
 
-                        <!-- Submenú Laboratorio -->
+                        <!-- Submenú Procesos / Laboratorio -->
                         <li class="nav-item mb-2">
                             <a class="sidebar-link" data-bs-toggle="collapse" href="#submenuLab" role="button">
-                                <i class="bi bi-flask me-2"></i> Módulos
+                                <i class="bi bi-flask me-2"></i> Procesos de Laboratorio
                                 <i class="bi bi-chevron-down ms-auto"></i>
                             </a>
 
@@ -172,6 +158,30 @@
 
                                 <a class="sidebar-link" href="/NotificacionEmail">
                                     <i class="bi bi-envelope-paper me-2"></i> Monitor de Emails
+                                </a>
+                            </div>
+                        </li>
+
+                        <!-- Título sección Administración -->
+                        <li class="nav-item">
+                            <div class="sidebar-title">Administración</div>
+                        </li>
+
+                        <!-- Submenú Administración (Usuarios/Roles) -->
+                        <li class="nav-item mb-2">
+                            <a class="sidebar-link" data-bs-toggle="collapse" href="#submenuAdmin" role="button">
+                                <i class="bi bi-gear me-2"></i> Administración
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+
+                            <div class="collapse submenu" id="submenuAdmin">
+
+                                <a class="sidebar-link" href="/Usuario">
+                                    <i class="bi bi-people me-2"></i> Usuarios
+                                </a>
+
+                                <a class="sidebar-link" href="/Rol">
+                                    <i class="bi bi-shield-lock me-2"></i> Roles
                                 </a>
                             </div>
                         </li>
@@ -210,6 +220,3 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
-
-
-

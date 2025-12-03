@@ -22,6 +22,16 @@
                 <span asp-validation-for="IdExamen" class="text-danger"></span>
             </div>
 
+            <!-- 🆕 Campo agregado: Paciente -->
+            <div class="mb-3">
+                <label asp-for="IdUsuario" class="form-label"></label>
+                <select asp-for="IdUsuario" class="form-select" asp-items="ViewBag.Usuarios">
+                    <option value="">-- Seleccione un Paciente --</option>
+                </select>
+                <span asp-validation-for="IdUsuario" class="text-danger"></span>
+            </div>
+            <!-- 🆕 FIN CAMPO -->
+
             <div class="mb-3">
                 <label asp-for="FechaEntrega" class="form-label"></label>
                 <input asp-for="FechaEntrega" class="form-control" type="date" />

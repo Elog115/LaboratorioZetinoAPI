@@ -10,6 +10,14 @@
         <h5 class="m-0 fw-bold" style="color: #0b5e6f;">
             <i class="bi bi-envelope-at me-2"></i> Monitor de Notificaciones por Email
         </h5>
+
+        <!-- 🔹 Botón NUEVA NOTIFICACIÓN -->
+        <a class="btn btn-success btn-icon-split" href="/NotificacionEmail/Create">
+            <span class="icon text-white-50">
+                <i class="bi bi-plus-circle"></i>
+            </span>
+            <span class="text">Nueva Notificación</span>
+        </a>
     </div>
 
     <div class="card-body">
@@ -71,6 +79,7 @@
                                     <span class="badge bg-danger-subtle text-danger-emphasis rounded-pill">Inactivo</span>
                                 }
                             </td>
+
                             <td class="text-end text-nowrap">
                                 @if (n.Estado)
                                 {
@@ -89,14 +98,14 @@
                                     </a>
                                 }
 
-                                <!-- ✉ Enviar/reenviar correo con comprobante -->
+                                <!-- ✉ Enviar correo -->
                                 <a href="/NotificacionEmail/Enviar/@n.IdResultado"
                                    class="btn btn-sm btn-outline-primary"
                                    title="Enviar correo con comprobante">
                                     <i class="bi bi-envelope-paper"></i>
                                 </a>
 
-                                <!-- 🧾 Ver comprobante PDF -->
+                                <!-- 🧾 Ver comprobante -->
                                 <a href="/NotificacionEmail/Comprobante/@n.IdResultado"
                                    class="btn btn-sm btn-outline-info"
                                    title="Ver comprobante PDF">
@@ -130,15 +139,20 @@
         const pager   = document.getElementById('pager');
         let page = 1;
         const perPage = 10;
-        const N = t => (t || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
-        function getVisibleRows(){
+        const N = t => (t || '').toString()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+
+        function getVisibleRows() {
             const q = N(input.value.trim());
             const rows = Array.from(tbody.rows);
+
             rows.forEach(tr => {
-                const asunto = N(tr.querySelector('.col-asunto')?.textContent);
-                const estadoEnvio  = N(tr.querySelector('.col-estado-envio')?.textContent);
-                const resId = N(tr.querySelector('.col-resultado-id')?.textContent);
+                const asunto      = N(tr.querySelector('.col-asunto')?.textContent);
+                const estadoEnvio = N(tr.querySelector('.col-estado-envio')?.textContent);
+                const resId       = N(tr.querySelector('.col-resultado-id')?.textContent);
 
                 const show = !q
                     || (asunto && asunto.includes(q))
@@ -147,46 +161,78 @@
 
                 tr.dataset.visible = show ? '1' : '0';
             });
+
             return rows.filter(r => r.dataset.visible !== '0');
         }
 
-        function renderPage(){
+        function renderPage() {
             const visibles = getVisibleRows();
             const total = visibles.length;
             const totalPages = Math.max(1, Math.ceil(total / perPage));
+
             if (page > totalPages) page = totalPages;
+
             Array.from(tbody.rows).forEach(r => r.style.display = 'none');
+
             const start = (page - 1) * perPage;
             visibles.slice(start, start + perPage).forEach(r => r.style.display = '');
+
             noRows.style.display = total === 0 ? '' : 'none';
             buildPager(totalPages);
         }
-        function buildPager(totalPages){
+
+        function buildPager(totalPages) {
             pager.innerHTML = '';
             if (totalPages <= 1) return;
+
             const addItem = (label, disabled, active, goTo) => {
                 const li = document.createElement('li');
                 li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+
                 const a = document.createElement('a');
                 a.className = 'page-link';
                 a.href = '#';
                 a.textContent = label;
+
                 if (!disabled && !active) {
-                    a.addEventListener('click', e => { e.preventDefault(); page = goTo; renderPage(); });
+                    a.addEventListener('click', e => {
+                        e.preventDefault();
+                        page = goTo;
+                        renderPage();
+                    });
                 }
+
                 li.appendChild(a);
                 pager.appendChild(li);
             };
+
             addItem('«', page === 1, false, page - 1);
+
             const windowSize = 7;
             let start = Math.max(1, page - Math.floor(windowSize / 2));
             let end   = Math.min(totalPages, start + windowSize - 1);
             start     = Math.max(1, end - windowSize + 1);
-            for (let i = start; i <= end; i++) addItem(i.toString(), false, i === page, i);
+
+            for (let i = start; i <= end; i++) {
+                addItem(i.toString(), false, i === page, i);
+            }
+
             addItem('»', page === totalPages, false, page + 1);
         }
-        input.addEventListener('input', () => { page = 1; renderPage(); });
-        clear.addEventListener('click', () => { input.value = ''; page = 1; renderPage(); input.focus(); });
+
+        input.addEventListener('input', () => {
+            page = 1;
+            renderPage();
+        });
+
+        clear.addEventListener('click', () => {
+            input.value = '';
+            page = 1;
+            renderPage();
+            input.focus();
+        });
+
         renderPage();
     })();
 </script>
+ 

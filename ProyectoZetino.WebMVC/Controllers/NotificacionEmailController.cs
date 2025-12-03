@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;   // 👈 IMPORTANTE para SelectList
 using ProyectoZetino.WebMVC.Models;
 using ProyectoZetino.WebMVC.Services;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace ProyectoZetino.WebMVC.Controllers
 {
     public class NotificacionEmailController : Controller
     {
-
         private readonly IApiClient _api;
         private readonly IEmailService _emailService;
 
@@ -24,20 +24,77 @@ namespace ProyectoZetino.WebMVC.Controllers
             _emailService = emailService;
         }
 
-
         // GET: /NotificacionEmail/
         public async Task<IActionResult> Index(string searchTerm)
         {
-            // El filtro JS client-side usará esto
             ViewData["CurrentFilter"] = searchTerm;
 
-            // La API no usa 'searchTerm', así que llamamos sin él
             var notificaciones = await _api.GetNotificacionesEmailAsync();
             return View(notificaciones);
         }
 
+        // GET: /NotificacionEmail/Create
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var modelo = new NotificacionEmailDto
+            {
+                Estado = true,
+                EstadoEnvio = "Pendiente"
+            };
+
+            // 👇 Cargamos la lista de resultados para el <select>
+            await CargarResultadosDropdown();
+
+            return View(modelo);
+        }
+
+        // POST: /NotificacionEmail/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(NotificacionEmailDto notificacion)
+        {
+            // 1) Validación de modelo
+            if (!ModelState.IsValid)
+            {
+                await CargarResultadosDropdown(notificacion.IdResultado);
+                return View(notificacion);
+            }
+
+            // 2) Valores por defecto
+            if (string.IsNullOrWhiteSpace(notificacion.EstadoEnvio))
+                notificacion.EstadoEnvio = "Pendiente";
+
+            // Por si acaso
+            if (!notificacion.Estado)
+                notificacion.Estado = true;
+
+            // 3) Llamar a la API
+            var respuesta = await _api.CreateNotificacionEmailAsync(notificacion);
+
+            // 4) Analizar respuesta de la API
+            if (string.IsNullOrWhiteSpace(respuesta))
+            {
+                TempData["Error"] = "Error al crear notificación: la API no devolvió respuesta.";
+                await CargarResultadosDropdown(notificacion.IdResultado);
+                return View(notificacion);
+            }
+
+            if (respuesta.StartsWith("Error", StringComparison.OrdinalIgnoreCase))
+            {
+                // Aquí ya te va a mostrar el detalle que devuelva tu API
+                TempData["Error"] = "Error al crear notificación: " + respuesta;
+                await CargarResultadosDropdown(notificacion.IdResultado);
+                return View(notificacion);
+            }
+
+            // 5) Éxito
+            TempData["Success"] = "✅ Notificación registrada correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+
+
         // GET: /NotificacionEmail/ToggleEstado/5
-        // (Para el "borrado lógico" o cancelación)
         [HttpGet]
         public async Task<IActionResult> ToggleEstado(int id)
         {
@@ -48,7 +105,6 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Invertimos el estado
             notificacion.Estado = !notificacion.Estado;
 
             var resultado = await _api.UpdateNotificacionEmailAsync(id, notificacion);
@@ -61,16 +117,11 @@ namespace ProyectoZetino.WebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // NO HAY ACCIONES CREATE O EDIT
-
-
-
-        // 🔹 NUEVO MÉTODO: COMPROBANTE PDF DEL RESULTADO (MISMO DISEÑO QUE EN ResultadoController)
+        // 🔹 COMPROBANTE PDF DEL RESULTADO
         // GET: /NotificacionEmail/Comprobante/5   (5 = IdResultado)
         [HttpGet]
         public async Task<IActionResult> Comprobante(int idResultado)
         {
-            // 1. Obtener el resultado por IdResultado
             var resultado = await _api.GetResultadoAsync(idResultado);
             if (resultado == null)
             {
@@ -78,18 +129,15 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // 2. Obtener el examen para mostrar el nombre
             var examenes = await _api.GetExamenesAsync();
             var examen = examenes?.FirstOrDefault(e => e.IdExamen == resultado.IdExamen);
             var nombreExamen = examen?.Descripcion ?? $"ID examen: {resultado.IdExamen}";
 
-            // 3. Configurar QuestPDF
             QuestPDF.Settings.License = LicenseType.Community;
 
             var fechaEntregaTexto = resultado.FechaEntrega.ToString("dd/MM/yyyy");
             var estadoTexto = resultado.Estado ? "Activo" : "Inactivo";
 
-            // 4. Crear el documento PDF (misma estructura que usas en ResultadoController)
             var document = Document.Create(container =>
             {
                 container.Page(page =>
@@ -135,19 +183,17 @@ namespace ProyectoZetino.WebMVC.Controllers
                 });
             });
 
-            // 5. Generar PDF en memoria
             var pdfBytes = document.GeneratePdf();
             var fileName = $"Resultado_{resultado.IdResultado}.pdf";
 
-            // 6. Retornar el archivo PDF
             return File(pdfBytes, "application/pdf", fileName);
         }
+
         // ✅ ENVIAR COMPROBANTE PDF DEL RESULTADO POR CORREO
         // GET: /NotificacionEmail/Enviar/5   (5 = IdResultado)
         [HttpGet]
         public async Task<IActionResult> Enviar(int idResultado)
         {
-            // 1. Obtener el resultado
             var resultado = await _api.GetResultadoAsync(idResultado);
             if (resultado == null)
             {
@@ -155,12 +201,10 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return RedirectToAction("Index", "Resultado");
             }
 
-            // 2. Obtener el examen para el nombre
             var examenes = await _api.GetExamenesAsync();
             var examen = examenes?.FirstOrDefault(e => e.IdExamen == resultado.IdExamen);
             var nombreExamen = examen?.Descripcion ?? $"ID examen: {resultado.IdExamen}";
 
-            // 3. Obtener el paciente desde la API de usuarios usando IdUsuario
             var usuarios = await _api.GetUsuariosAsync();
             var paciente = usuarios.FirstOrDefault(u => u.IdUsuario == resultado.IdUsuario);
 
@@ -170,7 +214,7 @@ namespace ProyectoZetino.WebMVC.Controllers
                 return RedirectToAction("Index", "Resultado");
             }
 
-            if (string.IsNullOrWhiteSpace(paciente.Email)) // ajusta si tu propiedad se llama distinto
+            if (string.IsNullOrWhiteSpace(paciente.Email))
             {
                 TempData["Error"] = "El paciente no tiene un correo electrónico registrado.";
                 return RedirectToAction("Index", "Resultado");
@@ -179,7 +223,6 @@ namespace ProyectoZetino.WebMVC.Controllers
             string nombrePaciente = $"{paciente.Nombre} {paciente.Apellido}".Trim();
             string emailPaciente = paciente.Email;
 
-            // 4. Generar el PDF (igual que en Comprobante)
             QuestPDF.Settings.License = LicenseType.Community;
 
             var fechaEntregaTexto = resultado.FechaEntrega.ToString("dd/MM/yyyy");
@@ -233,7 +276,6 @@ namespace ProyectoZetino.WebMVC.Controllers
             var pdfBytes = document.GeneratePdf();
             var fileName = $"Resultado_{resultado.IdResultado}.pdf";
 
-            // 5. Asunto y cuerpo del correo
             string asunto = $"Resultado de examen - {nombrePaciente}";
             string mensajeHtml = $@"
         <p>Estimado(a) <strong>{nombrePaciente}</strong>,</p>
@@ -242,7 +284,6 @@ namespace ProyectoZetino.WebMVC.Controllers
         <p>Saludos cordiales,<br/>Laboratorio Zetino</p>
     ";
 
-            // 6. Crear registro de notificación
             var notificacion = new NotificacionEmailDto
             {
                 IdResultado = idResultado,
@@ -254,7 +295,6 @@ namespace ProyectoZetino.WebMVC.Controllers
 
             try
             {
-                // 7. Enviar correo con adjunto
                 await _emailService.SendEmailWithAttachmentAsync(
                     emailPaciente,
                     asunto,
@@ -272,15 +312,27 @@ namespace ProyectoZetino.WebMVC.Controllers
                 TempData["Error"] = "❌ Ocurrió un error al enviar el correo. Verifica la configuración de correo.";
             }
 
-            // 8. Guardar notificación en la API
             var respuesta = await _api.CreateNotificacionEmailAsync(notificacion);
             if (respuesta.StartsWith("Error"))
             {
                 TempData["Error"] = respuesta;
             }
-
+             
             return RedirectToAction("Index", "Resultado");
         }
 
+        // 🔹 Helper privado para llenar el dropdown de resultados
+        private async Task CargarResultadosDropdown(object selectedValue = null)
+        {
+            var resultados = await _api.GetResultadosAsync(null) ?? Enumerable.Empty<ResultadoDto>();
+
+            // De momento mostramos solo el IdResultado en el combo
+            ViewBag.Resultados = new SelectList(
+                resultados.OrderBy(r => r.IdResultado),
+                "IdResultado",
+                "IdResultado",
+                selectedValue
+            );
+        }
     }
 }

@@ -5,22 +5,40 @@
 }
 
 <div class="card shadow-sm rounded-3">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h5 class="m-0 fw-bold" style="color: #0b5e6f;">
             <i class="bi bi-envelope-plus-fill me-2"></i>
             Registrar Nueva Notificación de Email
         </h5>
+        <a class="btn btn-outline-secondary btn-sm" href="/NotificacionEmail">
+            <i class="bi bi-arrow-left-circle me-1"></i> Volver
+        </a>
     </div>
 
     <div class="card-body">
 
-        <form asp-action="Create" class="mt-3">
+        @* Mensaje de error de la API *@
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
+
+        @* Resumen de validaciones del modelo *@
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <form asp-action="Create" method="post" class="mt-3">
+            @Html.AntiForgeryToken()
 
             <!-- ID Resultado -->
             <div class="mb-3">
                 <label asp-for="IdResultado" class="form-label"></label>
-                <input asp-for="IdResultado" class="form-control" type="number" min="1"
-                       placeholder="Ej: 101 (ID del resultado asociado)" />
+                <select asp-for="IdResultado"
+                        class="form-select"
+                        asp-items="ViewBag.Resultados">
+                    <option value="">-- Seleccione un Resultado --</option>
+                </select>
                 <span asp-validation-for="IdResultado" class="text-danger"></span>
             </div>
 
@@ -35,7 +53,9 @@
             <!-- Mensaje -->
             <div class="mb-3">
                 <label asp-for="Mensaje" class="form-label"></label>
-                <textarea asp-for="Mensaje" class="form-control" rows="4"
+                <textarea asp-for="Mensaje"
+                          class="form-control"
+                          rows="4"
                           placeholder="Escribe aquí el cuerpo del mensaje que se enviará al paciente..."></textarea>
                 <span asp-validation-for="Mensaje" class="text-danger"></span>
             </div>
@@ -67,7 +87,6 @@
             <a class="btn btn-secondary" href="/NotificacionEmail">
                 <i class="bi bi-x-circle me-1"></i> Cancelar
             </a>
-
         </form>
 
     </div>
@@ -78,4 +97,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
